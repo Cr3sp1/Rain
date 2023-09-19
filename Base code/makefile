@@ -7,7 +7,7 @@ MYLIBS = random.o DataBlocking.o rain.o body.o rainfun.o
 main.exe: main.cpp ${MYLIBS}
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-%.o : %.cpp %.h
+%.o : %.cpp 
 	$(CC) -c $< $(CFLAGS) $(LDFLAGS)
 
 run: 
