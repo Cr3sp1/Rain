@@ -2,7 +2,7 @@ useful commands:
 
 git pull origin main
 
-
-git commit -am "update"
+git add .
+git commit -m "update"
 git push origin main
 
