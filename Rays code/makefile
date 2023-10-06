@@ -1,14 +1,13 @@
 CC = g++
 CFLAGS = -Wall -O3 --std=c++11 
-LDFLAGS = -larmadillo
-MYLIBS = random.o DataBlocking.o rain.o body.o rainfun.o
+MYLIBS = random.o  body.o 
 
 
 main.exe: main.cpp ${MYLIBS}
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) 
 
 %.o : %.cpp 
-	$(CC) -c $< $(CFLAGS) $(LDFLAGS)
+	$(CC) -c $< $(CFLAGS)
 
 run: 
 	./main.exe
