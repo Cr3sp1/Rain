@@ -3,7 +3,6 @@
 #include <string>
 #include <cmath>
 #include <vector>
-#include "random.h"
 #include "body.h"
 
 
@@ -11,8 +10,6 @@ using namespace std;
 
 
 int main (int argc, char *argv[]){
-
-    Random rand("Primes", "seed.in");
 
     // Declare stuff
     vector<double> wind(3);
@@ -29,7 +26,6 @@ int main (int argc, char *argv[]){
     ReadInput >> nstep;
     double dt = tot_time/nstep;
     ReadInput >> wind[0] >> wind[1] >> wind[2];
-
     ReadInput.close();
 
 
@@ -56,8 +52,6 @@ int main (int argc, char *argv[]){
     // Output
     // cout << "Sphere wetness: " << sfera.Wetness()/1000000 << " l" << endl;
     // cout << "Cube wetness: " << cube.Wetness()/1000000 << " l" << endl;
-
-    rand.SaveSeed();
 
     return 0;
 }

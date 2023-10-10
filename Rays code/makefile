@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -O3 --std=c++11 
-MYLIBS = random.o  body.o 
+MYLIBS = body.o 
 
 
 main.exe: main.cpp ${MYLIBS}

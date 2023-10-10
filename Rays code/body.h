@@ -5,8 +5,7 @@
 #include <fstream>
 #include <cmath>
 #include "body.h"
-#include "random.h"
-#include "vector"
+#include <vector>
 
 using namespace std;
 
