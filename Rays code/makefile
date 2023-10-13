@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -O3 --std=c++11 
-MYLIBS = body.o 
+MYLIBS = body.o VectorOperations.h VectorStat.h
 
 
 main.exe: main.cpp ${MYLIBS}
@@ -13,4 +13,4 @@ run:
 	./main.exe
 
 clean :
-	rm *.o main.exe seed.out
+	rm *.o main.exe

@@ -4,19 +4,14 @@
 
 #include <fstream>
 #include <cmath>
-#include "body.h"
 #include <vector>
+
 
 using namespace std;
 
 // Body class
 class Body {
 
-  protected:
-
-	double wetness;     // Volume of water absorbed (mm^3)
-
-	
   public:
     // Default constructor
 	Body();
@@ -24,10 +19,10 @@ class Body {
 	double Wetness() const;
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( double dt ) {}
-	// Checks if the body is making contact with a raindrop and if so adds its the volume to the wetness
-	virtual void Check() {}
-	// Checks an array of raindrops	WIP
-	// void Check( vector<Raindrop> rain ):
+	// Checks if the body is making contact with a ray
+	virtual bool Check() {}
+	// Checks an array of rays	WIP
+	// void Check( vector<ray> rain ):
 
 };
 
@@ -45,8 +40,8 @@ class Sphere: public Body {
 
 	// Complete constructor ( [center] = [mm], [radius] = [mm] )
 	Sphere( vector<double> center, double radius );
-	// Checks if the body is making contact with a raindrop and if so adds its the volume to the wetness
-	void Check( ) override;
+	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
+	bool Check( ) override;
 
 };
 
@@ -64,8 +59,8 @@ class Pippo: public Body {
 
 	// Complete constructor ( [center]=[mm], [dimensions]=[mm] )
 	Pippo( vector<double> center, vector<double> dim );
-	// Checks if the body is making contact with a raindrop and if so adds its the volume to the wetness
-	void Check() override;
+	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
+	bool Check() override;
 
 };
 

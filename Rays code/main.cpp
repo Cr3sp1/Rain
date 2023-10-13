@@ -13,16 +13,18 @@ int main (int argc, char *argv[]){
 
     // Declare stuff
     vector<double> wind(3);
+    vector<double> box(3); 
     double body_vel, tot_dist;
-    int nrain, nstep;
+    int nray, nstep;
     
 
     // Reads the input file
     ifstream ReadInput;
     ReadInput.open("input.in"); 
+    ReadInput >> box[0] >> box[1] >> box[2];
     ReadInput >> tot_dist;
     ReadInput >> body_vel;
-    double tot_time = (body_vel > 0) ? tot_dist/body_vel : 600 ;
+    double tot_time = (body_vel > 0) ? tot_dist/body_vel : 60 ;
     ReadInput >> nstep;
     double dt = tot_time/nstep;
     ReadInput >> wind[0] >> wind[1] >> wind[2];
@@ -31,7 +33,7 @@ int main (int argc, char *argv[]){
 
     // Outputs settings and stuff
     cout << "Wind = [ " << wind[0] << ", " << wind[1] << ", " << wind[2] << " ]" << endl;
-    cout << "Object velocity = " << body_vel  << ", dt = " << dt << ", nstep = " << nstep << ", nrain = " << nrain << endl;
+    cout << "Object velocity = " << body_vel  << ", dt = " << dt << ", nstep = " << nstep << ", nray = " << nray << endl;
     cout << "Time = " << tot_time << " s" << endl;
 
     // Builds Rain 

@@ -4,11 +4,7 @@ using namespace std;
 
 
 // Default constuctor
-Body::Body() {wetness = 0;}
-
-// Returns the wetness
-double Body::Wetness() const { return wetness; }
-
+Body::Body() {}
 
 // Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
 Sphere::Sphere( vector<double> center, double radius ): Body() {
@@ -16,8 +12,8 @@ Sphere::Sphere( vector<double> center, double radius ): Body() {
     rad = radius;
 }
 
-// Checks if the body is making contact with a raindrop and if so adds its the volume to the wetness
-void Sphere::Check( ) {
+// Checks if the body is making contact with a ray
+bool Sphere::Check( ) {
     
 }
 
@@ -29,9 +25,9 @@ Pippo::Pippo( vector<double> center, vector<double> dimensions ): Body() {
     dim = dimensions;
 }
 
-// Checks if the body is making contact with a raindrop and if so adds its the volume to the wetness
-void Pippo::Check( ) {
-    
+// Checks if the body is making contact with a ray
+bool Pippo::Check( ) {
+
 }
 
 

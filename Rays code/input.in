@@ -8,9 +8,9 @@
 
 
 
-  ReadInput >> size(0) >> size(1) >> size(2) (lenght of the side of the box)
-  ReadInput >> nrain (number of raindrops)
+  ReadInput >> box(0) >> box(1) >> box(2) (lenght of the side of the box)
+  ReadInput >> nrays (approximate number of rays)
   ReadInput >> tot_dist (total distance to cover by the object)
-  ReadInput >> body_vel (velocity of the object, oriented on 0 axis)
+  ReadInput >> body_vel (velocity of the object, oriented on the 0 axis)
   ReadInput >> nstep (number of steps in the simulation)
   ReadInput >> wind(0) >> wind(1) >> wind(2) (wind vec3)
