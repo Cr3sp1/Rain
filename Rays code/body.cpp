@@ -13,9 +13,9 @@ Sphere::Sphere( vector<double> center, double radius ): Body() {
 }
 
 // Checks if the body is making contact with a ray
-bool Sphere::Check( ) {
+// bool Sphere::Check( Ray ray ) {
     
-}
+// }
 
 
 
@@ -26,8 +26,8 @@ Pippo::Pippo( vector<double> center, vector<double> dimensions ): Body() {
 }
 
 // Checks if the body is making contact with a ray
-bool Pippo::Check( ) {
+// bool Pippo::Check( Ray ray ) {
 
-}
+// }
 
 

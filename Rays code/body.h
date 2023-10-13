@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
+#include "ray.h"
 
 
 using namespace std;
@@ -15,14 +16,10 @@ class Body {
   public:
     // Default constructor
 	Body();
-	// Returns the wetness
-	double Wetness() const;
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( double dt ) {}
 	// Checks if the body is making contact with a ray
-	virtual bool Check() {}
-	// Checks an array of rays	WIP
-	// void Check( vector<ray> rain ):
+	// virtual bool Check( Ray ray ) {}
 
 };
 
@@ -41,7 +38,7 @@ class Sphere: public Body {
 	// Complete constructor ( [center] = [mm], [radius] = [mm] )
 	Sphere( vector<double> center, double radius );
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
-	bool Check( ) override;
+	// bool Check( Ray ray ) override;
 
 };
 
@@ -60,7 +57,7 @@ class Pippo: public Body {
 	// Complete constructor ( [center]=[mm], [dimensions]=[mm] )
 	Pippo( vector<double> center, vector<double> dim );
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
-	bool Check() override;
+	// bool Check( Ray ray ) override;
 
 };
 

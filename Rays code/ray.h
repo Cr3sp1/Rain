@@ -3,6 +3,7 @@
 
 
 #include <fstream>
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include "VectorOperations.h"
@@ -60,13 +61,13 @@ class ProjSurface{
   public:
 
     // Complete constructor
-    ProjSurface(vector<double> box, vector<double> vel, int nrays);
+    ProjSurface(vector<double> box, vector<double> vel, unsigned int nrays);
 
     // Resets the surface between steps
     void reset();
 
     // Returns an estimate of the projection of the body on the plane
-    double proj();
+    //double BodyProj( Body body );
 
 };
 
