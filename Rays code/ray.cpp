@@ -17,8 +17,8 @@ Ray::Ray( vector<double> position, vector<double> direction){
         if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
             throw std::invalid_argument("Box must be of size 3 with all components positive!");
         }
-        if( vel.size() != 3 or vel[2] <= 0  ) {
-            throw std::invalid_argument("Box must be of size 3 with third component negative!");
+        if( vel.size() != 3 or vel[2] >= 0  ) {
+            throw std::invalid_argument("Velocity must be of size 3 with third component negative!");
         }
 
         // Finds vertex between three "seen" faces
@@ -28,9 +28,5 @@ Ray::Ray( vector<double> position, vector<double> direction){
         }
         cout << "Seen vertex is " << p[0] << p[1]  << p[2] << endl;
 
-
-        // Temporary
-        H = box;
-        surf = 0;
 
     }

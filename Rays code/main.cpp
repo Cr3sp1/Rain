@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 #include "body.h"
+#include "ray.h"
 
 
 using namespace std;
@@ -23,6 +24,7 @@ int main (int argc, char *argv[]){
     ifstream ReadInput;
     ReadInput.open("input.in"); 
     ReadInput >> box[0] >> box[1] >> box[2];
+    ReadInput >> nray;
     ReadInput >> tot_dist;
     ReadInput >> body_vel;
     double tot_time = (body_vel > 0) ? tot_dist/body_vel : 60 ;
@@ -35,7 +37,7 @@ int main (int argc, char *argv[]){
 
 
     // Outputs settings and stuff
-    cout << "relative velocity = [ " << rain_vel[0] << ", " << rain_vel[1] << ", " << rain_vel[2] << " ]" << endl;
+    cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
     cout << "Object velocity = " << body_vel  << ", dt = " << dt << ", nstep = " << nstep << ", nray = " << nray << endl;
     cout << "Time = " << tot_time << " s" << endl;
 
