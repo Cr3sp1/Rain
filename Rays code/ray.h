@@ -28,7 +28,7 @@ class Ray {
 	
   public:
     // Complete constructor
-	Ray( vector<double> position, vector<double> direction);
+	  Ray( vector<double> position, vector<double> direction);
 
     // Turns the ray on and off
     void On(){Active = true;}
@@ -48,11 +48,9 @@ class ProjSurface{
   protected:
     
     // Vertices of the hexagon
-    vector<double> H;
+    vector<vector<double>> H;
     // Total surface
     double surf;
-    // Number of rays
-    int nrays;
     // Number of rays intersecting the object
     int nhit;
     // Rays
