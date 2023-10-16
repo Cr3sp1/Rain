@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -O3 --std=c++11 
-MYLIBS = body.o ray.o VectorOperations.h VectorStat.h
+MYLIBS = body.o ray.o RainFunctions.o VectorOperations.h VectorStat.h
 
 
 main.exe: main.cpp ${MYLIBS}

@@ -1,3 +1,6 @@
+#ifndef __VOper_h__
+#define __VOper_h__
+
 #include <iostream>
 #include <vector>
 #include <cassert>
@@ -131,3 +134,6 @@ template <typename T> std::vector<T>& operator-=(std::vector<T>& a, const std::v
   
   return a;
 }
+
+
+#endif

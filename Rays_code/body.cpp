@@ -7,7 +7,7 @@ using namespace std;
 Body::Body() {}
 
 // Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
-Sphere::Sphere( vector<double> center, double radius ): Body() {
+Sphere::Sphere( vector<long double> center, long double radius ): Body() {
     cent = center;
     rad = radius;
 }
@@ -20,7 +20,7 @@ Sphere::Sphere( vector<double> center, double radius ): Body() {
 
 
 // Complete Parallelepiped constructor ( [center] = [mm], [radius] = [mm] )
-Pippo::Pippo( vector<double> center, vector<double> dimensions ): Body() {
+Pippo::Pippo( vector<long double> center, vector<long double> dimensions ): Body() {
     cent = center;
     dim = dimensions;
 }

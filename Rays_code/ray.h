@@ -8,6 +8,7 @@
 #include <vector>
 #include "VectorOperations.h"
 #include "body.h"
+#include "RainFunctions.h"
 
 using namespace std;
 
@@ -17,10 +18,10 @@ class Ray {
 
   protected:
     // Starting point
-	vector<double> R0;    
+	vector<long double> R0;    
 
     // Direction vector 
-    vector<double> V;      
+    vector<long double> V;      
 
     // The ray starts active and deactivates when it hits an object
     bool Active;
@@ -28,15 +29,15 @@ class Ray {
 	
   public:
     // Complete constructor
-	  Ray( vector<double> position, vector<double> direction);
+	  Ray( vector<long double> position, vector<long double> direction);
 
     // Turns the ray on and off
     void On(){Active = true;}
     void Off(){Active = false;}
 
     // Gets stuff
-    vector<double> GetR0(){return R0;}    
-    vector<double> GetV(){return V;};     
+    vector<long double> GetR0(){return R0;}    
+    vector<long double> GetV(){return V;};     
     bool IsOn(){return Active;}
 
 };
@@ -48,9 +49,9 @@ class ProjSurface{
   protected:
     
     // Vertices of the hexagon
-    vector<vector<double>> H;
+    vector<vector<long double>> H;
     // Total surface
-    double surf;
+    long double surf;
     // Number of rays intersecting the object
     int nhit;
     // Rays
@@ -59,13 +60,22 @@ class ProjSurface{
   public:
 
     // Complete constructor
-    ProjSurface(vector<double> box, vector<double> vel, unsigned int nrays);
+    ProjSurface(vector<long double> box, vector<long double> vel, unsigned int nrays);
 
     // Resets the surface between steps
     void reset();
 
+    // Get stuff
+    int GetNRays(){return rays.size();}
+
+    // Prints all the origins of the rays to file
+    void PrintR( string outfile );
+
+    // Prints H to file
+    void PrintH( string outfile );
+
     // Returns an estimate of the projection of the body on the plane
-    //double BodyProj( Body body );
+    //long double BodyProj( Body body );
 
 };
 
