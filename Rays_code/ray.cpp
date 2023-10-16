@@ -48,8 +48,8 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         h[i] = Project( h[i], p, vel );         // We project them
     }
     H = h;
-    for( int i = 0; i < 6; i++) cout << "H["<<i<<"] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << endl;
-    for( int i = 0; i < 6; i++) cout << (H[i]-p)*vel << endl;
+    // for( int i = 0; i < 6; i++) cout << "H["<<i<<"] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << endl;
+    // for( int i = 0; i < 6; i++) cout << (H[i]-p)*vel << endl;
 
 
     // Evaluates the surface
@@ -65,14 +65,14 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     rays = {};
     long double d = sqrt(surf/n_rays);
     // cout << "d = " << d << endl;
-    vector<long double> u1 = (Norm(H[0] - p) > Norm(H[2] - p)) ? H[0] - p : H[2] - p ;
+    vector<long double> u1 = (Norm(H[4] - p) > Norm(H[2] - p)) ? H[4] - p : H[2] - p ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*d;
     // cout << "|u1| = " << Norm(u1) << endl;
     vector<long double> u2 = CrossProduct(u1, vel);
     u2 = (u2/Norm(u2))*d;
     // cout << "|u2| = " << Norm(u2) << endl;
     vector<long double> point1 = p;
-    bool end_reached1, end_reached2;
+    bool still_inside1, still_inside2;
 
     do{
         vector<long double> point2 = point1;
@@ -80,50 +80,51 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         do{
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2+=u2;
-            end_reached2 = PointIsInside(point2, p, H );
+            point2 = Project( point2 + u2, p, vel);
+            still_inside2 = PointIsInside(point2, p, H );
         } 
-        while(end_reached2);
+        while(still_inside2);
 
-        point2 = point1;
-        do{
+        point2 = Project(point1 - u2, p, vel);
+        still_inside2 = PointIsInside(point2, p, H );
+        while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2-=u2;
-            end_reached2 = PointIsInside(point2, p, H );
+            point2 = Project( point2 - u2, p, vel);
+            still_inside2 = PointIsInside(point2, p, H );
         } 
-        while(end_reached2);
+        
 
-        point1 += u1;
-        end_reached1 = PointIsInside(point1, p, H );
+        point1 = Project( point1 + u1, p, vel);
+        still_inside1 = PointIsInside(point1, p, H );
     }
-    while(end_reached1);
+    while(still_inside1);
 
-    point1 = p;
-
-    do{
+    point1 = Project( p - u1, p, vel);
+    still_inside1 = PointIsInside(point1, p, H );
+    while(still_inside1){
         vector<long double> point2 = point1;
         do{
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2+=u2;
-            end_reached2 = PointIsInside(point2, p, H );
+            point2 = Project( point2 + u2, p, vel);
+            still_inside2 = PointIsInside(point2, p, H );
         } 
-        while(end_reached2);
+        while(still_inside2);
 
-        point2 = point1;
-        do{
+        point2 = Project(point1 - u2, p, vel);
+        still_inside2 = PointIsInside(point2, p, H );;
+        while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2-=u2;
-            end_reached2 = PointIsInside(point2, p, H );
+            point2 = Project( point2 - u2, p, vel);
+            still_inside2 = PointIsInside(point2, p, H );
         } 
-        while(end_reached2);
 
-        point1 -= u1;
-        end_reached1 = PointIsInside(point1, p, H );
+        point1 = Project( point1 - u1, p, vel);
+        still_inside1 = PointIsInside(point1, p, H );
     }
-    while(end_reached1);
+    
 
     cout << "Number of rays generated: " <<  rays.size() << "/" << n_rays << endl;
 }
