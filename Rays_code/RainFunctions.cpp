@@ -1,4 +1,6 @@
 #include "RainFunctions.h"
+#include "body.h"
+#include "ray.h"
 
 using namespace std;
 
@@ -77,4 +79,15 @@ int PBCH( int i ) {
     while( i > 5 ) i -= 6;
     while( i < 0 ) i += 6;
     return i;
+}
+
+
+// Checks rays generation 
+void RayGenCheck( string outfile, vector<long double> box, vector<long double> rel_vel ){
+    ofstream Pout("outfile");
+    for( int i = 0; i < 10000; i+=50 ){
+        ProjSurface temp( box, rel_vel, i+1 );
+        Pout << (double)temp.GetNRays()/(i+1) << endl;
+    }
+    Pout.close();
 }

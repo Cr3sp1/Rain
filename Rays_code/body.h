@@ -5,10 +5,14 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
-#include "ray.h"
+
 
 
 using namespace std;
+
+// Forward declaration
+class Ray;
+class ProjSurface;
 
 // Body class
 class Body {
@@ -17,9 +21,9 @@ class Body {
     // Default constructor
 	Body();
 	// Time evolution ( [dt] = [s] )
-	virtual void Move( long double dt ) {}
+	virtual void Move( long double dt );
 	// Checks if the body is making contact with a ray
-	virtual bool Check( Ray ray ) {}
+	virtual bool Check( Ray& rayy );
 
 };
 
@@ -38,26 +42,10 @@ class Sphere: public Body {
 	// Complete constructor ( [center] = [mm], [radius] = [mm] )
 	Sphere( vector<long double> center, long double radius );
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
-	bool Check( Ray ray ) override;
-
-};
-
-
-// Parallelepiped class
-class Pippo: public Body {
-
-  private:
-	
-	vector<long double> cent;	// Position of the center of the sphere (mm)
-	vector<long double> dim;  // Dimensions along the axes (mm)
-
-
-  public:
-
-	// Complete constructor ( [center]=[mm], [dimensions]=[mm] )
-	Pippo( vector<long double> center, vector<long double> dim );
-	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
-	// bool Check( Ray ray ) override;
+	bool Check( Ray& ray ) override;
+	// Gets stuff
+	vector<long double> GetCent(){return cent;}
+	long double GetRad(){return rad;}
 
 };
 

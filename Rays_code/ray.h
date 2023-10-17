@@ -7,11 +7,13 @@
 #include <cmath>
 #include <vector>
 #include "VectorOperations.h"
-#include "body.h"
 #include "RainFunctions.h"
 
 using namespace std;
 
+
+// Forward declaratio
+class Body;
 
 // Ray class
 class Ray {
@@ -52,8 +54,6 @@ class ProjSurface{
     vector<vector<long double>> H;
     // Total surface
     long double surf;
-    // Number of rays intersecting the object
-    int nhit;
     // Rays
     vector<Ray> rays;
 
@@ -75,7 +75,7 @@ class ProjSurface{
     void PrintH( string outfile );
 
     // Returns an estimate of the projection of the body on the plane
-    //long double BodyProj( Body body );
+    long double BodyProj( Body& body );
 
 };
 

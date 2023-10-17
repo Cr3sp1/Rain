@@ -49,25 +49,16 @@ int main (int argc, char *argv[]){
     hex.PrintR("../data/RayOrigins.dat");
     hex.PrintH("../data/H.dat");
 
-
-    // Checking rays generation
-    ofstream Pout("../data/RaysGen.dat");
-    for( int i = 0; i < 10000; i+=50 ){
-        ProjSurface temp( box, rel_vel, i+1 );
-        Pout << (double)temp.GetNRays()/(i+1) << endl;
-    }
-    Pout.close();
-
-
-
+    
     // Builds objects
+    Sphere trial( box*(long double )0.5, 1 );
 
 
     // Simulating Sphere
-
+    long double AreaS = hex.BodyProj(trial)/(M_PI*trial.GetRad()*trial.GetRad());
 
     // Output
-
+    cout << "Area of the sphere is " << AreaS << "*PI*r^2" << endl;
 
     return 0;
 }

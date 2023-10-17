@@ -1,4 +1,5 @@
 #include "ray.h"
+#include "body.h"
 
 using namespace std;
 
@@ -10,6 +11,13 @@ Ray::Ray( vector<long double> position, vector<long double> direction){
     Active = true;
 }
 
+
+// Resets the surface between steps (turns on all rays)
+void ProjSurface::reset() {
+    for( long unsigned int i = 0; i < rays.size(); i++ ){
+        rays[i].On();
+    }
+}
 
 
 // Complete constructor
@@ -131,7 +139,6 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
 }
 
 
-
 // Prints all the origins of the rays to file
 void ProjSurface::PrintR( string outfile ){
     ofstream fout(outfile);
@@ -142,6 +149,7 @@ void ProjSurface::PrintR( string outfile ){
     fout.close();
 }
 
+
 // Prints H to file
 void ProjSurface::PrintH( string outfile ){
     ofstream fout(outfile);
@@ -149,4 +157,19 @@ void ProjSurface::PrintH( string outfile ){
         fout << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << endl;
     }
     fout.close();
+}
+
+
+// Returns an estimate of the projection of the body on the plane
+long double ProjSurface::BodyProj( Body& body ) {
+    unsigned int nhit = 0;
+    cout << "Projecting on " << rays.size() << " rays" << endl;
+    for( long unsigned int i = 0; i < rays.size(); i++ ){
+        if( body.Check( rays[i]) ) {
+            nhit++;
+            rays[i].Off();
+        }
+    }
+    cout << "nhit = " << nhit << endl;
+    return surf*nhit/rays.size();
 }
