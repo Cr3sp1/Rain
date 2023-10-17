@@ -12,11 +12,17 @@
 using namespace std;
 
 
-// Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon
-bool PointIsInside( vector<long double> Point, vector<long double> p, vector<vector<long double>> H );
-
-
 // Projects the Point on a plane perpendicular to v and passing through p
 vector<long double> Project( vector<long double> Point, vector<long double> p, vector<long double> v );
+
+
+// Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking parallelograms
+bool PointIsInsideP( vector<long double> Point, vector<long double> p, vector<vector<long double>> H );
+
+// Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking triangles
+bool PointIsInsideT( vector<long double> Point, vector<long double> p, vector<vector<long double>> H );
+
+// Periodic Boundary conditions for the index of H
+int PBCH( int i );
 
 #endif

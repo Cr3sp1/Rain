@@ -3,8 +3,36 @@
 using namespace std;
 
 
+// Projects the Point on a plane perpendicular to v and passing through p
+vector<long double> Project( vector<long double> Point, vector<long double> p, vector<long double> v ){
+    vector<long double> diff = p - Point;
+    return ( Point + v*(diff*v)/(v*v) );
+}
+
 // Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
-bool PointIsInside( vector<long double> Point, vector<long double> p, vector<vector<long double>> H ) {
+bool PointIsInsideT( vector<long double> Point, vector<long double> p, vector<vector<long double>> H ){
+    // Centers on p
+    Point -= p;
+    for(int i = 0; i < 6; i++ ){
+        H[i] -= p;
+    }
+
+    // Checks if Point is inside the reiangle with vertices p, H[i], H[i+1]
+    for( int i = 0; i < 6; i++ ){
+        long double epsilon = 1e-10;
+        long double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
+        long double alpha = Norm( CrossProduct( Point, H[PBCH(i+1)]) )/A;
+        long double beta = Norm( CrossProduct( Point, H[i]) )/A;
+        long double gamma = Norm( CrossProduct( Point-H[i], Point-H[PBCH(i+1)]) )/A;
+        if( 0 <= alpha and alpha <= 1 and 0 <= beta and beta <= 1 and 0 <= gamma and gamma <= 1 and abs(alpha + beta + gamma - 1 ) <  epsilon ){
+            return true;
+        }
+    }
+    return false;
+}
+
+// Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
+bool PointIsInsideP( vector<long double> Point, vector<long double> p, vector<vector<long double>> H ){
     // centers the points in p
     Point -= p;
     for(int i = 0; i < 6; i++ ) H[i] -=p;
@@ -44,8 +72,9 @@ bool PointIsInside( vector<long double> Point, vector<long double> p, vector<vec
 
 
 
-// Projects the Point on a plane perpendicular to v and passing through p
-vector<long double> Project( vector<long double> Point, vector<long double> p, vector<long double> v ){
-    vector<long double> diff = p - Point;
-    return ( Point + v*(diff*v)/(v*v) );
+// Periodic Boundary conditions for the index of H
+int PBCH( int i ) {
+    while( i > 5 ) i -= 6;
+    while( i < 0 ) i += 6;
+    return i;
 }

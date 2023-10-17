@@ -19,7 +19,7 @@ class Body {
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( long double dt ) {}
 	// Checks if the body is making contact with a ray
-	// virtual bool Check( Ray ray ) {}
+	virtual bool Check( Ray ray ) {}
 
 };
 
@@ -38,7 +38,7 @@ class Sphere: public Body {
 	// Complete constructor ( [center] = [mm], [radius] = [mm] )
 	Sphere( vector<long double> center, long double radius );
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
-	// bool Check( Ray ray ) override;
+	bool Check( Ray ray ) override;
 
 };
 

@@ -46,17 +46,17 @@ int main (int argc, char *argv[]){
     ProjSurface hex( box, rel_vel, nray );
 
     // Prints Rays
-    hex.PrintR("RayOrigins.dat");
-    hex.PrintH("H.dat");
+    hex.PrintR("../data/RayOrigins.dat");
+    hex.PrintH("../data/H.dat");
 
 
     // Checking rays generation
-    // ofstream Pout("RaysGen.dat");
-    // for( int i = 0; i < 10000; i+=50 ){
-    //     ProjSurface temp( box, rel_vel, i+1 );
-    //     Pout << (double)temp.GetNRays()/(i+1) << endl;
-    // }
-    // Pout.close();
+    ofstream Pout("../data/RaysGen.dat");
+    for( int i = 0; i < 10000; i+=50 ){
+        ProjSurface temp( box, rel_vel, i+1 );
+        Pout << (double)temp.GetNRays()/(i+1) << endl;
+    }
+    Pout.close();
 
 
 

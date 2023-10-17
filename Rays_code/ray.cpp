@@ -48,6 +48,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         h[i] = Project( h[i], p, vel );         // We project them
     }
     H = h;
+    H.push_back(p);
     // for( int i = 0; i < 6; i++) cout << "H["<<i<<"] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << endl;
     // for( int i = 0; i < 6; i++) cout << (H[i]-p)*vel << endl;
 
@@ -81,48 +82,48 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
             Ray temp( point2, vel );
             rays.push_back(temp);
             point2 = Project( point2 + u2, p, vel);
-            still_inside2 = PointIsInside(point2, p, H );
+            still_inside2 = PointIsInsideT(point2, p, H );
         } 
         while(still_inside2);
 
         point2 = Project(point1 - u2, p, vel);
-        still_inside2 = PointIsInside(point2, p, H );
+        still_inside2 = PointIsInsideT(point2, p, H );
         while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
             point2 = Project( point2 - u2, p, vel);
-            still_inside2 = PointIsInside(point2, p, H );
+            still_inside2 = PointIsInsideT(point2, p, H );
         } 
         
 
         point1 = Project( point1 + u1, p, vel);
-        still_inside1 = PointIsInside(point1, p, H );
+        still_inside1 = PointIsInsideT(point1, p, H );
     }
     while(still_inside1);
 
     point1 = Project( p - u1, p, vel);
-    still_inside1 = PointIsInside(point1, p, H );
+    still_inside1 = PointIsInsideT(point1, p, H );
     while(still_inside1){
         vector<long double> point2 = point1;
         do{
             Ray temp( point2, vel );
             rays.push_back(temp);
             point2 = Project( point2 + u2, p, vel);
-            still_inside2 = PointIsInside(point2, p, H );
+            still_inside2 = PointIsInsideT(point2, p, H );
         } 
         while(still_inside2);
 
         point2 = Project(point1 - u2, p, vel);
-        still_inside2 = PointIsInside(point2, p, H );;
+        still_inside2 = PointIsInsideT(point2, p, H );;
         while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
             point2 = Project( point2 - u2, p, vel);
-            still_inside2 = PointIsInside(point2, p, H );
+            still_inside2 = PointIsInsideT(point2, p, H );
         } 
 
         point1 = Project( point1 - u1, p, vel);
-        still_inside1 = PointIsInside(point1, p, H );
+        still_inside1 = PointIsInsideT(point1, p, H );
     }
     
 
