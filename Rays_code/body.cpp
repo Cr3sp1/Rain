@@ -22,10 +22,10 @@ Sphere::Sphere( vector<long double> center, long double radius ): Body() {
 bool Sphere::Check( Ray& ray ) {
     if( ray.IsOn() != true ) return false;
     vector<long double> v = ray.GetV();
-    vector<long double> R0 = ray.GetR0();
+    vector<long double> R0 = ray.GetR0() - cent;
     long double a = v*v;
-    long double b = 2*((R0-cent)*v);
-    long double c = (v-R0)*(v-R0) - rad*rad;
+    long double b = 2*(R0*v);
+    long double c = R0*R0 - rad*rad;
     if( b*b >= 4*a*c ) return true;
     
     return false;
