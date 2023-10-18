@@ -40,7 +40,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     // cout << "p = (" << p[0] << ", " << p[1] << ", " << p[2] << ")" << endl;
 
 
-    // Finds the projections H of the six vertices adjacent to P
+    // Finds the projections H of the six vertices adjacent to H0
     vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices
     for( int i = 0; i < 3; i++ ){
         delta[i][i] = vel[i] < 0 ? (-box[i]) : box[i];

@@ -22,10 +22,15 @@ class Body {
 	Body();
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( long double dt );
+	// Primes the body to be checked
+	virtual void Prime( ProjSurface& surface );
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy );
 
+
 };
+
+
 
 
 // Sphere class
@@ -49,6 +54,31 @@ class Sphere: public Body {
 
 };
 
+
+
+// Parallelepiped class
+class Pippo: public Body {
+
+  private:
+	
+	vector<long double> p;	// Position of a vertex 
+	vector<vector<long double>> side;	// Radius of the sphere 
+	vector<vector<long double>> H;		// Hexagonal projection on surface
+
+
+  public:
+
+	// Complete constructor 
+	Pippo( vector<long double> center, long double radius );
+	// Primes the body to be checked
+	void Prime( ProjSurface& surface ) override;
+	// Checks if the body is making contact with a ray
+	bool Check( Ray& ray ) override;
+	// Gets stuff
+	vector<long double> GetP(){return p;}
+	vector<vector<long double>>  GetSide(){return side;}
+
+};
 
 
 #endif // __Body_h__

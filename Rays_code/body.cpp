@@ -10,6 +10,7 @@ Body::Body() {}
 // Virtual functions
 bool Body::Check( Ray& ray ) {return 0;}
 void Body::Move( long double dt ) {}
+void Body::Prime( ProjSurface& surface ) {}
 
 
 // Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
@@ -18,7 +19,7 @@ Sphere::Sphere( vector<long double> center, long double radius ): Body() {
     rad = radius;
 }
 
-// Checks if the body is making contact with a ray
+// Checks if the Sphere is making contact with a ray
 bool Sphere::Check( Ray& ray ) {
     if( ray.IsOn() != true ) return false;
     vector<long double> v = ray.GetV();
@@ -32,6 +33,11 @@ bool Sphere::Check( Ray& ray ) {
 }
 
 
+// Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
+Sphere::Sphere( vector<long double> center, long double radius ): Body() {
+    cent = center;
+    rad = radius;
+}
 
 
 // Checks if the body is making contact with a ray
