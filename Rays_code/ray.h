@@ -67,6 +67,8 @@ class ProjSurface{
 
     // Get stuff
     int GetNRays(){return rays.size();}
+    vector<vector<long double>> GetH(){return H;}
+    vector<long double> GetV(){return rays[0].GetV();}
 
     // Prints all the origins of the rays to file
     void PrintR( string outfile );

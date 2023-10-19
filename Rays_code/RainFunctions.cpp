@@ -19,8 +19,29 @@ vector<long double> FindMiddle( vector<long double> p, vector<vector<long double
     return p;
 }
 
+// Finds the hexagonal projection H of a parallelepiped on a plane perpendicular to v and passing through O
+vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<long double>> Side, vector<long double> v, vector<long double> O){
+    vector<vector<long double>> H = {FindMiddle( p, Side, v )};
+    vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices
+    for( int i = 0; i < 3; i++ ){
+        delta[i] = Side[i]*v < 0 ? ((long double)-1)*Side[i] : Side[i];
+    }
+    H.push_back( H[0] + delta[0] );
+    H.push_back( H[0] + delta[0] + delta[1]) ;
+    H.push_back( H[0] + delta[1] );
+    H.push_back( H[0] + delta[1] + delta[2] );
+    H.push_back( H[0] + delta[2] );
+    H.push_back( H[0] + delta[2] + delta[0] );
+    for( int i = 1; i < 7; i++ ){
+        H[i] = Project( H[i], O, v );         // We project them
+    }
 
-// Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
+    return H;
+}
+
+
+
+// Auxiliary function used only that checks wether a point is inside the hexagon
 bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     // Centers on p
     Point -= H[0];
@@ -46,7 +67,7 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
 bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
     // centers the points in p
     Point -= H[0];
-    for(int i = 0; i < 6; i++ ) H[i] -=H[0];
+    for(int i = 0; i < 7; i++ ) H[i] -=H[0];
     // Calculate stuff
     long double a, b;
     long double epsilon = 1e-16;
@@ -83,10 +104,10 @@ bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
 
 
 
-// Periodic Boundary conditions for the index of H
+// Periodic Boundary conditions for the index of H, keeps it between 1 and 6
 int PBCH( int i ) {
-    while( i > 5 ) i -= 6;
-    while( i < 0 ) i += 6;
+    while( i > 6 ) i -= 6;
+    while( i < 1 ) i += 6;
     return i;
 }
 

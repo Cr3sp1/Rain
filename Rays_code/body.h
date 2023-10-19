@@ -23,7 +23,7 @@ class Body {
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( long double dt );
 	// Primes the body to be checked
-	virtual void Prime( ProjSurface& surface );
+	virtual void Prime( vector<long double> p, vector<long double> v );
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy );
 
@@ -38,14 +38,17 @@ class Sphere: public Body {
 
   private:
 	
-	vector<long double> cent;	// Position of the center of the sphere (mm)
-	long double rad;	// Radius of the sphere (mm)
+	vector<long double> cent;	// Position of the center of the sphere 
+	long double rad;	// Radius of the sphere
+	vector<long double> Hcent;		// Projection of the center of the sphere
 
 
   public:
 
 	// Complete constructor ( [center] = [mm], [radius] = [mm] )
 	Sphere( vector<long double> center, long double radius );
+	// Primes the body to be checked
+	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
 	// Gets stuff
@@ -71,7 +74,7 @@ class Pippo: public Body {
 	// Complete constructor 
 	Pippo( vector<long double> P, vector<vector<long double>> Side );
 	// Primes the body to be checked
-	void Prime( ProjSurface& surface ) override;
+	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray
 	bool Check( Ray& ray ) override;
 	// Gets stuff

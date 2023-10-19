@@ -33,30 +33,9 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
 
 
     vector<vector<long double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
-    vector<vector<long double>> h(7, vector<long double>(3));       // h[i] is the position of the vertex i
-
-    // Finds vertex between three "seen" faces
-    h[0] = FindMiddle( {0,0,0}, sides, vel );
-    // cout << "p = (" << p[0] << ", " << p[1] << ", " << p[2] << ")" << endl;
-
-
-    // Finds the projections H of the six vertices adjacent to H0
-    vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices
-    for( int i = 0; i < 3; i++ ){
-        delta[i][i] = vel[i] < 0 ? (-box[i]) : box[i];
-    }
-    h[1] = h[0] + delta[0];
-    h[2] = h[0] + delta[0] + delta[1];
-    h[3] = h[0] + delta[1];
-    h[4] = h[0] + delta[1] + delta[2];
-    h[5] = h[0] + delta[2];
-    h[6] = h[0] + delta[2] + delta[0];
-    for( int i = 1; i < 7; i++ ){
-        h[i] = Project( h[i], h[0], vel );         // We project them
-    }
-    H = h;
-    // for( int i = 0; i < 6; i++) cout << "H["<<i<<"] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << endl;
-    // for( int i = 0; i < 6; i++) cout << (H[i]-p)*vel << endl;
+    
+    // Finds vertex between three "seen" faces and projects the other vertices on the plane passing by it perpendicular to vel
+    H = FindHexProj( {0,0,0}, sides, vel, FindMiddle({0,0,0}, sides, vel) );
 
 
     // Evaluates the surface
@@ -72,7 +51,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     rays = {};
     long double d = sqrt(surf/n_rays);
     // cout << "d = " << d << endl;
-    vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[4] - H[0] : H[2] - H[0] ;      // makes sure that u1 isn't infinitesimal
+    vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*d;
     // cout << "|u1| = " << Norm(u1) << endl;
     vector<long double> u2 = CrossProduct(u1, vel);
@@ -162,11 +141,9 @@ void ProjSurface::PrintH( string outfile ){
 long double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
     cout << "Projecting on " << rays.size() << " rays" << endl;
+    body.Prime( H[0], rays[0].GetV() );
     for( long unsigned int i = 0; i < rays.size(); i++ ){
-        if( body.Check( rays[i]) ) {
-            nhit++;
-            rays[i].Off();
-        }
+        if( body.Check( rays[i]) ) nhit++;
     }
     cout << "nhit = " << nhit << endl;
     return surf*nhit/rays.size();
