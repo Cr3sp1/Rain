@@ -69,7 +69,7 @@ class Pippo: public Body {
   public:
 
 	// Complete constructor 
-	Pippo( vector<long double> center, long double radius );
+	Pippo( vector<long double> P, vector<vector<long double>> Side );
 	// Primes the body to be checked
 	void Prime( ProjSurface& surface ) override;
 	// Checks if the body is making contact with a ray

@@ -11,16 +11,25 @@ vector<long double> Project( vector<long double> Point, vector<long double> p, v
     return ( Point + v*(diff*v)/(v*v) );
 }
 
+// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
+vector<long double> FindMiddle( vector<long double> p, vector<vector<long double>> sides, vector<long double> v ){
+    for( unsigned int i = 0; i < sides.size(); i++ ){
+        if( sides[i]*v < 0 ) p += sides[i];
+    }
+    return p;
+}
+
+
 // Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
-bool PointIsInsideT( vector<long double> Point, vector<long double> p, vector<vector<long double>> H ){
+bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     // Centers on p
-    Point -= p;
-    for(int i = 0; i < 6; i++ ){
-        H[i] -= p;
+    Point -= H[0];
+    for(int i = 1; i < 7; i++ ){
+        H[i] -= H[0];
     }
 
-    // Checks if Point is inside the reiangle with vertices p, H[i], H[i+1]
-    for( int i = 0; i < 6; i++ ){
+    // Checks if Point is inside the reiangle with vertices H[0], H[i], H[i+1]
+    for( int i = 1; i < 7; i++ ){
         long double epsilon = 1e-10;
         long double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
         long double alpha = Norm( CrossProduct( Point, H[PBCH(i+1)]) )/A;
@@ -34,38 +43,38 @@ bool PointIsInsideT( vector<long double> Point, vector<long double> p, vector<ve
 }
 
 // Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
-bool PointIsInsideP( vector<long double> Point, vector<long double> p, vector<vector<long double>> H ){
+bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
     // centers the points in p
-    Point -= p;
-    for(int i = 0; i < 6; i++ ) H[i] -=p;
+    Point -= H[0];
+    for(int i = 0; i < 6; i++ ) H[i] -=H[0];
     // Calculate stuff
     long double a, b;
     long double epsilon = 1e-16;
-    long double H0p = H[0]*Point;
-    long double H0H0 = H[0]*H[0];
-    long double H0H2 = H[0]*H[2];
-    long double H2p = H[2]*Point;
-    long double H2H2 = H[2]*H[2];
-    long double H2H4 = H[2]*H[4];
-    long double H4p = H[4]*Point;
-    long double H4H4 = H[4]*H[4];
-    long double H4H0 = H[4]*H[0];
+    long double H1p = H[1]*Point;
+    long double H1H1 = H[1]*H[1];
+    long double H1H3 = H[1]*H[3];
+    long double H3p = H[3]*Point;
+    long double H3H3 = H[3]*H[3];
+    long double H3H5 = H[3]*H[4];
+    long double H5p = H[5]*Point;
+    long double H5H5 = H[5]*H[5];
+    long double H5H1 = H[5]*H[1];
 
-    if( H0H0*H2H2 - H0H2*H0H2 > epsilon and H0H0 > epsilon ){
-        b = (H2p*H0H0 - H0p*H0H2)/(H0H0*H2H2 - H0H2*H0H2);
-        a = (H0p*H2H2 - H2p*H0H2)/(H0H0*H2H2 - H0H2*H0H2);
+    if( H1H1*H3H3 - H1H3*H1H3 > epsilon and H1H1 > epsilon ){
+        b = (H3p*H1H1 - H1p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
+        a = (H1p*H3H3 - H3p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
     }
 
-    if( H2H2*H4H4 - H2H4*H2H4 > epsilon and H2H2 > epsilon ){
-        b = (H4p*H2H2 - H2p*H2H4)/(H2H2*H4H4 - H2H4*H2H4);
-        a = (H2p*H4H4 - H4p*H2H4)/(H2H2*H4H4 - H2H4*H2H4);
+    if( H3H3*H5H5 - H3H5*H3H5 > epsilon and H3H3 > epsilon ){
+        b = (H5p*H3H3 - H3p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
+        a = (H3p*H5H5 - H5p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
     } 
 
-    if( H4H4*H0H0 - H4H0*H4H0 > epsilon and H4H4 > epsilon ){
-        b = (H0p*H4H4 - H4p*H4H0)/(H4H4*H4H4 - H4H0*H4H0);
-        a = (H4p*H0H0 - H0p*H4H0)/(H4H4*H4H4 - H4H0*H4H0);
+    if( H5H5*H1H1 - H5H1*H5H1 > epsilon and H5H5 > epsilon ){
+        b = (H1p*H5H5 - H5p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
+        a = (H5p*H1H1 - H1p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
     }
 

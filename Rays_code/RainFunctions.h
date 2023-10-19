@@ -20,12 +20,14 @@ class ProjSurface;
 // Projects the Point on a plane perpendicular to v and passing through p
 vector<long double> Project( vector<long double> Point, vector<long double> p, vector<long double> v );
 
+// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
+vector<long double> FindMiddle( vector<long double> p, vector<vector<long double>> sides, vector<long double> v );
 
 // (NOTE: DOESN'T ALWAYS WORK)  Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking parallelograms
-bool PointIsInsideP( vector<long double> Point, vector<long double> p, vector<vector<long double>> H );
+bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H );
 
 // Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking triangles
-bool PointIsInsideT( vector<long double> Point, vector<long double> p, vector<vector<long double>> H );
+bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H );
 
 // Periodic Boundary conditions for the index of H
 int PBCH( int i );

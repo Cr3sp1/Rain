@@ -33,15 +33,19 @@ bool Sphere::Check( Ray& ray ) {
 }
 
 
-// Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
-Sphere::Sphere( vector<long double> center, long double radius ): Body() {
-    cent = center;
-    rad = radius;
+// Complete Parallelepiped constructor 
+Pippo::Pippo( vector<long double> P, vector<vector<long double>> Side ): Body() {
+    p = P;
+    side = Side;
 }
 
+// Primes the body to be checked
+void Pippo::Prime( ProjSurface& surface ) {}
 
 // Checks if the body is making contact with a ray
-// bool Pippo::Check( Ray ray ) {
+bool Pippo::Check( Ray& ray ) {return true;}
+
+
 
 // }
 

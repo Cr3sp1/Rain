@@ -32,11 +32,11 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     }
 
 
+    vector<vector<long double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
+    vector<vector<long double>> h(7, vector<long double>(3));       // h[i] is the position of the vertex i
+
     // Finds vertex between three "seen" faces
-    vector<long double> p(3);
-    for( int i = 0; i < 3; i++ ){
-        p[i] = vel[i] < 0 ? box[i] : 0;
-    }
+    h[0] = FindMiddle( {0,0,0}, sides, vel );
     // cout << "p = (" << p[0] << ", " << p[1] << ", " << p[2] << ")" << endl;
 
 
@@ -45,26 +45,24 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     for( int i = 0; i < 3; i++ ){
         delta[i][i] = vel[i] < 0 ? (-box[i]) : box[i];
     }
-    vector<vector<long double>> h(6, vector<long double>(3));       // h[i] is the position of the vertex i
-    h[0] = p + delta[0];
-    h[1] = p + delta[0] + delta[1];
-    h[2] = p + delta[1];
-    h[3] = p + delta[1] + delta[2];
-    h[4] = p + delta[2];
-    h[5] = p + delta[2] + delta[0];
-    for( int i = 0; i < 6; i++ ){
-        h[i] = Project( h[i], p, vel );         // We project them
+    h[1] = h[0] + delta[0];
+    h[2] = h[0] + delta[0] + delta[1];
+    h[3] = h[0] + delta[1];
+    h[4] = h[0] + delta[1] + delta[2];
+    h[5] = h[0] + delta[2];
+    h[6] = h[0] + delta[2] + delta[0];
+    for( int i = 1; i < 7; i++ ){
+        h[i] = Project( h[i], h[0], vel );         // We project them
     }
     H = h;
-    H.push_back(p);
     // for( int i = 0; i < 6; i++) cout << "H["<<i<<"] = (" << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << ")" << endl;
     // for( int i = 0; i < 6; i++) cout << (H[i]-p)*vel << endl;
 
 
     // Evaluates the surface
     surf = 0;
-    for( int i = 0; i < 6; i+=2 ) {
-        surf += Norm( CrossProduct( p-H[i], H[i]-H[i+1] ) );
+    for( int i = 1; i < 7; i+=2 ) {
+        surf += Norm( CrossProduct( H[0]-H[i], H[i]-H[i+1] ) );
     }
     // cout << "Tot Surface = " << surf << endl;
 
@@ -74,13 +72,13 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     rays = {};
     long double d = sqrt(surf/n_rays);
     // cout << "d = " << d << endl;
-    vector<long double> u1 = (Norm(H[4] - p) > Norm(H[2] - p)) ? H[4] - p : H[2] - p ;      // makes sure that u1 isn't infinitesimal
+    vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[4] - H[0] : H[2] - H[0] ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*d;
     // cout << "|u1| = " << Norm(u1) << endl;
     vector<long double> u2 = CrossProduct(u1, vel);
     u2 = (u2/Norm(u2))*d;
     // cout << "|u2| = " << Norm(u2) << endl;
-    vector<long double> point1 = p;
+    vector<long double> point1 = H[0];
     bool still_inside1, still_inside2;
 
     do{
@@ -89,49 +87,49 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         do{
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2 = Project( point2 + u2, p, vel);
-            still_inside2 = PointIsInsideT(point2, p, H );
+            point2 = Project( point2 + u2, H[0], vel);
+            still_inside2 = PointIsInsideT(point2, H );
         } 
         while(still_inside2);
 
-        point2 = Project(point1 - u2, p, vel);
-        still_inside2 = PointIsInsideT(point2, p, H );
+        point2 = Project(point1 - u2, H[0], vel);
+        still_inside2 = PointIsInsideT(point2, H );
         while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2 = Project( point2 - u2, p, vel);
-            still_inside2 = PointIsInsideT(point2, p, H );
+            point2 = Project( point2 - u2, H[0], vel);
+            still_inside2 = PointIsInsideT(point2, H );
         } 
         
 
-        point1 = Project( point1 + u1, p, vel);
-        still_inside1 = PointIsInsideT(point1, p, H );
+        point1 = Project( point1 + u1, H[0], vel);
+        still_inside1 = PointIsInsideT(point1, H );
     }
     while(still_inside1);
 
-    point1 = Project( p - u1, p, vel);
-    still_inside1 = PointIsInsideT(point1, p, H );
+    point1 = Project( H[0] - u1, H[0], vel);
+    still_inside1 = PointIsInsideT(point1, H );
     while(still_inside1){
         vector<long double> point2 = point1;
         do{
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2 = Project( point2 + u2, p, vel);
-            still_inside2 = PointIsInsideT(point2, p, H );
+            point2 = Project( point2 + u2, H[0], vel);
+            still_inside2 = PointIsInsideT(point2,  H );
         } 
         while(still_inside2);
 
-        point2 = Project(point1 - u2, p, vel);
-        still_inside2 = PointIsInsideT(point2, p, H );;
+        point2 = Project(point1 - u2, H[0], vel);
+        still_inside2 = PointIsInsideT(point2, H );;
         while(still_inside2){
             Ray temp( point2, vel );
             rays.push_back(temp);
-            point2 = Project( point2 - u2, p, vel);
-            still_inside2 = PointIsInsideT(point2, p, H );
+            point2 = Project( point2 - u2, H[0], vel);
+            still_inside2 = PointIsInsideT(point2, H );
         } 
 
-        point1 = Project( point1 - u1, p, vel);
-        still_inside1 = PointIsInsideT(point1, p, H );
+        point1 = Project( point1 - u1, H[0], vel);
+        still_inside1 = PointIsInsideT(point1, H );
     }
     
 
