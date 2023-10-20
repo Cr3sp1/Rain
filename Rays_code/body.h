@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
+#include "VectorOperations.h"
 
 
 
@@ -26,6 +27,8 @@ class Body {
 	virtual void Prime( vector<long double> p, vector<long double> v );
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy );
+	// Analytical solution of rain intercepted
+	virtual long double Anal( vector<long double> v, long double dist, long double bodyvel  );
 
 
 };
@@ -51,6 +54,8 @@ class Sphere: public Body {
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
+	// Analytical solution of rain intercepted
+	long double Anal( vector<long double> v , long double dist, long double bodyvel ) override;
 	// Gets stuff
 	vector<long double> GetCent(){return cent;}
 	long double GetRad(){return rad;}
@@ -77,6 +82,8 @@ class Pippo: public Body {
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray
 	bool Check( Ray& ray ) override;
+	// Analytical solution of rain intercepted (only for parallelepiped with sides along axes and no component v along y axis)
+	long double Anal( vector<long double> v, long double dist, long double bodyvel  ) override;
 	// Gets stuff
 	vector<long double> GetP(){return p;}
 	vector<vector<long double>>  GetSide(){return side;}

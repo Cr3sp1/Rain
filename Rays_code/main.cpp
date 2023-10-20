@@ -19,6 +19,9 @@ int main (int argc, char *argv[]){
     vector<long double> box(3); 
     long double body_vel, tot_dist;
     int nray, nstep;
+    vector<long double> vel_ratio(100);
+    vector<long double> NumResults(100);
+    vector<long double> AnalResults(100);
     
 
     // Reads the input file
@@ -51,14 +54,35 @@ int main (int argc, char *argv[]){
 
     
     // Builds objects
-    Sphere trial( box*(long double )0.5, 1 );
+    Sphere trial( box*(long double)0.5, box[0]/2 );
 
 
-    // Simulating Sphere
+    // Simulating parallelepiped
     long double AreaS = hex.BodyProj(trial)/(M_PI*trial.GetRad()*trial.GetRad());
 
     // Output
     cout << "Area of the sphere is " << AreaS << "*PI*r^2" << endl;
+
+    // Simulate different body velocities
+    for( int i = 0; i < 100; i++ ){
+        vel_ratio[i] = (i+1)*0.03;
+        body_vel= vel_ratio[i]*Norm(rain_vel);
+        rel_vel = rain_vel;
+        rel_vel[0] -= body_vel;
+
+        AnalResults[i] = trial.Anal(rel_vel, tot_dist, body_vel);
+        ProjSurface temp( box, rel_vel, nray);
+        NumResults[i] = temp.BodyProj( trial )*Norm(rel_vel)*tot_dist/body_vel;
+    }
+
+    vector<vector<long double>> results = { vel_ratio, AnalResults, NumResults };
+    ofstream outputFile("../data/CompareSphere.txt");
+
+    for (size_t i = 0; i < results[0].size(); ++i) {
+        outputFile << results[0][i] << " " << results[1][i] << " " << results[2][i] << endl;
+    }
+
+    outputFile.close();
 
     return 0;
 }

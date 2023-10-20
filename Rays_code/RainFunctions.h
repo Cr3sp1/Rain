@@ -35,7 +35,9 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H );
 // Periodic Boundary conditions for the index of H
 int PBCH( int i );
 
-// Checks rays generation 
+// Prints percentsge of rays generated for various nrays
 void RayGenCheck( string outfile, vector<long double> box, vector<long double> rel_vel );
+
+
 
 #endif
