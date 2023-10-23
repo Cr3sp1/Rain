@@ -26,6 +26,9 @@ vector<long double> FindMiddle( vector<long double> p, vector<vector<long double
 // Finds the hexagonal projection H of a parallelepiped on a plane perpendicular to v and passing through O
 vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<long double>> Side, vector<long double> v, vector<long double> O);
 
+/// Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
+long double MaxU(vector<vector<long double>> H, vector<long double> u );
+
 // (NOTE: DOESN'T ALWAYS WORK)  Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking parallelograms
 bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H );
 
@@ -35,9 +38,7 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H );
 // Periodic Boundary conditions for the index of H
 int PBCH( int i );
 
-// Prints percentsge of rays generated for various nrays
+// Checks rays generation 
 void RayGenCheck( string outfile, vector<long double> box, vector<long double> rel_vel );
-
-
 
 #endif

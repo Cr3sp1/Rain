@@ -39,9 +39,21 @@ vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<l
     return H;
 }
 
+// Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
+long double MaxU(vector<vector<long double>> H, vector<long double> u ) {
+    long double result = 0;
+    for( int i = 1; i < 7; i++ ) {
+        H[i] -= H[0];
+        long double proj = abs(H[i]*u/Norm(u));
+        if(proj > result) result = proj;
+    }
+    // cout << result << endl;
+    return result;
+}
 
 
-// Auxiliary function used only that checks wether a point is inside the hexagon
+
+// Returns wether the Point is inside the hexagon H using triangles
 bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     // Centers on p
     Point -= H[0];
@@ -63,7 +75,7 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     return false;
 }
 
-// Auxiliary function used only in the constructor that checks wether a point is inside the hexagon
+// Returns wether the Point is inside the hexagon H using parallelograms
 bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
     // centers the points in p
     Point -= H[0];
@@ -121,6 +133,3 @@ void RayGenCheck( string outfile, vector<long double> box, vector<long double> r
     }
     Pout.close();
 }
-
-
-

@@ -60,64 +60,36 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     // cout << "d = " << d << endl;
     vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*d;
+     long double maxu1 = MaxU( H, u1 );
     // cout << "|u1| = " << Norm(u1) << endl;
+    // cout << "steps1 = " << Norm(u1) << endl;
     vector<long double> u2 = CrossProduct(u1, vel);
     u2 = (u2/Norm(u2))*d;
+    long double maxu2 = MaxU( H, u2 );
     // cout << "|u2| = " << Norm(u2) << endl;
-    vector<long double> point1 = H[0];
-    bool still_inside1, still_inside2;
 
-    do{
-        vector<long double> point2 = point1;
+    for( long double sign1 = -1; sign1 < 2; sign1+=2 ) {
 
-        do{
-            Ray temp( point2);
-            rays.push_back(temp);
-            point2 = Project( point2 + u2, H[0], vel);
-            still_inside2 = PointIsInsideT(point2, H );
-        } 
-        while(still_inside2);
+        vector<long double> point1 = H[0];
+        if(sign1 == 1) point1 += u1;
+        while( Norm( point1 - H[0]) < maxu1 ) {
+            for( long double sign2 = -1; sign2 < 2; sign2+=2 ){
 
-        point2 = Project(point1 - u2, H[0], vel);
-        still_inside2 = PointIsInsideT(point2, H );
-        while(still_inside2){
-            Ray temp( point2);
-            rays.push_back(temp);
-            point2 = Project( point2 - u2, H[0], vel);
-            still_inside2 = PointIsInsideT(point2, H );
-        } 
-        
-
-        point1 = Project( point1 + u1, H[0], vel);
-        still_inside1 = PointIsInsideT(point1, H );
+                vector<long double> point2 = point1;
+                if(sign2 == 1) point2 += u2;
+                while( Norm(point2 - point1) < maxu2 ){
+                    if( PointIsInsideT( point2, H )) {
+                        Ray temp( point2 );
+                        rays.push_back(temp);
+                    }
+                    point2 += (sign2*u2);
+                }
+            }
+            point1 += (sign1*u1); 
+        }
     }
-    while(still_inside1);
 
-    point1 = Project( H[0] - u1, H[0], vel);
-    still_inside1 = PointIsInsideT(point1, H );
-    while(still_inside1){
-        vector<long double> point2 = point1;
-        do{
-            Ray temp( point2);
-            rays.push_back(temp);
-            point2 = Project( point2 + u2, H[0], vel);
-            still_inside2 = PointIsInsideT(point2,  H );
-        } 
-        while(still_inside2);
 
-        point2 = Project(point1 - u2, H[0], vel);
-        still_inside2 = PointIsInsideT(point2, H );;
-        while(still_inside2){
-            Ray temp( point2 );
-            rays.push_back(temp);
-            point2 = Project( point2 - u2, H[0], vel);
-            still_inside2 = PointIsInsideT(point2, H );
-        } 
-
-        point1 = Project( point1 - u1, H[0], vel);
-        still_inside1 = PointIsInsideT(point1, H );
-    }
-    
     // Sets the rain speed
     Ray::V = vel;
 
