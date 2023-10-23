@@ -19,9 +19,9 @@ int main (int argc, char *argv[]){
     vector<long double> box(3); 
     long double body_vel, tot_dist;
     int nray, nstep;
-    vector<long double> vel_ratio(100);
-    vector<long double> NumResults(100);
-    vector<long double> AnalResults(100);
+    vector<long double> vel_ratio;
+    vector<long double> NumResults;
+    vector<long double> AnalResults;
     
 
     // Reads the input file
@@ -64,15 +64,15 @@ int main (int argc, char *argv[]){
     cout << "Area of the sphere is " << AreaS << "*PI*r^2" << endl;
 
     // Simulate different body velocities
-    for( int i = 0; i < 100; i++ ){
-        vel_ratio[i] = (i+1)*0.03;
+    for( int i = 0; i < 20; i++ ){
+        vel_ratio.push_back( (4*i+20)*0.03);
         body_vel= vel_ratio[i]*Norm(rain_vel);
         rel_vel = rain_vel;
         rel_vel[0] -= body_vel;
 
-        AnalResults[i] = trial.Anal(rel_vel, tot_dist, body_vel);
+        AnalResults.push_back(trial.Anal(rel_vel, tot_dist, body_vel));
         ProjSurface temp( box, rel_vel, nray);
-        NumResults[i] = temp.BodyProj( trial )*Norm(rel_vel)*tot_dist/body_vel;
+        NumResults.push_back(temp.BodyProj( trial )*Norm(rel_vel)*tot_dist/body_vel);
     }
 
     vector<vector<long double>> results = { vel_ratio, AnalResults, NumResults };

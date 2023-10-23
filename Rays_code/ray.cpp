@@ -4,6 +4,9 @@
 using namespace std;
 
 
+// Declares V
+vector<long double> Ray::V(3);
+
 // Complete ray constructor
 Ray::Ray( vector<long double> position, vector<long double> direction){
     R0 = position;
@@ -11,6 +14,11 @@ Ray::Ray( vector<long double> position, vector<long double> direction){
     Active = true;
 }
 
+// Efficient constructor
+Ray::Ray( vector<long double> position ) {
+    R0 = position;
+    Active = true;
+}
 
 // Resets the surface between steps (turns on all rays)
 void ProjSurface::reset() {
@@ -25,16 +33,15 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
 
     // Checks validity of arguments
     if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
-        throw std::invalid_argument("Box must be of size 3 with all components positive!");
+        throw invalid_argument("Box must be of size 3 with all components positive!");
     }
     if( vel.size() != 3 or vel[2] >= 0  ) {
-        throw std::invalid_argument("Velocity must be of size 3 with third component negative!");
+        throw invalid_argument("Velocity must be of size 3 with third component negative!");
     }
 
-
-    vector<vector<long double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
     
     // Finds vertex between three "seen" faces and projects the other vertices on the plane passing by it perpendicular to vel
+    vector<vector<long double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
     H = FindHexProj( {0,0,0}, sides, vel, FindMiddle({0,0,0}, sides, vel) );
 
 
@@ -47,7 +54,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
 
 
     // Generates the rays on a square grid along directions u1 and u2
-    cout << "Generating rays" << endl;
+    // cout << "Generating rays" << endl;
     rays = {};
     long double d = sqrt(surf/n_rays);
     // cout << "d = " << d << endl;
@@ -64,7 +71,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         vector<long double> point2 = point1;
 
         do{
-            Ray temp( point2, vel );
+            Ray temp( point2);
             rays.push_back(temp);
             point2 = Project( point2 + u2, H[0], vel);
             still_inside2 = PointIsInsideT(point2, H );
@@ -74,7 +81,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         point2 = Project(point1 - u2, H[0], vel);
         still_inside2 = PointIsInsideT(point2, H );
         while(still_inside2){
-            Ray temp( point2, vel );
+            Ray temp( point2);
             rays.push_back(temp);
             point2 = Project( point2 - u2, H[0], vel);
             still_inside2 = PointIsInsideT(point2, H );
@@ -91,7 +98,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     while(still_inside1){
         vector<long double> point2 = point1;
         do{
-            Ray temp( point2, vel );
+            Ray temp( point2);
             rays.push_back(temp);
             point2 = Project( point2 + u2, H[0], vel);
             still_inside2 = PointIsInsideT(point2,  H );
@@ -101,7 +108,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         point2 = Project(point1 - u2, H[0], vel);
         still_inside2 = PointIsInsideT(point2, H );;
         while(still_inside2){
-            Ray temp( point2, vel );
+            Ray temp( point2 );
             rays.push_back(temp);
             point2 = Project( point2 - u2, H[0], vel);
             still_inside2 = PointIsInsideT(point2, H );
@@ -111,8 +118,10 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
         still_inside1 = PointIsInsideT(point1, H );
     }
     
+    // Sets the rain speed
+    Ray::V = vel;
 
-    cout << "Number of rays generated: " <<  rays.size() << "/" << n_rays << endl;
+    // cout << "Number of rays generated: " <<  rays.size() << "/" << n_rays << endl;
 }
 
 
@@ -140,11 +149,11 @@ void ProjSurface::PrintH( string outfile ){
 // Returns an estimate of the projection of the body on the plane
 long double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
-    cout << "Projecting on " << rays.size() << " rays" << endl;
-    body.Prime( H[0], rays[0].GetV() );
+    // cout << "Projecting on " << rays.size() << " rays" << endl;
+    body.Prime( H[0], Ray::V );
     for( long unsigned int i = 0; i < rays.size(); i++ ){
         if( body.Check( rays[i]) ) nhit++;
     }
-    cout << "nhit = " << nhit << endl;
+    // cout << "nhit = " << nhit << endl;
     return surf*nhit/rays.size();
 }

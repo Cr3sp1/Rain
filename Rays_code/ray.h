@@ -20,18 +20,24 @@ class Ray {
 
   protected:
     // Starting point
-	vector<long double> R0;    
-
-    // Direction vector 
-    vector<long double> V;      
+	  vector<long double> R0;         
 
     // The ray starts active and deactivates when it hits an object
     bool Active;
 
 	
   public:
+    // Static direction vector 
+    static vector<long double> V; 
+
+    // Direction setter
+    void SetV( vector<long double> v ) { v = V;}
+
     // Complete constructor
 	  Ray( vector<long double> position, vector<long double> direction);
+
+    // Efficient constructor
+    Ray( vector<long double> position );
 
     // Turns the ray on and off
     void On(){Active = true;}
