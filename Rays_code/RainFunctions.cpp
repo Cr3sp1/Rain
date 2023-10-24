@@ -133,3 +133,14 @@ void RayGenCheck( string outfile, vector<long double> box, vector<long double> r
     }
     Pout.close();
 }
+
+
+// Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
+vector<vector<long double>> Simulate( Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N ) {
+    vector<long double> body_v = {};
+    vector<long double> wetness = {};
+    for( unsigned int i = 0; i < N; i++ ){
+        
+    }
+    
+}

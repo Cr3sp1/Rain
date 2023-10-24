@@ -57,7 +57,7 @@ int main (int argc, char *argv[]){
     Sphere trial( box*(long double)0.5, box[0]/2 );
 
 
-    // Simulating parallelepiped
+    // Simulating sphere
     long double AreaS = hex.BodyProj(trial)/(M_PI*trial.GetRad()*trial.GetRad());
 
     // Output
