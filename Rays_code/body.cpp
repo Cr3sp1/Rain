@@ -11,7 +11,7 @@ Body::Body() {}
 bool Body::Check( Ray& ray ) {return 0;}
 void Body::Move( long double dt ) {}
 void Body::Prime( vector<long double> p, vector<long double> v  ) {}
-long double Body::Anal( vector<long double> v, long double dist, long double bodyvel  ) {return 0;}
+long double Body::Anal( vector<long double> v, long double bodyvel  ) {return -1;}
 
 
 // Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
@@ -37,10 +37,9 @@ bool Sphere::Check( Ray& ray ) {
 }
 
 // Analytical solution of rain intercepted
-long double Sphere::Anal( vector<long double> v, long double dist, long double bodyvel ) {
+long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
     long double surface = M_PI*rad*rad;
-    long double time = dist/bodyvel;
-    return time*surface*Norm(v);
+    return Norm(v)*surface/bodyvel;
 }
 	
 
@@ -67,7 +66,7 @@ bool Pippo::Check( Ray& ray ) {
 }
 
 // WIP Analytical solution of rain intercepted (only for parallelepiped with sides along axes and no component v along y axis)
-long double Pippo::Anal( vector<long double> v, long double dist, long double bodyvel  ) {
+long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
     return 0;
 }
 
