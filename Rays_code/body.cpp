@@ -36,12 +36,13 @@ bool Sphere::Check( Ray& ray ) {
     return false;
 }
 
-// Analytical solution of rain intercepted
+// Analytical solution of rain intercepted. v is relative velocity
 long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
     long double surface = M_PI*rad*rad;
     return Norm(v)*surface/bodyvel;
 }
 	
+
 
 
 // Complete Parallelepiped constructor 
@@ -58,16 +59,21 @@ void Pippo::Prime( vector<long double> P, vector<long double> V ) {
 // Checks if the body is making contact with a ray
 bool Pippo::Check( Ray& ray ) {
     if( ray.IsOn() != true ) return false;
-    if( PointIsInsideP( ray.GetR0(), H )) {
+    if( PointIsInsideT( ray.GetR0(), H )) {
         ray.Off();
         return true;
     }
     return false;
 }
 
-// WIP Analytical solution of rain intercepted (only for parallelepiped with sides along axes and no component v along y axis)
+// Analytical solution of rain intercepted
 long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
-    return 0;
+    Prime({0,0,0}, v );
+    long double surf = 0;
+    for( int i = 1; i < 7; i+=2 ) {
+        surf += Norm( CrossProduct( H[0]-H[i], H[i]-H[i+1] ) );
+    }
+    return Norm(v)*surf/bodyvel;
 }
 
 

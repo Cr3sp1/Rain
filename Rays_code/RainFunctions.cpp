@@ -19,10 +19,10 @@ vector<long double> FindMiddle( vector<long double> p, vector<vector<long double
     return p;
 }
 
-// Finds the hexagonal projection H of a parallelepiped on a plane perpendicular to v and passing through O
-vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<long double>> Side, vector<long double> v, vector<long double> O){
+// Finds the hexagonal projection H of a parallelepiped defined by p nad sides on a plane perpendicular to v and passing through P0
+vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<long double>> Side, vector<long double> v, vector<long double> P0){
     vector<vector<long double>> H = {FindMiddle( p, Side, v )};
-    vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices
+    vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices to project
     for( int i = 0; i < 3; i++ ){
         delta[i] = Side[i]*v < 0 ? ((long double)-1)*Side[i] : Side[i];
     }
@@ -32,8 +32,8 @@ vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<l
     H.push_back( H[0] + delta[1] + delta[2] );
     H.push_back( H[0] + delta[2] );
     H.push_back( H[0] + delta[2] + delta[0] );
-    for( int i = 1; i < 7; i++ ){
-        H[i] = Project( H[i], O, v );         // We project them
+    for( int i = 0; i < 7; i++ ){
+        H[i] = Project( H[i], P0, v );         // We project them
     }
 
     return H;
@@ -75,44 +75,44 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     return false;
 }
 
-// Returns wether the Point is inside the hexagon H using parallelograms
-bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
-    // centers the points in p
-    Point -= H[0];
-    for(int i = 0; i < 7; i++ ) H[i] -=H[0];
-    // Calculate stuff
-    long double a, b;
-    long double epsilon = 1e-16;
-    long double H1p = H[1]*Point;
-    long double H1H1 = H[1]*H[1];
-    long double H1H3 = H[1]*H[3];
-    long double H3p = H[3]*Point;
-    long double H3H3 = H[3]*H[3];
-    long double H3H5 = H[3]*H[4];
-    long double H5p = H[5]*Point;
-    long double H5H5 = H[5]*H[5];
-    long double H5H1 = H[5]*H[1];
+// NOT WORKING PROPERLY: Returns wether the Point is inside the hexagon H using parallelograms 
+// bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
+//     // centers the points in p
+//     Point -= H[0];
+//     for(int i = 0; i < 7; i++ ) H[i] -=H[0];
+//     // Calculate stuff
+//     long double a, b;
+//     long double epsilon = 1e-16;
+//     long double H1p = H[1]*Point;
+//     long double H1H1 = H[1]*H[1];
+//     long double H1H3 = H[1]*H[3];
+//     long double H3p = H[3]*Point;
+//     long double H3H3 = H[3]*H[3];
+//     long double H3H5 = H[3]*H[4];
+//     long double H5p = H[5]*Point;
+//     long double H5H5 = H[5]*H[5];
+//     long double H5H1 = H[5]*H[1];
 
-    if( H1H1*H3H3 - H1H3*H1H3 > epsilon and H1H1 > epsilon ){
-        b = (H3p*H1H1 - H1p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
-        a = (H1p*H3H3 - H3p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
-        if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-    }
+//     if( H1H1*H3H3 - H1H3*H1H3 > epsilon and H1H1 > epsilon ){
+//         b = (H3p*H1H1 - H1p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
+//         a = (H1p*H3H3 - H3p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
+//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
+//     }
 
-    if( H3H3*H5H5 - H3H5*H3H5 > epsilon and H3H3 > epsilon ){
-        b = (H5p*H3H3 - H3p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
-        a = (H3p*H5H5 - H5p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
-        if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-    } 
+//     if( H3H3*H5H5 - H3H5*H3H5 > epsilon and H3H3 > epsilon ){
+//         b = (H5p*H3H3 - H3p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
+//         a = (H3p*H5H5 - H5p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
+//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
+//     } 
 
-    if( H5H5*H1H1 - H5H1*H5H1 > epsilon and H5H5 > epsilon ){
-        b = (H1p*H5H5 - H5p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
-        a = (H5p*H1H1 - H1p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
-        if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-    }
+//     if( H5H5*H1H1 - H5H1*H5H1 > epsilon and H5H5 > epsilon ){
+//         b = (H1p*H5H5 - H5p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
+//         a = (H5p*H1H1 - H1p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
+//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
 
 

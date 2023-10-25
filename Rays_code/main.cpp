@@ -48,24 +48,26 @@ int main (int argc, char *argv[]){
 
     
     // Builds objects
-    Sphere trial( box*(long double)0.5, box[0]/2 );
-
-
-    // Simulating sphere
-    long double AreaS = hex.BodyProj(trial)/(M_PI*trial.GetRad()*trial.GetRad());
-
-    // Output
-    cout << "Area of the sphere is " << AreaS << "*PI*r^2" << endl;
+    Pippo trialP(box*(long double)0.5, { {box[0]/3, 0, 0}, {0, box[1]/3, 0}, {0, 0, box[2]/3} });
+    Sphere trialS( (long double)0.5*box, (long double)0.3*box[0]);
 
     // Simulate different body velocities
-    vector<vector<long double>> results = CompareAN( box, trial, rain_vel, 2, 7, 50, nray );
-    ofstream outputFile("../data/CompareSphere.txt");
+    vector<vector<long double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, nray );
+    vector<vector<long double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, nray );
 
-    for (size_t i = 0; i < results[0].size(); ++i) {
-        outputFile << results[0][i] << " " << results[1][i] << " " << results[2][i] << endl;
+
+    // output
+    ofstream outputFileP("../data/ComparePippo.dat");
+    for (size_t i = 0; i < resultsP[0].size(); ++i) {
+        outputFileP << resultsP[0][i] << " " << resultsP[1][i] << " " << resultsP[2][i] << endl;
     }
+    outputFileP.close();
 
-    outputFile.close();
+    ofstream outputFileS("../data/CompareSphere.dat");
+    for (size_t i = 0; i < resultsS[0].size(); ++i) {
+        outputFileS << resultsS[0][i] << " " << resultsS[1][i] << " " << resultsS[2][i] << endl;
+    }
+    outputFileS.close();
 
     return 0;
 }
