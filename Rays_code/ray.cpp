@@ -121,11 +121,11 @@ void ProjSurface::PrintH( string outfile ){
 // Returns an estimate of the projection of the body on the plane
 long double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
-    cout << "Projecting on " << rays.size() << " rays" << endl;
+    // cout << "Projecting on " << rays.size() << " rays" << endl;
     body.Prime( H[0], Ray::V );
     for( long unsigned int i = 0; i < rays.size(); i++ ){
         if( body.Check( rays[i]) ) nhit++;
     }
-    cout << "nhit = " << nhit << endl;
+    // cout << "nhit = " << nhit << endl;
     return surf*nhit/rays.size();
 }
