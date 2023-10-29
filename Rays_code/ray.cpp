@@ -29,7 +29,7 @@ void ProjSurface::reset() {
 
 
 // Complete constructor
-ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsigned int n_rays){
+ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long double dx){
 
     // Checks validity of arguments
     if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
@@ -53,30 +53,27 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     // cout << "Tot Surface = " << surf << endl;
 
 
-    // Generates the rays on a square grid along directions u1 and u2
+    // Generates the rays on a square grid along directions u1 and u2 (u1 and ud perpendicular and belonging to surface)
     // cout << "Generating rays" << endl;
     rays = {};
-    long double d = sqrt(surf/n_rays);
-    // cout << "d = " << d << endl;
+    // cout << "dx = " << dx << endl;
     vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
-    u1 = (u1/Norm(u1))*d;
+    u1 = (u1/Norm(u1))*dx;
      long double maxu1 = MaxU( H, u1 );
     // cout << "|u1| = " << Norm(u1) << endl;
     // cout << "steps1 = " << Norm(u1) << endl;
     vector<long double> u2 = CrossProduct(u1, vel);
-    u2 = (u2/Norm(u2))*d;
+    u2 = (u2/Norm(u2))*dx;
     long double maxu2 = MaxU( H, u2 );
     // cout << "|u2| = " << Norm(u2) << endl;
 
     for( long double sign1 = -1; sign1 < 2; sign1+=2 ) {
-
-        vector<long double> point1 = H[0];
-        if(sign1 == 1) point1 += u1;
+        vector<long double> point1 = (sign1 == -1) ? H[0] : H[0] + u1;
+        
         while( Norm( point1 - H[0]) < maxu1 ) {
             for( long double sign2 = -1; sign2 < 2; sign2+=2 ){
+                vector<long double> point2 = (sign2 == -1) ? point1 : point1 + u2;
 
-                vector<long double> point2 = point1;
-                if(sign2 == 1) point2 += u2;
                 while( Norm(point2 - point1) < maxu2 ){
                     if( PointIsInsideT( point2, H )) {
                         Ray temp( point2 );
@@ -93,7 +90,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, unsig
     // Sets the rain speed
     Ray::V = vel;
 
-    // cout << "Number of rays generated: " <<  rays.size() << "/" << n_rays << endl;
+    // cout << "Number of rays generated: " <<  rays.size()  << endl;
 }
 
 

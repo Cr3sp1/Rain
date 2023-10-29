@@ -66,7 +66,7 @@ class ProjSurface{
   public:
 
     // Complete constructor
-    ProjSurface(vector<long double> box, vector<long double> vel, unsigned int nrays);
+    ProjSurface(vector<long double> box, vector<long double> vel, long double dx);
 
     // Resets the surface between steps
     void reset();

@@ -61,7 +61,7 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
         H[i] -= H[0];
     }
 
-    // Checks if Point is inside the reiangle with vertices H[0], H[i], H[i+1]
+    // Checks if Point is inside the rectangle with vertices H[0], H[i], H[i+1]
     for( int i = 1; i < 7; i++ ){
         long double epsilon = 1e-10;
         long double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
@@ -136,7 +136,7 @@ void RayGenCheck( string outfile, vector<long double> box, vector<long double> r
 
 
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
-vector<vector<long double>> Simulate( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, unsigned int nrays ) {
+vector<vector<long double>> Simulate( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     vector<long double> body_v(N);
     vector<long double> wetness(N);
@@ -144,13 +144,14 @@ vector<vector<long double>> Simulate( vector<long double> box, Body& body, vecto
         body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(long double)i/((long double)N-1) );
         vector<long double> relvel = rain_v;
         relvel[0] -= body_v[i];
-        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, nrays ).BodyProj(body)/body_v[i];
+        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
     }
     return {body_v, wetness};
 }
 
+
 // Estimates wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
-vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, unsigned int nrays ) {
+vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     vmin*=-rain_v[2];
     vmax*=-rain_v[2];
@@ -162,7 +163,21 @@ vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vect
         vector<long double> relvel = rain_v;
         relvel[0] -= body_v[i];
         analytical[i] = body.Anal( relvel, body_v[i]);
-        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, nrays ).BodyProj(body)/body_v[i];
+        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
     }
     return {body_v, analytical,  wetness};
+}
+
+
+// Returns the minimum distance between the point p and the segment line with extremes l1 and l2
+long double PointSegDist( vector<long double> p, vector<long double> l1, vector<long double> l2 ) {
+    // Changes frame of reference to l1 = 0
+    p -= l1;
+    l2 -= l1;
+    // Calculates projection of p on line passing through l1 and l2
+    long double proj = p*l2/Norm(l2);
+    // Returns distance between p and the closest point belonging to the segment
+    if( proj <= 0 )  return Norm(p);
+    if( proj >= Norm(l2) ) return Norm(p-l2);
+    return Norm( p - l2*proj);
 }

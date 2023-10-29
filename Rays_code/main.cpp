@@ -17,15 +17,15 @@ int main (int argc, char *argv[]){
     vector<long double> rain_vel(3);
     vector<long double> rel_vel(3);
     vector<long double> box(3); 
-    long double body_vel;
-    int nray, nstep;
+    long double body_vel, dx;
+    int nstep;
     
 
     // Reads the input file
     ifstream ReadInput;
     ReadInput.open("input.in"); 
     ReadInput >> box[0] >> box[1] >> box[2];
-    ReadInput >> nray;
+    ReadInput >> dx;
     ReadInput >> body_vel;
     ReadInput >> nstep;
     ReadInput >> rain_vel[0] >> rain_vel[1] >> rain_vel[2];
@@ -36,24 +36,26 @@ int main (int argc, char *argv[]){
 
     // Outputs settings and stuff
     cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
-    cout << "Object velocity = " << body_vel  << ", nstep = " << nstep << ", nray = " << nray << endl;
+    cout << "Object velocity = " << body_vel  << ", nstep = " << nstep << ", dx = " << dx << endl;
     // cout << "Time = " << tot_time << " s" << endl;
 
     // Builds Rays
-    ProjSurface hex( box, rel_vel, nray );
+    ProjSurface hex( box, rel_vel, dx );
 
     // Prints Rays
     hex.PrintR("../data/RayOrigins.dat");
     hex.PrintH("../data/H.dat");
 
-    
+     
     // Builds objects
     Pippo trialP(box*(long double)0.5, { {box[0]/3, 0, 0}, {0, box[1]/3, 0}, {0, 0, box[2]/3} });
     Sphere trialS( (long double)0.5*box, (long double)0.3*box[0]);
+    Capsule trialC( (long double)0.3*box, (long double)0.7*box,  (long double)0.2*box[0] );
 
     // Simulate different body velocities
-    vector<vector<long double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, nray );
-    vector<vector<long double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, nray );
+    vector<vector<long double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
+    vector<vector<long double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
+    vector<vector<long double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
 
 
     // output
@@ -68,6 +70,12 @@ int main (int argc, char *argv[]){
         outputFileS << resultsS[0][i] << " " << resultsS[1][i] << " " << resultsS[2][i] << endl;
     }
     outputFileS.close();
+
+    ofstream outputFileC("../data/CompareCapsule.dat");
+    for (size_t i = 0; i < resultsS[0].size(); ++i) {
+        outputFileC << resultsS[0][i] << " " << resultsS[1][i] << " " << resultsS[2][i] << endl;
+    }
+    outputFileC.close();
 
     return 0;
 }

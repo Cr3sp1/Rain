@@ -14,7 +14,9 @@ void Body::Prime( vector<long double> p, vector<long double> v  ) {}
 long double Body::Anal( vector<long double> v, long double bodyvel  ) {return -1;}
 
 
-// Complete Sphere constructor ( [center] = [mm], [radius] = [mm] )
+
+
+// Complete Sphere constructor 
 Sphere::Sphere( vector<long double> center, long double radius ): Body() {
     cent = center;
     rad = radius;
@@ -27,7 +29,7 @@ void Sphere::Prime( vector<long double> p, vector<long double> v  ) {
 
 // Checks if the Sphere is making contact with a ray
 bool Sphere::Check( Ray& ray ) {
-    if( ray.IsOn() != true ) return false;
+    if( ray.IsOn() == false ) return false;
     vector<long double> Xrel = ray.GetR0() - Hcent;
     if( Xrel*Xrel <= rad*rad ) {
         ray.Off();
@@ -58,7 +60,7 @@ void Pippo::Prime( vector<long double> P, vector<long double> V ) {
 
 // Checks if the body is making contact with a ray
 bool Pippo::Check( Ray& ray ) {
-    if( ray.IsOn() != true ) return false;
+    if( ray.IsOn() == false ) return false;
     if( PointIsInsideT( ray.GetR0(), H )) {
         ray.Off();
         return true;
@@ -66,16 +68,45 @@ bool Pippo::Check( Ray& ray ) {
     return false;
 }
 
-// Analytical solution of rain intercepted
+// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
-    Prime({0,0,0}, v );
-    long double surf = 0;
-    for( int i = 1; i < 7; i+=2 ) {
-        surf += Norm( CrossProduct( H[0]-H[i], H[i]-H[i+1] ) );
-    }
-    return Norm(v)*surf/bodyvel;
+    long double flux = 0;
+    flux += abs(CrossProduct(side[0], side[1]) * v);
+    flux += abs(CrossProduct(side[1], side[2]) * v);
+    flux += abs(CrossProduct(side[2], side[0]) * v);
+    return flux/bodyvel;
 }
 
 
 
 
+// Complete Capsule constructor 
+Capsule::Capsule( vector<long double> L1, vector<long double> L2,  long double radius ): Body() {
+    l1 = L1;
+    l2 = L2;
+    rad = radius;
+}
+
+// Primes the body to be checked (projects the center of the sphere onto the surface)
+void Capsule::Prime( vector<long double> p, vector<long double> v  ) {
+    H1 = Project( l1, p, v);
+    H2 = Project( l2, p, v);
+}
+
+// Checks if the Capsule is making contact with a ray
+bool Capsule::Check( Ray& ray ) {
+    if( ray.IsOn() == false ) return false;
+
+    if( PointSegDist( ray.GetR0(), H1, H2 ) <= rad ) {
+        ray.Off();
+        return true;
+    }
+    return false;
+}
+
+// Analytical solution of rain intercepted. v is relative velocity
+long double Capsule::Anal( vector<long double> v, long double bodyvel ) {
+    long double L = abs((l1 - l2)*v)/Norm(v);
+    long double surface = M_PI*rad*rad + L*rad;
+    return Norm(v)*surface/bodyvel;
+}

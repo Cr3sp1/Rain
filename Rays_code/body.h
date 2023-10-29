@@ -27,7 +27,7 @@ class Body {
 	virtual void Prime( vector<long double> p, vector<long double> v );
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy );
-	// Analytical solution of rain intercepted
+	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	virtual long double Anal( vector<long double> RelVel, long double bodyvel  );
 
 
@@ -54,7 +54,7 @@ class Sphere: public Body {
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
-	// Analytical solution of rain intercepted
+	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v , long double bodyvel ) override;
 	// Gets stuff
 	vector<long double> GetCent(){return cent;}
@@ -70,7 +70,7 @@ class Pippo: public Body {
   private:
 	
 	vector<long double> p;	// Position of a vertex 
-	vector<vector<long double>> side;	// Radius of the sphere 
+	vector<vector<long double>> side;	// Sides of the parallelepiped 
 	vector<vector<long double>> H;		// Hexagonal projection on surface
 
 
@@ -82,11 +82,40 @@ class Pippo: public Body {
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray
 	bool Check( Ray& ray ) override;
-	// Analytical solution of rain intercepted (only for parallelepiped with sides along axes and no component v along y axis)
+	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v, long double bodyvel  ) override;
 	// Gets stuff
 	vector<long double> GetP(){return p;}
 	vector<vector<long double>>  GetSide(){return side;}
+
+};
+
+
+
+// Capsule class
+class Capsule: public Body {
+
+  private:
+	
+	vector<long double> l1,l2;	// Position of the two extremes of the axis
+	long double rad;	// Radius of the sphere
+	vector<long double> H1, H2;		// Projections of the two extremes of the axise
+
+
+  public:
+
+	// Complete constructor 
+	Capsule( vector<long double> l1, vector<long double> l2, long double radius );
+	// Primes the body to be checked
+	void Prime( vector<long double> p, vector<long double> v  ) override;
+	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
+	bool Check( Ray& ray ) override;
+	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
+	long double Anal( vector<long double> v , long double bodyvel ) override;
+	// Gets stuff
+	vector<long double> GetL1(){return l1;}
+	vector<long double> GetL2(){return l2;}
+	long double GetRad(){return rad;}
 
 };
 
