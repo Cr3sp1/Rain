@@ -110,3 +110,85 @@ long double Capsule::Anal( vector<long double> v, long double bodyvel ) {
     long double surface = M_PI*rad*rad + L*rad;
     return Norm(v)*surface/bodyvel;
 }
+
+
+
+
+// Complete ManyBody constructor 
+ManyBody::ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules ): Body() {
+    spheres = Spheres;
+    pippos = Pippos;
+    capsules = Capsules;
+}
+
+// Primes the body to be checked. Primes each body
+void ManyBody::Prime( vector<long double> p, vector<long double> v  ) {
+    for( long unsigned int i = 0; i < spheres.size(); i++ ) spheres[i].Prime( p, v );
+    for( long unsigned int i = 0; i < pippos.size(); i++ ) pippos[i].Prime( p, v );
+    for( long unsigned int i = 0; i < capsules.size(); i++ ) capsules[i].Prime( p, v );
+}
+
+// Checks if the ManyBody is making contact with a ray
+bool ManyBody::Check( Ray& ray ) {
+    for( long unsigned int i = 0; i < spheres.size(); i++ ) if(spheres[i].Check( ray )) return true;
+    for( long unsigned int i = 0; i < pippos.size(); i++ ) if(pippos[i].Check( ray )) return true;
+    for( long unsigned int i = 0; i < capsules.size(); i++ ) if(capsules[i].Check( ray )) return true;
+    return false;
+}
+
+// Gets stuff
+vector<long double> ManyBody::GetSphCent( unsigned int index ){
+    if( index >= spheres.size() ){
+        cout << "No sphere with index " << index << endl;
+        return {}; 
+    }
+    return spheres[index].GetCent();
+}
+
+long double ManyBody::GetSphRad( unsigned int index ){
+    if( index >= spheres.size() ){
+        cout << "No sphere with index " << index << endl;
+        return 0; 
+    }
+    return spheres[index].GetRad();
+}
+
+vector<long double> ManyBody::GetPipP( unsigned int index ){
+    if( index >= pippos.size() ){
+        cout << "No parallelepiped with index " << index << endl;
+        return {}; 
+    }
+    return pippos[index].GetP();
+}
+
+vector<vector<long double>>  ManyBody::GetPipSide( unsigned int index ) {
+    if( index >= pippos.size() ){
+        cout << "No parallelepiped with index " << index << endl;
+        return {}; 
+    }
+    return pippos[index].GetSide();
+}
+
+vector<long double> ManyBody::GetCapL1( unsigned int index ){
+    if( index >= capsules.size() ){
+        cout << "No parallelepiped with index " << index << endl;
+        return {}; 
+    }
+    return capsules[index].GetL1();
+}
+	
+vector<long double> ManyBody::GetCapL2( unsigned int index ){
+    if( index >= capsules.size() ){
+        cout << "No parallelepiped with index " << index << endl;
+        return {}; 
+    }
+    return capsules[index].GetL2();
+}
+	
+long double ManyBody::GetCapRad( unsigned int index ){
+    if( index >= capsules.size() ){
+        cout << "No parallelepiped with index " << index << endl;
+        return 0; 
+    }
+    return capsules[index].GetRad();
+}

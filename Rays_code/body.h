@@ -23,7 +23,7 @@ class Body {
 	Body();
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( long double dt );
-	// Primes the body to be checked
+	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	virtual void Prime( vector<long double> p, vector<long double> v );
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy );
@@ -48,9 +48,9 @@ class Sphere: public Body {
 
   public:
 
-	// Complete constructor ( [center] = [mm], [radius] = [mm] )
+	// Complete constructor
 	Sphere( vector<long double> center, long double radius );
-	// Primes the body to be checked
+	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
@@ -61,6 +61,7 @@ class Sphere: public Body {
 	long double GetRad(){return rad;}
 
 };
+
 
 
 
@@ -78,7 +79,7 @@ class Pippo: public Body {
 
 	// Complete constructor 
 	Pippo( vector<long double> P, vector<vector<long double>> Side );
-	// Primes the body to be checked
+	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray
 	bool Check( Ray& ray ) override;
@@ -89,6 +90,7 @@ class Pippo: public Body {
 	vector<vector<long double>>  GetSide(){return side;}
 
 };
+
 
 
 
@@ -106,7 +108,7 @@ class Capsule: public Body {
 
 	// Complete constructor 
 	Capsule( vector<long double> l1, vector<long double> l2, long double radius );
-	// Primes the body to be checked
+	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
@@ -118,6 +120,39 @@ class Capsule: public Body {
 	long double GetRad(){return rad;}
 
 };
+
+
+
+
+// ManyBody class
+class ManyBody: public Body {
+
+  private:
+	
+	vector<Sphere> spheres;		// Position of the center of the sphere 
+	vector<Pippo> pippos;		// Position of the center of the sphere 
+	vector<Capsule> capsules;		// Position of the center of the sphere
+
+
+  public:
+
+	// Complete constructor 
+	ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules );
+	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
+	void Prime( vector<long double> p, vector<long double> v  ) override;
+	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
+	bool Check( Ray& ray ) override;
+	// Gets stuff
+	vector<long double> GetSphCent( unsigned int index );
+	long double GetSphRad( unsigned int index );
+	vector<long double> GetPipP( unsigned int index );
+	vector<vector<long double>>  GetPipSide( unsigned int index );
+	vector<long double> GetCapL1( unsigned int index );
+	vector<long double> GetCapL2( unsigned int index );
+	long double GetCapRad( unsigned int index );
+
+};
+
 
 
 #endif // __Body_h__

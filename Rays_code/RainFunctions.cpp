@@ -168,6 +168,23 @@ vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vect
     return {body_v, analytical,  wetness};
 }
 
+// Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
+vector<vector<long double>> CompareBB( vector<long double> box, Body& body1, Body& body2, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx){
+    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
+    vector<long double> body_v(N);
+    vector<long double> wetness1(N);
+    vector<long double> wetness2(N);
+    for( unsigned int i = 0; i < N; i++ ){
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(long double)i/((long double)N-1) );
+        vector<long double> relvel = rain_v;
+        relvel[0] -= body_v[i];
+        wetness1[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body1)/body_v[i];
+        wetness2[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body2)/body_v[i];
+    }
+    return {body_v, wetness1, wetness2};
+}
+
+
 
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 long double PointSegDist( vector<long double> p, vector<long double> l1, vector<long double> l2 ) {

@@ -47,6 +47,9 @@ vector<vector<long double>> Simulate( vector<long double> box, Body& body, vecto
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
 vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx);
 
+// Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
+vector<vector<long double>> CompareBB( vector<long double> box, Body& body1, Body& body2, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx);
+
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 long double PointSegDist( vector<long double> p, vector<long double> l1, vector<long double> l2 );
 
