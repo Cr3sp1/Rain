@@ -48,13 +48,14 @@ long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
 
 
 // Complete Parallelepiped constructor 
-Pippo::Pippo( vector<long double> P, vector<vector<long double>> Side ): Body() {
-    p = P;
+Pippo::Pippo( vector<long double> Cent, vector<vector<long double>> Side ): Body() {
+    cent = Cent;
     side = Side;
 }
 
 // Primes the body to be checked (finds hexagonal projection on the same plane as the origins of the rays)
 void Pippo::Prime( vector<long double> P, vector<long double> V ) {
+    vector<long double> p = cent + (long double)0.5*(side[0] + side[1] + side[2]);
     H = FindHexProj( p, side, V, P );
 }
 
@@ -153,12 +154,12 @@ long double ManyBody::GetSphRad( unsigned int index ){
     return spheres[index].GetRad();
 }
 
-vector<long double> ManyBody::GetPipP( unsigned int index ){
+vector<long double> ManyBody::GetPipCent( unsigned int index ){
     if( index >= pippos.size() ){
         cout << "No parallelepiped with index " << index << endl;
         return {}; 
     }
-    return pippos[index].GetP();
+    return pippos[index].GetCent();
 }
 
 vector<vector<long double>>  ManyBody::GetPipSide( unsigned int index ) {

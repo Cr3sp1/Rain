@@ -70,7 +70,7 @@ class Pippo: public Body {
 
   private:
 	
-	vector<long double> p;	// Position of a vertex 
+	vector<long double> cent;	// Position of the center
 	vector<vector<long double>> side;	// Sides of the parallelepiped 
 	vector<vector<long double>> H;		// Hexagonal projection on surface
 
@@ -78,7 +78,7 @@ class Pippo: public Body {
   public:
 
 	// Complete constructor 
-	Pippo( vector<long double> P, vector<vector<long double>> Side );
+	Pippo( vector<long double> Cent, vector<vector<long double>> Side );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray
@@ -86,7 +86,7 @@ class Pippo: public Body {
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v, long double bodyvel  ) override;
 	// Gets stuff
-	vector<long double> GetP(){return p;}
+	vector<long double> GetCent(){return cent;}
 	vector<vector<long double>>  GetSide(){return side;}
 
 };
@@ -145,7 +145,7 @@ class ManyBody: public Body {
 	// Gets stuff
 	vector<long double> GetSphCent( unsigned int index );
 	long double GetSphRad( unsigned int index );
-	vector<long double> GetPipP( unsigned int index );
+	vector<long double> GetPipCent( unsigned int index );
 	vector<vector<long double>>  GetPipSide( unsigned int index );
 	vector<long double> GetCapL1( unsigned int index );
 	vector<long double> GetCapL2( unsigned int index );
