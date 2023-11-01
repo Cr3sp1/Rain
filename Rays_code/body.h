@@ -17,12 +17,24 @@ class ProjSurface;
 
 // Body class
 class Body {
+	
+  private:
+  	// Time (should go from 0 to 1)
+	long double t;
+	// Points used for rotation in time evolution: rot[0] is center, rot[1]-rot[0] is the axis of rotation
+	vector<vector<long double>> rot;
+	// Amplitude of oscillation in radiants (should go from 0 to pi)
+	long double w;
+	// Vectors used for periodic translation in time evolution
+	vector<vector<long double>> trans;
+	// 
+
 
   public:
     // Default constructor
 	Body();
 	// Time evolution ( [dt] = [s] )
-	virtual void Move( long double dt );
+	virtual void Move( long double T );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	virtual void Prime( vector<long double> p, vector<long double> v );
 	// Checks if the body is making contact with a ray
@@ -129,8 +141,8 @@ class ManyBody: public Body {
 
   private:
 	
-	vector<Sphere> spheres;		// Position of the center of the sphere 
-	vector<Pippo> pippos;		// Position of the center of the sphere 
+	vector<Sphere> spheres;			// Position of the center of the sphere 
+	vector<Pippo> pippos;			// Position of the center of the sphere 
 	vector<Capsule> capsules;		// Position of the center of the sphere
 
 

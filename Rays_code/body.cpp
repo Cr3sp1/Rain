@@ -5,11 +5,11 @@ using namespace std;
 
 
 // Default constuctor
-Body::Body() {}
+Body::Body() { t = 0; }
 
 // Virtual functions
 bool Body::Check( Ray& ray ) {return 0;}
-void Body::Move( long double dt ) {}
+void Body::Move( long double T ) {}
 void Body::Prime( vector<long double> p, vector<long double> v  ) {}
 long double Body::Anal( vector<long double> v, long double bodyvel  ) {return -1;}
 
