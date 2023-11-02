@@ -27,20 +27,30 @@ class Body {
 	long double w;
 	// Vectors used for periodic translation in time evolution
 	vector<vector<long double>> trans;
-	// 
+	// Pointers to all the bodies that move relative to this one
+	vector<Body*> SubBodies;
+	// Pointer to the body this moves relative to 
+    Body* SuperBody; 
+
 
 
   public:
     // Default constructor
-	Body();
+	Body(): t(0), SuperBody(nullptr) {};
+	// Copy constructor
+    Body(const Body& other);
+	// Copy assignment operator
+	Body& operator=(const Body& other);
+	// Destructor
+    ~Body();
 	// Time evolution ( [dt] = [s] )
 	virtual void Move( long double T );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
-	virtual void Prime( vector<long double> p, vector<long double> v );
+	virtual void Prime( vector<long double> p, vector<long double> v ) {}
 	// Checks if the body is making contact with a ray
-	virtual bool Check( Ray& rayy );
+	virtual bool Check( Ray& rayy ) { return false; }
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-	virtual long double Anal( vector<long double> RelVel, long double bodyvel  );
+	virtual long double Anal( vector<long double> RelVel, long double bodyvel  ) { return -1; }
 
 
 };
@@ -60,7 +70,7 @@ class Sphere: public Body {
 
   public:
 
-	// Complete constructor
+	// Complete static constructor
 	Sphere( vector<long double> center, long double radius );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
@@ -89,7 +99,7 @@ class Pippo: public Body {
 
   public:
 
-	// Complete constructor 
+	// Complete static constructor 
 	Pippo( vector<long double> Cent, vector<vector<long double>> Side );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
@@ -118,7 +128,7 @@ class Capsule: public Body {
 
   public:
 
-	// Complete constructor 
+	// Complete static constructor 
 	Capsule( vector<long double> l1, vector<long double> l2, long double radius );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
@@ -148,7 +158,7 @@ class ManyBody: public Body {
 
   public:
 
-	// Complete constructor 
+	// Complete static constructor 
 	ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;

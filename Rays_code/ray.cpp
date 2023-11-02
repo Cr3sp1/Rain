@@ -7,7 +7,7 @@ using namespace std;
 // Declares V
 vector<long double> Ray::V(3);
 
-// Complete ray constructor
+// Complete static ray constructor
 Ray::Ray( vector<long double> position, vector<long double> direction){
     R0 = position;
     V = direction;
@@ -28,7 +28,7 @@ void ProjSurface::reset() {
 }
 
 
-// Complete constructor
+// Complete static constructor
 ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long double dx){
 
     // Checks validity of arguments

@@ -4,19 +4,72 @@
 using namespace std;
 
 
-// Default constuctor
-Body::Body() { t = 0; }
 
 // Virtual functions
-bool Body::Check( Ray& ray ) {return 0;}
 void Body::Move( long double T ) {}
-void Body::Prime( vector<long double> p, vector<long double> v  ) {}
-long double Body::Anal( vector<long double> v, long double bodyvel  ) {return -1;}
+
+
+// Copy constructor
+Body::Body(const Body& other) : t(other.t), rot(other.rot), w(other.w), trans(other.trans) {
+    // Deep copy sub-bodies
+    for (const Body* body : other.SubBodies) {
+        SubBodies.push_back(new Body(*body));
+    }
+
+    // Deep copy super-body
+    if (other.SuperBody) {
+        SuperBody= new Body(*other.SuperBody);
+    } else {
+        SuperBody = nullptr;
+    }
+}
+
+
+// Copy assignment operator
+Body& Body::operator=(const Body& other) {
+    if (this != &other) {
+        // Clean up existing sub-bodies
+        for (Body* body : SubBodies) {
+            delete body;
+        }
+        SubBodies.clear();
+
+        // Deep copy connected bodies
+        for (const Body* body : other.SubBodies) {
+            SubBodies.push_back(new Body(*body));
+        }
+
+        // Clean up existing linked body
+        delete SuperBody;
+
+        // Deep copy linked body
+        if (other.SuperBody) {
+            SuperBody = new Body(*other.SuperBody);
+        } else {
+            SuperBody = nullptr;
+        }
+
+        t = other.t;
+        rot = other.rot;
+        w = other.w;
+        trans = other.trans;
+    }
+    return *this;
+}
+
+
+// Destructor
+Body::~Body() {
+    for (Body* body : SubBodies) {
+        delete body;
+    }
+    delete SuperBody;
+}
+    
 
 
 
-
-// Complete Sphere constructor 
+// Complete static Sphere constructor 
 Sphere::Sphere( vector<long double> center, long double radius ): Body() {
     cent = center;
     rad = radius;
@@ -47,7 +100,7 @@ long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
 
 
 
-// Complete Parallelepiped constructor 
+// Complete static Parallelepiped constructor 
 Pippo::Pippo( vector<long double> Cent, vector<vector<long double>> Side ): Body() {
     cent = Cent;
     side = Side;
@@ -81,7 +134,7 @@ long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
 
 
 
-// Complete Capsule constructor 
+// Complete static Capsule constructor 
 Capsule::Capsule( vector<long double> L1, vector<long double> L2,  long double radius ): Body() {
     l1 = L1;
     l2 = L2;
@@ -115,7 +168,7 @@ long double Capsule::Anal( vector<long double> v, long double bodyvel ) {
 
 
 
-// Complete ManyBody constructor 
+// Complete static ManyBody constructor 
 ManyBody::ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules ): Body() {
     spheres = Spheres;
     pippos = Pippos;

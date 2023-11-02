@@ -33,7 +33,7 @@ class Ray {
     // Direction setter
     void SetV( vector<long double> v ) { v = V;}
 
-    // Complete constructor
+    // Complete static constructor
 	  Ray( vector<long double> position, vector<long double> direction);
 
     // Efficient constructor
@@ -65,7 +65,7 @@ class ProjSurface{
 
   public:
 
-    // Complete constructor
+    // Complete static constructor
     ProjSurface(vector<long double> box, vector<long double> vel, long double dx);
 
     // Resets the surface between steps
