@@ -5,8 +5,24 @@ using namespace std;
 
 
 
-// Virtual functions
-void Body::Move( long double T ) {}
+// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+void Body::Move( long double T ) {
+    // Calculates the total translation for the step
+    vector<long double> delta({0,0,0});
+    for( long unsigned int i = 0; i < trans.size(); i++ ){
+        delta += trans[i]*( sin(T*M_PI/(i+1)) - sin(t*M_PI/(i+1) ));
+    }
+    // Translates the rot
+    for( vector<long double> point : rot ){
+        point += delta;
+    }
+}
+
+// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
+void Body::BeMoved( long double T, vector<vector<long double>> Rot, long double W, vector<vector<long double>> Trans ) {
+
+}
+
 
 
 // Copy constructor
@@ -49,6 +65,7 @@ Body& Body::operator=(const Body& other) {
             SuperBody = nullptr;
         }
 
+        // Copy other stuff
         t = other.t;
         rot = other.rot;
         w = other.w;
@@ -68,12 +85,6 @@ Body::~Body() {
     
 
 
-
-// Complete static Sphere constructor 
-Sphere::Sphere( vector<long double> center, long double radius ): Body() {
-    cent = center;
-    rad = radius;
-}
 
 // Primes the body to be checked (projects the center of the sphere onto the surface)
 void Sphere::Prime( vector<long double> p, vector<long double> v  ) {
@@ -99,12 +110,6 @@ long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
 	
 
 
-
-// Complete static Parallelepiped constructor 
-Pippo::Pippo( vector<long double> Cent, vector<vector<long double>> Side ): Body() {
-    cent = Cent;
-    side = Side;
-}
 
 // Primes the body to be checked (finds hexagonal projection on the same plane as the origins of the rays)
 void Pippo::Prime( vector<long double> P, vector<long double> V ) {
@@ -133,13 +138,6 @@ long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
 
 
 
-
-// Complete static Capsule constructor 
-Capsule::Capsule( vector<long double> L1, vector<long double> L2,  long double radius ): Body() {
-    l1 = L1;
-    l2 = L2;
-    rad = radius;
-}
 
 // Primes the body to be checked (projects the center of the sphere onto the surface)
 void Capsule::Prime( vector<long double> p, vector<long double> v  ) {
