@@ -36,7 +36,7 @@ class Body {
 
   public:
     // Default constructor
-	Body(): t(0), SuperBody(nullptr) {};
+	Body(): t(0), w(0), SuperBody(nullptr) {};
 	// Dynamic constructor
 	Body( vector<vector<double>> Rot, double W, vector<vector<double>> Trans ): t(0), rot(Rot), w(W), trans(Trans) {} 
 	// Copy constructor
@@ -80,6 +80,8 @@ class Sphere: public Body {
 
 	// Complete static constructor
 	Sphere( vector<double> center, double radius ): Body(), cent(center), rad(radius) {}
+	// Complete dynamic constructor
+	Sphere( vector<double> center, double radius, vector<vector<double>> Rot, double W, vector<vector<double>> Trans  ): Body( Rot, W, Trans ), cent(center), rad(radius) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
@@ -90,6 +92,8 @@ class Sphere: public Body {
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override;
+	// Prints to file the state (all the bodies and their parameters)
+	void PrintState();
 	// Gets stuff
 	vector<double> GetCent(){return cent;}
 	double GetRad(){return rad;}
@@ -113,6 +117,8 @@ class Pippo: public Body {
 
 	// Complete static constructor 
 	Pippo( vector<double> Center, vector<vector<double>> Side ): Body(), cent(Center), side(Side) {}
+	// Complete dynamic constructor
+	Pippo( vector<double> Center, vector<vector<double>> Side, vector<vector<double>> Rot, double W, vector<vector<double>> Trans  ): Body( Rot, W, Trans ), cent(Center), side(Side) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray
@@ -146,6 +152,8 @@ class Capsule: public Body {
 
 	// Complete static constructor 
 	Capsule( vector<double> L1, vector<double> L2, double Radius ): Body(), l1(L1), l2(L2), rad(Radius) {} 
+	// Complete dynamic constructor
+	Capsule( vector<double> L1, vector<double> L2, double Radius, vector<vector<double>> Rot, double W, vector<vector<double>> Trans  ): Body( Rot, W, Trans ), l1(L1), l2(L2), rad(Radius) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
@@ -169,15 +177,12 @@ class Capsule: public Body {
 // ManyBody class
 class ManyBody: public Body {
 
-  protected:
-	
-	vector<Sphere> spheres;			// Position of the center of the sphere 
-	vector<Pippo> pippos;			// Position of the center of the sphere 
-	vector<Capsule> capsules;		// Position of the center of the sphere
-
-
   public:
 
+	// Bodies contained in ManyBody
+	vector<Sphere> spheres;
+	vector<Pippo> pippos;
+	vector<Capsule> capsules;
 	// Complete constructor 
 	ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
@@ -188,14 +193,6 @@ class ManyBody: public Body {
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
-	// Gets stuff
-	vector<double> GetSphCent( unsigned int index );
-	double GetSphRad( unsigned int index );
-	vector<double> GetPipCent( unsigned int index );
-	vector<vector<double>>  GetPipSide( unsigned int index );
-	vector<double> GetCapL1( unsigned int index );
-	vector<double> GetCapL2( unsigned int index );
-	double GetCapRad( unsigned int index );
 
 };
 

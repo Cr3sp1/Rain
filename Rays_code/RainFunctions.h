@@ -50,6 +50,9 @@ vector<vector<double>> CompareBB( vector<double> box, Body& body1, Body& body2, 
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 );
 
+// Returns NxN identity matrix
+vector<vector<double>> IdMat( unsigned int N );
+
 // Returns the rotation matrix
 vector<vector<double>> RotMat( vector<double> axis, double theta );
 

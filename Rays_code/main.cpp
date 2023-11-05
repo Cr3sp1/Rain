@@ -40,6 +40,11 @@ int main (int argc, char *argv[]){
     // cout << "Time = " << tot_time << " s" << endl;
 
     // Check many-body and motion
+    vector<vector<double>> Rot({{0,0,0}, {0,0,1}});
+    double W = 0.5*M_PI;
+    Sphere S1( {1,0,0}, 1, Rot, W, {});
+    Sphere S2( {0,1,0}, 1, Rot, W, {});
+    
 
      
     // // Builds objects

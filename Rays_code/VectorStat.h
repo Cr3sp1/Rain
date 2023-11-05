@@ -63,8 +63,6 @@ template <typename T> double Covariance (const vector<T>& x, const vector<T>& y)
 }
 
 
-
-
 template <typename T> vector<T> Read ( unsigned int size , char* filename ) {	
 	ifstream fin(filename);
 	if(!fin){
@@ -85,6 +83,7 @@ template <typename T> vector<T> Read ( unsigned int size , char* filename ) {
 	return v;
 }
 
+
 template <typename T> void Print( ofstream &fout, const vector<T> & v ) {
   for ( long unsigned int i = 0; i < v.size(); i++ ) {
     fout << v[i] << endl;
@@ -97,13 +96,34 @@ template <typename T> void Print( const vector<T> & v ) {
   } 
 }
 
-template <typename T> void Print(const vector<vector<T>> &matrix) {
-    for (const auto &row : matrix) {
-        for (const auto &element : row) {
-            cout << element << " ";
-        }
-        cout << endl;
+
+template <typename T> void Print( ofstream &fout, const vector<vector<T>> &matrix ) {
+  for (const auto &row : matrix) {
+      for (const auto &element : row) {
+          fout << element << " ";
+      }
+      fout << endl;
+  }
+}
+
+template <typename T> void Print( string outfile, const vector<vector<T>> &matrix ) {
+  ofstream fout(outfile);
+  for (const auto &row : matrix) {
+      for (const auto &element : row) {
+          fout << element << " ";
+      }
+      cout << endl;
     }
+  fout.close();
+}
+
+template <typename T> void Print(const vector<vector<T>> &matrix) {
+  for (const auto &row : matrix) {
+    for (const auto &element : row) {
+        cout << element << " ";
+    }
+    cout << endl;
+  }
 }
 
 

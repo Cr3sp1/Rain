@@ -95,6 +95,13 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
 
 
 // Prints all the origins of the rays to file
+void ProjSurface::PrintR( ofstream &fout ){
+    for( long unsigned int i = 0; i < rays.size(); i++ ){
+        vector<double> r = rays[i].GetR0();
+        fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
+    }
+}
+
 void ProjSurface::PrintR( string outfile ){
     ofstream fout(outfile);
     for( long unsigned int i = 0; i < rays.size(); i++ ){
@@ -106,6 +113,12 @@ void ProjSurface::PrintR( string outfile ){
 
 
 // Prints H to file
+void ProjSurface::PrintH( ofstream &fout ){
+    for( long unsigned int i = 0; i < H.size(); i++ ){
+        fout << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << endl;
+    }
+}
+
 void ProjSurface::PrintH( string outfile ){
     ofstream fout(outfile);
     for( long unsigned int i = 0; i < H.size(); i++ ){

@@ -77,9 +77,11 @@ class ProjSurface{
     vector<double> GetV(){return rays[0].GetV();}
 
     // Prints all the origins of the rays to file
+    void PrintR( ofstream &fout );
     void PrintR( string outfile );
 
     // Prints H to file
+    void PrintH( ofstream &fout );
     void PrintH( string outfile );
 
     // Returns an estimate of the projection of the body on the plane

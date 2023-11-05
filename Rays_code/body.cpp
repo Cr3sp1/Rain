@@ -22,8 +22,13 @@ void Body::Move( double T ) {
     }
 
     // Generate rotation matrix
-    double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
-    vector<vector<double>> rotmat = RotMat( rot[1]-rot[0], theta );
+    vector<vector<double>> rotmat;
+    if( w != 0 and rotmat.size() == 2 ) {
+        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+        rotmat =  RotMat( rot[1]-rot[0], theta );
+    } else {
+        rotmat = IdMat(3);
+    }
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
@@ -348,61 +353,4 @@ void ManyBody::Move( double T ) {
     for( Sphere sphere : spheres ) sphere.Move(T);
     for( Pippo pippo : pippos ) pippo.Move(T);
     for( Capsule capsule : capsules ) capsule.Move(T);
-}
-
-// Gets stuff
-vector<double> ManyBody::GetSphCent( unsigned int index ){
-    if( index >= spheres.size() ){
-        cout << "No sphere with index " << index << endl;
-        return {}; 
-    }
-    return spheres[index].GetCent();
-}
-
-double ManyBody::GetSphRad( unsigned int index ){
-    if( index >= spheres.size() ){
-        cout << "No sphere with index " << index << endl;
-        return 0; 
-    }
-    return spheres[index].GetRad();
-}
-
-vector<double> ManyBody::GetPipCent( unsigned int index ){
-    if( index >= pippos.size() ){
-        cout << "No parallelepiped with index " << index << endl;
-        return {}; 
-    }
-    return pippos[index].GetCent();
-}
-
-vector<vector<double>>  ManyBody::GetPipSide( unsigned int index ) {
-    if( index >= pippos.size() ){
-        cout << "No parallelepiped with index " << index << endl;
-        return {}; 
-    }
-    return pippos[index].GetSide();
-}
-
-vector<double> ManyBody::GetCapL1( unsigned int index ){
-    if( index >= capsules.size() ){
-        cout << "No parallelepiped with index " << index << endl;
-        return {}; 
-    }
-    return capsules[index].GetL1();
-}
-	
-vector<double> ManyBody::GetCapL2( unsigned int index ){
-    if( index >= capsules.size() ){
-        cout << "No parallelepiped with index " << index << endl;
-        return {}; 
-    }
-    return capsules[index].GetL2();
-}
-	
-double ManyBody::GetCapRad( unsigned int index ){
-    if( index >= capsules.size() ){
-        cout << "No parallelepiped with index " << index << endl;
-        return 0; 
-    }
-    return capsules[index].GetRad();
 }

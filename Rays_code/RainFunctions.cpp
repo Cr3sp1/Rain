@@ -163,6 +163,19 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
 
 
 
+// Returns NxN identity matrix
+vector<vector<double>> IdMat( unsigned int N ) {
+    vector<vector<double>> idmat(N, vector<double>(N));
+    for( unsigned int i = 0; i < N; i++ ){
+        for( unsigned int j = 0; j < N; j++ ){
+            idmat[i][j] = (i==j) ? 1 : 0; 
+        }
+    }
+    return idmat;
+}
+
+
+
 // Returns the rotation matrix
 vector<vector<double>> RotMat( vector<double> axis, double theta ) {
     if ( Norm(axis) == 0 or axis.size() != 3 ) return {}; // Handle zero-length vector to avoid division by zero
