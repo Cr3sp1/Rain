@@ -18,7 +18,7 @@ class ProjSurface;
 // Body class
 class Body {
 	
-  private:
+  protected:
   	// Time (should go from 0 to 1)
 	long double t;
 	// Points used for rotation in time evolution: rot[0] is center, rot[1]-rot[0] is the axis of rotation
@@ -37,26 +37,28 @@ class Body {
   public:
     // Default constructor
 	Body(): t(0), SuperBody(nullptr) {};
+	// Dynamic constructor
+	Body( vector<vector<long double>> Rot, long double W, vector<vector<long double>> Trans ): t(0), rot(Rot), w(W), trans(Trans) {} 
 	// Copy constructor
     Body(const Body& other);
 	// Copy assignment operator
 	Body& operator=(const Body& other);
 	// Destructor
     virtual ~Body();
-	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
-	virtual void Move( long double T );
-	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
-	virtual void BeMoved( long double T, vector<vector<long double>> Rot, long double W, vector<vector<long double>> Trans );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	virtual void Prime( vector<long double> p, vector<long double> v ) {}
 	// Checks if the body is making contact with a ray
 	virtual bool Check( Ray& rayy ) { return false; }
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	virtual long double Anal( vector<long double> RelVel, long double bodyvel  ) { return -1; }
-	// Adds a Body to SubBodies
-	virtual void AddSubBody(Body* body) { SubBodies.push_back(body); }
+	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+	virtual void Move( long double T );
+	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
+	virtual void BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat );
 	// Sets SuperBody
 	virtual void SetSuperBody(Body* body) { SuperBody = body; }
+	// Adds a Body to SubBodies
+	virtual void AddSubBody(Body* body);
 
 
 };
@@ -67,7 +69,7 @@ class Body {
 // Sphere class
 class Sphere: public Body {
 
-  private:
+  protected:
 	
 	vector<long double> cent;	// Position of the center of the sphere 
 	long double rad;	// Radius of the sphere
@@ -84,6 +86,10 @@ class Sphere: public Body {
 	bool Check( Ray& ray ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v , long double bodyvel ) override;
+	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+	void Move( long double T ) override;
+	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
+	void BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) override;
 	// Gets stuff
 	vector<long double> GetCent(){return cent;}
 	long double GetRad(){return rad;}
@@ -96,7 +102,7 @@ class Sphere: public Body {
 // Parallelepiped class
 class Pippo: public Body {
 
-  private:
+  protected:
 	
 	vector<long double> cent;	// Position of the center
 	vector<vector<long double>> side;	// Sides of the parallelepiped 
@@ -113,6 +119,10 @@ class Pippo: public Body {
 	bool Check( Ray& ray ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v, long double bodyvel  ) override;
+	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+	void Move( long double T ) override;
+	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
+	void BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) override;
 	// Gets stuff
 	vector<long double> GetCent(){return cent;}
 	vector<vector<long double>>  GetSide(){return side;}
@@ -125,7 +135,7 @@ class Pippo: public Body {
 // Capsule class
 class Capsule: public Body {
 
-  private:
+  protected:
 	
 	vector<long double> l1,l2;	// Position of the two extremes of the axis
 	long double rad;	// Radius of the sphere
@@ -142,6 +152,10 @@ class Capsule: public Body {
 	bool Check( Ray& ray ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	long double Anal( vector<long double> v , long double bodyvel ) override;
+	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+	void Move( long double T ) override;
+	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
+	void BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) override;
 	// Gets stuff
 	vector<long double> GetL1(){return l1;}
 	vector<long double> GetL2(){return l2;}
@@ -155,7 +169,7 @@ class Capsule: public Body {
 // ManyBody class
 class ManyBody: public Body {
 
-  private:
+  protected:
 	
 	vector<Sphere> spheres;			// Position of the center of the sphere 
 	vector<Pippo> pippos;			// Position of the center of the sphere 
@@ -164,12 +178,16 @@ class ManyBody: public Body {
 
   public:
 
-	// Complete static constructor 
+	// Complete constructor 
 	ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<long double> p, vector<long double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
+	// Time evolution of all the bodies
+	void Move( long double T ) override;
+	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
+	void BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) override {};
 	// Gets stuff
 	vector<long double> GetSphCent( unsigned int index );
 	long double GetSphRad( unsigned int index );

@@ -63,6 +63,24 @@ template <typename T> std::vector<T> CrossProduct(const std::vector<T> &a, const
   return result;
 }
 
+// ===============================================================================
+// matrix-vector multiplication
+// ===============================================================================
+template <typename T>
+std::vector<T> operator*(const std::vector<std::vector<T>>& matrix, const std::vector<T>& vec) {
+    assert(matrix.size() > 0 && matrix[0].size() == vec.size());
+
+    std::vector<T> result(matrix.size(), T(0));  // Initialize result vector with zeros
+
+    for (size_t i = 0; i < matrix.size(); ++i) {
+        for (size_t j = 0; j < vec.size(); ++j) {
+            result[i] += matrix[i][j] * vec[j];
+        }
+    }
+
+    return result;
+}
+
 // ===============================================================================  
 // norm of a vector 
 // ===============================================================================

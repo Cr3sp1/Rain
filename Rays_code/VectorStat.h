@@ -97,5 +97,15 @@ template <typename T> void Print( const vector<T> & v ) {
   } 
 }
 
+template <typename T> void Print(const vector<vector<T>> &matrix) {
+    for (const auto &row : matrix) {
+        for (const auto &element : row) {
+            cout << element << " ";
+        }
+        cout << endl;
+    }
+}
+
+
 
 #endif

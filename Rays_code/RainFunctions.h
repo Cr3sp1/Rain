@@ -29,9 +29,6 @@ vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<l
 /// Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
 long double MaxU(vector<vector<long double>> H, vector<long double> u );
 
-// (NOTE: DOESN'T ALWAYS WORK)  Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking parallelograms
-// bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H );
-
 // Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking triangles
 bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H );
 
@@ -52,5 +49,11 @@ vector<vector<long double>> CompareBB( vector<long double> box, Body& body1, Bod
 
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 long double PointSegDist( vector<long double> p, vector<long double> l1, vector<long double> l2 );
+
+// Returns the rotation matrix
+vector<vector<long double>> RotMat( vector<long double> axis, long double theta );
+
+// Rotates a Point relative to the point Rot0
+void Rotate( vector<long double>& Point, vector<long double> Rot0, const vector<vector<long double>>& Rotmat );
 
 #endif

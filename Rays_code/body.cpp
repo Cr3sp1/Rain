@@ -7,23 +7,40 @@ using namespace std;
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 void Body::Move( long double T ) {
-    // Calculates the total translation for the step
+    if( T == t ) return;
+
+    SuperBody->Move(T);
+
+    // Calculate the total translation for the step
     vector<long double> delta({0,0,0});
     for( long unsigned int i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*M_PI/(i+1)) - sin(t*M_PI/(i+1) ));
+        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
-    // Translates the rot
+    // Translate 
     for( vector<long double> point : rot ){
         point += delta;
     }
+
+    // Generate rotation matrix
+    long double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    vector<vector<long double>> rotmat = RotMat( rot[1]-rot[0], theta );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Body::BeMoved( long double T, vector<vector<long double>> Rot, long double W, vector<vector<long double>> Trans ) {
+void Body::BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) {
+    // Translate
+    for( vector<long double> point : rot ) point += Delta;
 
+    // Rotate
+    for( vector<long double> point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<long double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }
-
-
 
 // Copy constructor
 Body::Body(const Body& other) : t(other.t), rot(other.rot), w(other.w), trans(other.trans) {
@@ -107,6 +124,47 @@ long double Sphere::Anal( vector<long double> v, long double bodyvel ) {
     long double surface = M_PI*rad*rad;
     return Norm(v)*surface/bodyvel;
 }
+
+// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+void Sphere::Move( long double T ) {
+    if( T == t ) return;
+
+    SuperBody->Move(T);
+
+    // Calculate the total translation for the step
+    vector<long double> delta({0,0,0});
+    for( long unsigned int i = 0; i < trans.size(); i++ ){
+        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+    }
+    // Translate
+    for( vector<long double> point : rot ) point += delta;
+    cent += delta;
+
+    // Generate rotation matrix
+    long double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    vector<vector<long double>> rotmat = RotMat( rot[1]-rot[0], theta );
+
+    // Rotate
+    Rotate( cent, rot[0], rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+}
+
+// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
+void Sphere::BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) {
+    // Translate
+    for( vector<long double> point : rot ) point += Delta;
+    cent += Delta;
+
+    // Rotate
+    for( vector<long double> point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<long double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    Rotate( cent, Rot0, Rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
 	
 
 
@@ -136,6 +194,51 @@ long double Pippo::Anal( vector<long double> v, long double bodyvel  ) {
     return flux/bodyvel;
 }
 
+// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+void Pippo::Move( long double T ) {
+    if( T == t ) return;
+
+    SuperBody->Move(T);
+
+    // Calculate the total translation for the step
+    vector<long double> delta({0,0,0});
+    for( long unsigned int i = 0; i < trans.size(); i++ ){
+        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+    }
+    // Translate
+    for( vector<long double> point : rot ) point += delta;
+    cent += delta;
+    for( vector<long double> point : side ) point += delta;
+
+    // Generate rotation matrix
+    long double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    vector<vector<long double>> rotmat = RotMat( rot[1]-rot[0], theta );
+
+    // Rotate
+    Rotate( cent, rot[0], rotmat );
+    for( vector<long double> point : side ) Rotate( point, rot[0], rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+}
+
+// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
+void Pippo::BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) {
+    // Translate
+    for( vector<long double> point : rot ) point += Delta;
+    cent += Delta;
+    for( vector<long double> point : side ) point += Delta;
+
+    // Rotate
+    for( vector<long double> point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<long double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    Rotate( cent, Rot0, Rotmat );
+    for( vector<long double> point : side ) Rotate( point, Rot0, Rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
+
 
 
 
@@ -163,10 +266,60 @@ long double Capsule::Anal( vector<long double> v, long double bodyvel ) {
     return Norm(v)*surface/bodyvel;
 }
 
+// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+void Capsule::Move( long double T ) {
+    if( T == t ) return;
+
+    SuperBody->Move(T);
+
+    // Calculate the total translation for the step
+    vector<long double> delta({0,0,0});
+    for( long unsigned int i = 0; i < trans.size(); i++ ){
+        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+    }
+    // Translate 
+    for( vector<long double> point : rot )  point += delta;
+    l1 += delta;
+    l2 += delta;
+
+    // Generate rotation matrix
+    long double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    vector<vector<long double>> rotmat = RotMat( rot[1]-rot[0], theta );
+
+    // Rotate
+    Rotate( l1, rot[0], rotmat);
+    Rotate( l2, rot[0], rotmat);
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+}
+
+// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
+void Capsule::BeMoved( vector<long double> Delta, vector<long double> Rot0, vector<vector<long double>> Rotmat ) {
+    // Translate
+    for( vector<long double> point : rot ) point += Delta;
+    l1 += Delta;
+    l2 += Delta;
+
+    // Rotate
+    for( vector<long double> point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<long double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    Rotate( l1, Rot0, Rotmat );
+    Rotate( l2, Rot0, Rotmat );
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
+
+// Adds a sub-body
+void Body::AddSubBody(Body* subbody) { 
+    SubBodies.push_back(subbody); 
+    subbody->SetSuperBody(this);
+}
 
 
 
-// Complete static ManyBody constructor 
+
+// Complete ManyBody constructor 
 ManyBody::ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules ): Body() {
     spheres = Spheres;
     pippos = Pippos;
@@ -186,6 +339,15 @@ bool ManyBody::Check( Ray& ray ) {
     for( long unsigned int i = 0; i < pippos.size(); i++ ) if(pippos[i].Check( ray )) return true;
     for( long unsigned int i = 0; i < capsules.size(); i++ ) if(capsules[i].Check( ray )) return true;
     return false;
+}
+
+// Time evolution of the body
+void ManyBody::Move( long double T ) {
+    if( T == t ) return;
+    // Move parts
+    for( Sphere sphere : spheres ) sphere.Move(T);
+    for( Pippo pippo : pippos ) pippo.Move(T);
+    for( Capsule capsule : capsules ) capsule.Move(T);
 }
 
 // Gets stuff

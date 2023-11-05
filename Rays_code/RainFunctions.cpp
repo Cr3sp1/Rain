@@ -75,46 +75,6 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
     return false;
 }
 
-// NOT WORKING PROPERLY: Returns wether the Point is inside the hexagon H using parallelograms 
-// bool PointIsInsideP( vector<long double> Point, vector<vector<long double>> H ){
-//     // centers the points in p
-//     Point -= H[0];
-//     for(int i = 0; i < 7; i++ ) H[i] -=H[0];
-//     // Calculate stuff
-//     long double a, b;
-//     long double epsilon = 1e-16;
-//     long double H1p = H[1]*Point;
-//     long double H1H1 = H[1]*H[1];
-//     long double H1H3 = H[1]*H[3];
-//     long double H3p = H[3]*Point;
-//     long double H3H3 = H[3]*H[3];
-//     long double H3H5 = H[3]*H[4];
-//     long double H5p = H[5]*Point;
-//     long double H5H5 = H[5]*H[5];
-//     long double H5H1 = H[5]*H[1];
-
-//     if( H1H1*H3H3 - H1H3*H1H3 > epsilon and H1H1 > epsilon ){
-//         b = (H3p*H1H1 - H1p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
-//         a = (H1p*H3H3 - H3p*H1H3)/(H1H1*H3H3 - H1H3*H1H3);
-//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-//     }
-
-//     if( H3H3*H5H5 - H3H5*H3H5 > epsilon and H3H3 > epsilon ){
-//         b = (H5p*H3H3 - H3p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
-//         a = (H3p*H5H5 - H5p*H3H5)/(H3H3*H5H5 - H3H5*H3H5);
-//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-//     } 
-
-//     if( H5H5*H1H1 - H5H1*H5H1 > epsilon and H5H5 > epsilon ){
-//         b = (H1p*H5H5 - H5p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
-//         a = (H5p*H1H1 - H1p*H5H1)/(H5H5*H5H5 - H5H1*H5H1);
-//         if( 0 <= a and a <= 1 and 0 <= b and b <= 1 ) return true;
-//     }
-
-//     return false;
-// }
-
-
 
 // Periodic Boundary conditions for the index of H, keeps it between 1 and 6
 int PBCH( int i ) {
@@ -155,6 +115,7 @@ vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vect
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     vmin*=-rain_v[2];
     vmax*=-rain_v[2];
+    
     vector<long double> body_v(N);
     vector<long double> analytical(N);
     vector<long double> wetness(N);
@@ -165,6 +126,7 @@ vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vect
         analytical[i] = body.Anal( relvel, body_v[i]);
         wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
     }
+    
     return {body_v, analytical,  wetness};
 }
 
@@ -197,4 +159,27 @@ long double PointSegDist( vector<long double> p, vector<long double> l1, vector<
     if( proj <= 0 )  return Norm(p);
     if( proj >= Norm(l2) ) return Norm(p-l2);
     return Norm( p - l2*proj);
+}
+
+
+
+// Returns the rotation matrix
+vector<vector<long double>> RotMat( vector<long double> axis, long double theta ) {
+    if ( Norm(axis) == 0 or axis.size() != 3 ) return {}; // Handle zero-length vector to avoid division by zero
+    axis = axis/Norm(axis);
+    long double s = sin(theta);
+    long double c = cos(theta);
+    long double G = 1-c;
+
+    return { { axis[0]*axis[0]*G + c,           axis[0]*axis[1]*G - axis[2]*s,  axis[0]*axis[2]*G + axis[1]*s },
+             { axis[1]*axis[0]*G + axis[2]*s,   axis[1]*axis[1]*G + c,          axis[1]*axis[2]*G - axis[0]*s },
+             { axis[2]*axis[0]*G - axis[1]*s,   axis[2]*axis[1]*G + axis[0]*s,  axis[2]*axis[2]*G + c         } };
+}
+
+
+
+void Rotate( vector<long double>& Point, vector<long double> Rot0, const vector<vector<long double>>& Rotmat ){
+    Point -= Rot0;
+    Point = Rotmat*Point;
+    Point += Rot0; 
 }
