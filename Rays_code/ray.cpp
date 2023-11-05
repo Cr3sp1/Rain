@@ -5,17 +5,17 @@ using namespace std;
 
 
 // Declares V
-vector<long double> Ray::V(3);
+vector<double> Ray::V(3);
 
 // Complete static ray constructor
-Ray::Ray( vector<long double> position, vector<long double> direction){
+Ray::Ray( vector<double> position, vector<double> direction){
     R0 = position;
     V = direction;
     Active = true;
 }
 
 // Efficient constructor
-Ray::Ray( vector<long double> position ) {
+Ray::Ray( vector<double> position ) {
     R0 = position;
     Active = true;
 }
@@ -29,7 +29,7 @@ void ProjSurface::reset() {
 
 
 // Complete static constructor
-ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long double dx){
+ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
 
     // Checks validity of arguments
     if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
@@ -41,7 +41,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long 
 
     
     // Finds vertex between three "seen" faces and projects the other vertices on the plane passing by it perpendicular to vel
-    vector<vector<long double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
+    vector<vector<double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
     H = FindHexProj( {0,0,0}, sides, vel, FindMiddle({0,0,0}, sides, vel) );
 
 
@@ -57,22 +57,22 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long 
     // cout << "Generating rays" << endl;
     rays = {};
     // cout << "dx = " << dx << endl;
-    vector<long double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
+    vector<double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*dx;
-     long double maxu1 = MaxU( H, u1 );
+     double maxu1 = MaxU( H, u1 );
     // cout << "|u1| = " << Norm(u1) << endl;
     // cout << "steps1 = " << Norm(u1) << endl;
-    vector<long double> u2 = CrossProduct(u1, vel);
+    vector<double> u2 = CrossProduct(u1, vel);
     u2 = (u2/Norm(u2))*dx;
-    long double maxu2 = MaxU( H, u2 );
+    double maxu2 = MaxU( H, u2 );
     // cout << "|u2| = " << Norm(u2) << endl;
 
-    for( long double sign1 = -1; sign1 < 2; sign1+=2 ) {
-        vector<long double> point1 = (sign1 == -1) ? H[0] : H[0] + u1;
+    for( double sign1 = -1; sign1 < 2; sign1+=2 ) {
+        vector<double> point1 = (sign1 == -1) ? H[0] : H[0] + u1;
         
         while( Norm( point1 - H[0]) < maxu1 ) {
-            for( long double sign2 = -1; sign2 < 2; sign2+=2 ){
-                vector<long double> point2 = (sign2 == -1) ? point1 : point1 + u2;
+            for( double sign2 = -1; sign2 < 2; sign2+=2 ){
+                vector<double> point2 = (sign2 == -1) ? point1 : point1 + u2;
 
                 while( Norm(point2 - point1) < maxu2 ){
                     if( PointIsInsideT( point2, H )) {
@@ -98,7 +98,7 @@ ProjSurface::ProjSurface(vector<long double> box, vector<long double> vel, long 
 void ProjSurface::PrintR( string outfile ){
     ofstream fout(outfile);
     for( long unsigned int i = 0; i < rays.size(); i++ ){
-        vector<long double> r = rays[i].GetR0();
+        vector<double> r = rays[i].GetR0();
         fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
     }
     fout.close();
@@ -116,7 +116,7 @@ void ProjSurface::PrintH( string outfile ){
 
 
 // Returns an estimate of the projection of the body on the plane
-long double ProjSurface::BodyProj( Body& body ) {
+double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
     // cout << "Projecting on " << rays.size() << " rays" << endl;
     body.Prime( H[0], Ray::V );

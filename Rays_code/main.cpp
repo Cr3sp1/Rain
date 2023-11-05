@@ -14,10 +14,10 @@ using namespace std;
 int main (int argc, char *argv[]){
 
     // Declare stuff
-    vector<long double> rain_vel(3);
-    vector<long double> rel_vel(3);
-    vector<long double> box(3); 
-    long double body_vel, dx;
+    vector<double> rain_vel(3);
+    vector<double> rel_vel(3);
+    vector<double> box(3); 
+    double body_vel, dx;
     int nstep;
     
 
@@ -43,18 +43,18 @@ int main (int argc, char *argv[]){
 
      
     // // Builds objects
-    // Sphere trialS( (long double)0.5*box, (long double)0.3*box[0]);
-    // Pippo trialP(box*(long double)0.5, { {box[0]/3, 0, 0}, {0, box[1]/3, 0}, {0, 0, box[2]/3} });
-    // Capsule trialC( (long double)0.3*box, (long double)0.7*box,  (long double)0.2*box[0] );
+    // Sphere trialS( (double)0.5*box, (double)0.3*box[0]);
+    // Pippo trialP(box*(double)0.5, { {box[0]/3, 0, 0}, {0, box[1]/3, 0}, {0, 0, box[2]/3} });
+    // Capsule trialC( (double)0.3*box, (double)0.7*box,  (double)0.2*box[0] );
     // ManyBody trialM1( {trialS}, {trialP}, {trialC} );
-    // Sphere inner((long double)0.5*box, (long double)0.2*box[0]);
+    // Sphere inner((double)0.5*box, (double)0.2*box[0]);
     // ManyBody trialM2( {trialS, inner}, {trialP}, {trialC} );
 
     // // Simulate different body velocities
-    // vector<vector<long double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<long double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<long double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<long double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep, dx );
+    // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
+    // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
+    // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
+    // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep, dx );
 
     // // output
     // ofstream outputFileS("../data/CompareSphere.dat");

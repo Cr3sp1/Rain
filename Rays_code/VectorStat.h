@@ -9,14 +9,14 @@
 
 using namespace std;
 
-template <typename T> long double Avg(const vector<T> &v){
-    long double sum = accumulate(v.begin(), v.end(), 0.0);
+template <typename T> double Avg(const vector<T> &v){
+    double sum = accumulate(v.begin(), v.end(), 0.0);
     return sum / v.size();
 }
 
-template <typename T> long double Var( const vector<T> & v ){  
+template <typename T> double Var( const vector<T> & v ){  
     if( v.size()==1 ) return 0; 
-	long double va = 0;
+	double va = 0;
     for ( int i = 0; i < v.size(); i++ ) {
         T avg = Avg<T>( v );
         va = va + pow ( avg - v[i], 2 );
@@ -24,12 +24,12 @@ template <typename T> long double Var( const vector<T> & v ){
     return va / (v.size()-1);
 } 
 
-template <typename T> long double StDev(const vector<T> &v){
+template <typename T> double StDev(const vector<T> &v){
     return sqrt( Var(v) );
 }
 
-template <typename T> long double Med( vector<T> v ){
-	long double med;
+template <typename T> double Med( vector<T> v ){
+	double med;
   sort ( v.begin(), v.end() );
   
   if(v.size()%2==0){
@@ -41,10 +41,10 @@ template <typename T> long double Med( vector<T> v ){
 	return med;
 }
 
-template <typename T> long double Covariance (const vector<T>& x, const vector<T>& y){
-  long double mediax = Avg(x);
-  long double mediay = Avg(y);
-  long double result{0.};
+template <typename T> double Covariance (const vector<T>& x, const vector<T>& y){
+  double mediax = Avg(x);
+  double mediay = Avg(y);
+  double result{0.};
 
   if( x.size() != y.size() ){
     cout << "ERROR Covariance, vectors of different size!" << endl;

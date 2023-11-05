@@ -6,13 +6,13 @@ using namespace std;
 
 
 // Projects the Point on a plane perpendicular to v and passing through p
-vector<long double> Project( vector<long double> Point, vector<long double> p, vector<long double> v ){
-    vector<long double> diff = p - Point;
+vector<double> Project( vector<double> Point, vector<double> p, vector<double> v ){
+    vector<double> diff = p - Point;
     return ( Point + v*(diff*v)/(v*v) );
 }
 
 // Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
-vector<long double> FindMiddle( vector<long double> p, vector<vector<long double>> sides, vector<long double> v ){
+vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v ){
     for( unsigned int i = 0; i < sides.size(); i++ ){
         if( sides[i]*v < 0 ) p += sides[i];
     }
@@ -20,11 +20,11 @@ vector<long double> FindMiddle( vector<long double> p, vector<vector<long double
 }
 
 // Finds the hexagonal projection H of a parallelepiped defined by p nad sides on a plane perpendicular to v and passing through P0
-vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<long double>> Side, vector<long double> v, vector<long double> P0){
-    vector<vector<long double>> H = {FindMiddle( p, Side, v )};
-    vector<vector<long double>> delta(3, vector<long double>(3, 0.0));        // Used to calculate the position of the vertices to project
+vector<vector<double>> FindHexProj(  vector<double> p, vector<vector<double>> Side, vector<double> v, vector<double> P0){
+    vector<vector<double>> H = {FindMiddle( p, Side, v )};
+    vector<vector<double>> delta(3, vector<double>(3, 0.0));        // Used to calculate the position of the vertices to project
     for( int i = 0; i < 3; i++ ){
-        delta[i] = Side[i]*v < 0 ? ((long double)-1)*Side[i] : Side[i];
+        delta[i] = Side[i]*v < 0 ? ((double)-1)*Side[i] : Side[i];
     }
     H.push_back( H[0] + delta[0] );
     H.push_back( H[0] + delta[0] + delta[1]) ;
@@ -40,11 +40,11 @@ vector<vector<long double>> FindHexProj(  vector<long double> p, vector<vector<l
 }
 
 // Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
-long double MaxU(vector<vector<long double>> H, vector<long double> u ) {
-    long double result = 0;
+double MaxU(vector<vector<double>> H, vector<double> u ) {
+    double result = 0;
     for( int i = 1; i < 7; i++ ) {
         H[i] -= H[0];
-        long double proj = abs(H[i]*u/Norm(u));
+        double proj = abs(H[i]*u/Norm(u));
         if(proj > result) result = proj;
     }
     // cout << result << endl;
@@ -54,7 +54,7 @@ long double MaxU(vector<vector<long double>> H, vector<long double> u ) {
 
 
 // Returns wether the Point is inside the hexagon H using triangles
-bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
+bool PointIsInsideT( vector<double> Point, vector<vector<double>> H ){
     // Centers on p
     Point -= H[0];
     for(int i = 1; i < 7; i++ ){
@@ -63,11 +63,11 @@ bool PointIsInsideT( vector<long double> Point, vector<vector<long double>> H ){
 
     // Checks if Point is inside the rectangle with vertices H[0], H[i], H[i+1]
     for( int i = 1; i < 7; i++ ){
-        long double epsilon = 1e-10;
-        long double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
-        long double alpha = Norm( CrossProduct( Point, H[PBCH(i+1)]) )/A;
-        long double beta = Norm( CrossProduct( Point, H[i]) )/A;
-        long double gamma = Norm( CrossProduct( Point-H[i], Point-H[PBCH(i+1)]) )/A;
+        double epsilon = 1e-10;
+        double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
+        double alpha = Norm( CrossProduct( Point, H[PBCH(i+1)]) )/A;
+        double beta = Norm( CrossProduct( Point, H[i]) )/A;
+        double gamma = Norm( CrossProduct( Point-H[i], Point-H[PBCH(i+1)]) )/A;
         if( 0 <= alpha and alpha <= 1 and 0 <= beta and beta <= 1 and 0 <= gamma and gamma <= 1 and abs(alpha + beta + gamma - 1 ) <  epsilon ){
             return true;
         }
@@ -85,7 +85,7 @@ int PBCH( int i ) {
 
 
 // Checks rays generation 
-void RayGenCheck( string outfile, vector<long double> box, vector<long double> rel_vel ){
+void RayGenCheck( string outfile, vector<double> box, vector<double> rel_vel ){
     ofstream Pout("outfile");
     for( int i = 0; i < 10000; i+=50 ){
         ProjSurface temp( box, rel_vel, i+1 );
@@ -96,13 +96,13 @@ void RayGenCheck( string outfile, vector<long double> box, vector<long double> r
 
 
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
-vector<vector<long double>> Simulate( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx ) {
+vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
-    vector<long double> body_v(N);
-    vector<long double> wetness(N);
+    vector<double> body_v(N);
+    vector<double> wetness(N);
     for( unsigned int i = 0; i < N; i++ ){
-        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(long double)i/((long double)N-1) );
-        vector<long double> relvel = rain_v;
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
         wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
     }
@@ -111,17 +111,17 @@ vector<vector<long double>> Simulate( vector<long double> box, Body& body, vecto
 
 
 // Estimates wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
-vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx ) {
+vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     vmin*=-rain_v[2];
     vmax*=-rain_v[2];
     
-    vector<long double> body_v(N);
-    vector<long double> analytical(N);
-    vector<long double> wetness(N);
+    vector<double> body_v(N);
+    vector<double> analytical(N);
+    vector<double> wetness(N);
     for( unsigned int i = 0; i < N; i++ ){
-        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(long double)i/((long double)N-1) );
-        vector<long double> relvel = rain_v;
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
         analytical[i] = body.Anal( relvel, body_v[i]);
         wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
@@ -131,14 +131,14 @@ vector<vector<long double>> CompareAN( vector<long double> box, Body& body, vect
 }
 
 // Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
-vector<vector<long double>> CompareBB( vector<long double> box, Body& body1, Body& body2, vector<long double> rain_v, long double vmin, long double vmax, unsigned int N, long double dx){
+vector<vector<double>> CompareBB( vector<double> box, Body& body1, Body& body2, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx){
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
-    vector<long double> body_v(N);
-    vector<long double> wetness1(N);
-    vector<long double> wetness2(N);
+    vector<double> body_v(N);
+    vector<double> wetness1(N);
+    vector<double> wetness2(N);
     for( unsigned int i = 0; i < N; i++ ){
-        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(long double)i/((long double)N-1) );
-        vector<long double> relvel = rain_v;
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
         wetness1[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body1)/body_v[i];
         wetness2[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body2)/body_v[i];
@@ -149,12 +149,12 @@ vector<vector<long double>> CompareBB( vector<long double> box, Body& body1, Bod
 
 
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
-long double PointSegDist( vector<long double> p, vector<long double> l1, vector<long double> l2 ) {
+double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Changes frame of reference to l1 = 0
     p -= l1;
     l2 -= l1;
     // Calculates projection of p on line passing through l1 and l2
-    long double proj = p*l2/Norm(l2);
+    double proj = p*l2/Norm(l2);
     // Returns distance between p and the closest point belonging to the segment
     if( proj <= 0 )  return Norm(p);
     if( proj >= Norm(l2) ) return Norm(p-l2);
@@ -164,12 +164,12 @@ long double PointSegDist( vector<long double> p, vector<long double> l1, vector<
 
 
 // Returns the rotation matrix
-vector<vector<long double>> RotMat( vector<long double> axis, long double theta ) {
+vector<vector<double>> RotMat( vector<double> axis, double theta ) {
     if ( Norm(axis) == 0 or axis.size() != 3 ) return {}; // Handle zero-length vector to avoid division by zero
     axis = axis/Norm(axis);
-    long double s = sin(theta);
-    long double c = cos(theta);
-    long double G = 1-c;
+    double s = sin(theta);
+    double c = cos(theta);
+    double G = 1-c;
 
     return { { axis[0]*axis[0]*G + c,           axis[0]*axis[1]*G - axis[2]*s,  axis[0]*axis[2]*G + axis[1]*s },
              { axis[1]*axis[0]*G + axis[2]*s,   axis[1]*axis[1]*G + c,          axis[1]*axis[2]*G - axis[0]*s },
@@ -178,7 +178,7 @@ vector<vector<long double>> RotMat( vector<long double> axis, long double theta 
 
 
 
-void Rotate( vector<long double>& Point, vector<long double> Rot0, const vector<vector<long double>>& Rotmat ){
+void Rotate( vector<double>& Point, vector<double> Rot0, const vector<vector<double>>& Rotmat ){
     Point -= Rot0;
     Point = Rotmat*Point;
     Point += Rot0; 

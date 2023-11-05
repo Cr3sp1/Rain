@@ -20,7 +20,7 @@ class Ray {
 
   protected:
     // Starting point
-	  vector<long double> R0;         
+	  vector<double> R0;         
 
     // The ray starts active and deactivates when it hits an object
     bool Active;
@@ -28,24 +28,24 @@ class Ray {
 	
   public:
     // Static direction vector 
-    static vector<long double> V; 
+    static vector<double> V; 
 
     // Direction setter
-    void SetV( vector<long double> v ) { v = V;}
+    void SetV( vector<double> v ) { v = V;}
 
     // Complete static constructor
-	  Ray( vector<long double> position, vector<long double> direction);
+	  Ray( vector<double> position, vector<double> direction);
 
     // Efficient constructor
-    Ray( vector<long double> position );
+    Ray( vector<double> position );
 
     // Turns the ray on and off
     void On(){Active = true;}
     void Off(){Active = false;}
 
     // Gets stuff
-    vector<long double> GetR0(){return R0;}    
-    vector<long double> GetV(){return V;};     
+    vector<double> GetR0(){return R0;}    
+    vector<double> GetV(){return V;};     
     bool IsOn(){return Active;}
 
 };
@@ -57,24 +57,24 @@ class ProjSurface{
   protected:
     
     // Vertices of the hexagon
-    vector<vector<long double>> H;
+    vector<vector<double>> H;
     // Total surface
-    long double surf;
+    double surf;
     // Rays
     vector<Ray> rays;
 
   public:
 
     // Complete static constructor
-    ProjSurface(vector<long double> box, vector<long double> vel, long double dx);
+    ProjSurface(vector<double> box, vector<double> vel, double dx);
 
     // Resets the surface between steps
     void reset();
 
     // Get stuff
     int GetNRays(){return rays.size();}
-    vector<vector<long double>> GetH(){return H;}
-    vector<long double> GetV(){return rays[0].GetV();}
+    vector<vector<double>> GetH(){return H;}
+    vector<double> GetV(){return rays[0].GetV();}
 
     // Prints all the origins of the rays to file
     void PrintR( string outfile );
@@ -83,7 +83,7 @@ class ProjSurface{
     void PrintH( string outfile );
 
     // Returns an estimate of the projection of the body on the plane
-    long double BodyProj( Body& body );
+    double BodyProj( Body& body );
 
 };
 
