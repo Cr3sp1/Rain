@@ -288,7 +288,9 @@ bool Capsule::Check( Ray& ray ) {
 // Analytical solution of rain intercepted. v is relative velocity
 double Capsule::Anal( vector<double> v, double bodyvel ) {
     double L = abs((l1 - l2)*v)/Norm(v);
-    double surface = M_PI*rad*rad + L*rad;
+    // Prime({0,0,0}, v);
+    // double L = Norm(H1-H2);
+    double surface = M_PI*rad*rad + L*2*rad;
     return Norm(v)*surface/bodyvel;
 }
 

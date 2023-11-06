@@ -155,12 +155,14 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Changes frame of reference to l1 = 0
     p -= l1;
     l2 -= l1;
-    // Calculates projection of p on line passing through l1 and l2
+    if( Norm(l2) == 0 ) return Norm(p);
+    // Calculates projection of p on line passing through l1 (0) and l2
     double proj = p*l2/Norm(l2);
     // Returns distance between p and the closest point belonging to the segment
     if( proj <= 0 )  return Norm(p);
     if( proj >= Norm(l2) ) return Norm(p-l2);
-    return Norm( p - l2*proj);
+    // cout << "ok" << endl;
+    return Norm( p - proj*l2/Norm(l2));
 }
 
 
