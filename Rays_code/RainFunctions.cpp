@@ -13,7 +13,7 @@ vector<double> Project( vector<double> Point, vector<double> p, vector<double> v
 
 // Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v ){
-    for( unsigned int i = 0; i < sides.size(); i++ ){
+    for( size_t i = 0; i < sides.size(); i++ ){
         if( sides[i]*v < 0 ) p += sides[i];
     }
     return p;
@@ -100,7 +100,7 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     vector<double> body_v(N);
     vector<double> wetness(N);
-    for( unsigned int i = 0; i < N; i++ ){
+    for( size_t i = 0; i < N; i++ ){
         body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
         vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
@@ -119,7 +119,7 @@ vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double>
     vector<double> body_v(N);
     vector<double> analytical(N);
     vector<double> wetness(N);
-    for( unsigned int i = 0; i < N; i++ ){
+    for( size_t i = 0; i < N; i++ ){
         body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
         vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
@@ -127,7 +127,8 @@ vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double>
         wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
     }
     
-    return {body_v, analytical,  wetness};
+    vector<vector<double>> mat{body_v, analytical, wetness};
+    return Transpose(mat);
 }
 
 // Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
@@ -136,14 +137,15 @@ vector<vector<double>> CompareBB( vector<double> box, Body& body1, Body& body2, 
     vector<double> body_v(N);
     vector<double> wetness1(N);
     vector<double> wetness2(N);
-    for( unsigned int i = 0; i < N; i++ ){
+    for( size_t i = 0; i < N; i++ ){
         body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
         vector<double> relvel = rain_v;
         relvel[0] -= body_v[i];
         wetness1[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body1)/body_v[i];
         wetness2[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body2)/body_v[i];
     }
-    return {body_v, wetness1, wetness2};
+    vector<vector<double>> mat{body_v, wetness1, wetness2};
+    return Transpose(mat);
 }
 
 
@@ -166,8 +168,8 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
 // Returns NxN identity matrix
 vector<vector<double>> IdMat( unsigned int N ) {
     vector<vector<double>> idmat(N, vector<double>(N));
-    for( unsigned int i = 0; i < N; i++ ){
-        for( unsigned int j = 0; j < N; j++ ){
+    for( size_t i = 0; i < N; i++ ){
+        for( size_t j = 0; j < N; j++ ){
             idmat[i][j] = (i==j) ? 1 : 0; 
         }
     }

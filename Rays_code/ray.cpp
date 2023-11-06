@@ -22,13 +22,13 @@ Ray::Ray( vector<double> position ) {
 
 // Resets the surface between steps (turns on all rays)
 void ProjSurface::reset() {
-    for( long unsigned int i = 0; i < rays.size(); i++ ){
+    for( size_t i = 0; i < rays.size(); i++ ){
         rays[i].On();
     }
 }
 
 
-// Complete static constructor
+// Complete constructor
 ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
 
     // Checks validity of arguments
@@ -94,36 +94,33 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
 }
 
 
-// Prints all the origins of the rays to file
+// Prints all the origins of the active rays to file
 void ProjSurface::PrintR( ofstream &fout ){
-    for( long unsigned int i = 0; i < rays.size(); i++ ){
-        vector<double> r = rays[i].GetR0();
-        fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
+    for( Ray ray : rays ) {
+        if( ray.IsOn() ){
+            vector<double> r = ray.GetR0();
+            fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
+        }
     }
 }
 
 void ProjSurface::PrintR( string outfile ){
     ofstream fout(outfile);
-    for( long unsigned int i = 0; i < rays.size(); i++ ){
-        vector<double> r = rays[i].GetR0();
-        fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
-    }
+    PrintR(fout);
     fout.close();
 }
 
 
 // Prints H to file
 void ProjSurface::PrintH( ofstream &fout ){
-    for( long unsigned int i = 0; i < H.size(); i++ ){
+    for( size_t i = 0; i < H.size(); i++ ){
         fout << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << endl;
     }
 }
 
 void ProjSurface::PrintH( string outfile ){
     ofstream fout(outfile);
-    for( long unsigned int i = 0; i < H.size(); i++ ){
-        fout << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << endl;
-    }
+    PrintH(fout);
     fout.close();
 }
 
@@ -133,7 +130,7 @@ double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
     // cout << "Projecting on " << rays.size() << " rays" << endl;
     body.Prime( H[0], Ray::V );
-    for( long unsigned int i = 0; i < rays.size(); i++ ){
+    for( size_t i = 0; i < rays.size(); i++ ){
         if( body.Check( rays[i]) ) nhit++;
     }
     // cout << "nhit = " << nhit << endl;

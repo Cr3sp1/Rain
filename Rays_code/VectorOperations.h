@@ -153,5 +153,26 @@ template <typename T> std::vector<T>& operator-=(std::vector<T>& a, const std::v
   return a;
 }
 
+// ===============================================================================
+// Transpose of a matrix
+// ===============================================================================
+
+template <typename T> std::vector<std::vector<T>> Transpose(const std::vector<std::vector<T>>& matrix) {
+  if (matrix.empty()) return {};
+
+  size_t rows = matrix.size();
+  size_t cols = matrix[0].size();
+  std::vector<std::vector<T>> transposed(cols, std::vector<T>(rows));
+
+  for (size_t i = 0; i < rows; ++i) {
+    for (size_t j = 0; j < cols; ++j) {
+      transposed[j][i] = matrix[i][j];
+    }
+  }
+
+  return transposed;
+}
+
+
 
 #endif

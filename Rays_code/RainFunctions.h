@@ -24,12 +24,12 @@ vector<double> Project( vector<double> Point, vector<double> p, vector<double> v
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v );
 
 // Finds the hexagonal projection H of a parallelepiped on a plane perpendicular to v and passing through P
-vector<vector<double>> FindHexProj(  vector<double> p, vector<vector<double>> Side, vector<double> v, vector<double> P);
+vector<vector<double>> FindHexProj( vector<double> p, vector<vector<double>> Side, vector<double> v, vector<double> P);
 
 /// Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
 double MaxU(vector<vector<double>> H, vector<double> u );
 
-// Auxiliary function used only in the surface constructor that checks wether a point is inside the hexagon checking triangles
+// Checks wether a point is inside the hexagon using triangles
 bool PointIsInsideT( vector<double> Point, vector<vector<double>> H );
 
 // Periodic Boundary conditions for the index of H
@@ -58,5 +58,6 @@ vector<vector<double>> RotMat( vector<double> axis, double theta );
 
 // Rotates a Point relative to the point Rot0
 void Rotate( vector<double>& Point, vector<double> Rot0, const vector<vector<double>>& Rotmat );
+
 
 #endif

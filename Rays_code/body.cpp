@@ -13,7 +13,7 @@ void Body::Move( double T ) {
 
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
-    for( long unsigned int i = 0; i < trans.size(); i++ ){
+    for( size_t i = 0; i < trans.size(); i++ ){
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate 
@@ -99,11 +99,19 @@ Body& Body::operator=(const Body& other) {
 
 // Destructor
 Body::~Body() {
+    // cout << "Destroying" << endl;
     for (Body* body : SubBodies) {
         delete body;
     }
     delete SuperBody;
 }
+
+// Adds a sub-body
+void Body::AddSubBody(Body* subbody) { 
+    SubBodies.push_back(subbody); 
+    subbody->SetSuperBody(this);
+}
+
     
 
 
@@ -138,7 +146,7 @@ void Sphere::Move( double T ) {
 
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
-    for( long unsigned int i = 0; i < trans.size(); i++ ){
+    for( size_t i = 0; i < trans.size(); i++ ){
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate
@@ -207,7 +215,7 @@ void Pippo::Move( double T ) {
 
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
-    for( long unsigned int i = 0; i < trans.size(); i++ ){
+    for( size_t i = 0; i < trans.size(); i++ ){
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate
@@ -242,6 +250,19 @@ void Pippo::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<do
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
+
+// Returns all 8 vertices of the parallelepiped
+vector<vector<double>>  Pippo::GetVertices() {
+    vector<vector<double>> vertices{};
+    for( double i = -0.5; i <= 0.5; i ++ ) {
+        for( double j = -0.5; j <= 0.5; j ++ ) {
+            for( double k = -0.5; k <= 0.5; k ++ ){
+                vertices.push_back( cent + i*side[0] + j*side[1] + k*side[2] );
+            }
+        }
+    }
+    return vertices;
 }
 
 
@@ -279,7 +300,7 @@ void Capsule::Move( double T ) {
 
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
-    for( long unsigned int i = 0; i < trans.size(); i++ ){
+    for( size_t i = 0; i < trans.size(); i++ ){
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate 
@@ -315,13 +336,6 @@ void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }
 
-// Adds a sub-body
-void Body::AddSubBody(Body* subbody) { 
-    SubBodies.push_back(subbody); 
-    subbody->SetSuperBody(this);
-}
-
-
 
 
 // Complete ManyBody constructor 
@@ -333,16 +347,16 @@ ManyBody::ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule
 
 // Primes the body to be checked. Primes each body
 void ManyBody::Prime( vector<double> p, vector<double> v  ) {
-    for( long unsigned int i = 0; i < spheres.size(); i++ ) spheres[i].Prime( p, v );
-    for( long unsigned int i = 0; i < pippos.size(); i++ ) pippos[i].Prime( p, v );
-    for( long unsigned int i = 0; i < capsules.size(); i++ ) capsules[i].Prime( p, v );
+    for( size_t i = 0; i < spheres.size(); i++ ) spheres[i].Prime( p, v );
+    for( size_t i = 0; i < pippos.size(); i++ ) pippos[i].Prime( p, v );
+    for( size_t i = 0; i < capsules.size(); i++ ) capsules[i].Prime( p, v );
 }
 
 // Checks if the ManyBody is making contact with a ray
 bool ManyBody::Check( Ray& ray ) {
-    for( long unsigned int i = 0; i < spheres.size(); i++ ) if(spheres[i].Check( ray )) return true;
-    for( long unsigned int i = 0; i < pippos.size(); i++ ) if(pippos[i].Check( ray )) return true;
-    for( long unsigned int i = 0; i < capsules.size(); i++ ) if(capsules[i].Check( ray )) return true;
+    for( size_t i = 0; i < spheres.size(); i++ ) if(spheres[i].Check( ray )) return true;
+    for( size_t i = 0; i < pippos.size(); i++ ) if(pippos[i].Check( ray )) return true;
+    for( size_t i = 0; i < capsules.size(); i++ ) if(capsules[i].Check( ray )) return true;
     return false;
 }
 
@@ -354,3 +368,36 @@ void ManyBody::Move( double T ) {
     for( Pippo pippo : pippos ) pippo.Move(T);
     for( Capsule capsule : capsules ) capsule.Move(T);
 }
+
+// Prints to file the state (all the bodies and their parameters)
+void ManyBody::PrintState( ofstream &fout ) {
+    for( Sphere sphere : spheres ) {
+        vector<double> cent = sphere.GetCent();
+        double rad = sphere.GetRad();
+        fout << "S," << cent[0] << "," << cent[1] << "," << cent[2] << "," << rad << endl;
+    }
+
+    for( Pippo pippo : pippos ) {
+        vector<vector<double>> vertices = pippo.GetVertices();
+        fout << "P,";
+        for( size_t i = 0; i < vertices.size(); i++ ) {
+            fout << vertices[i][0] << "," << vertices[i][1] << "," << vertices[i][2];
+            if( i+1 != vertices.size() ) fout << ",";
+        }
+        fout << endl;
+    }
+
+    for( Capsule capsule : capsules ) {
+        vector<double> l1 = capsule.GetL1();
+        vector<double> l2 = capsule.GetL2();
+        double rad = capsule.GetRad();
+        fout << "S," << l1[0] << "," << l1[1] << "," << l1[2] << "," << l2[0] << "," << l2[1] << "," << l2[2] << "," << rad << endl;
+    }
+    
+}
+
+void ManyBody::PrintState( string outfile ) {
+    ofstream fout(outfile);
+    PrintState( fout );
+    fout.close();
+} 

@@ -65,7 +65,7 @@ class ProjSurface{
 
   public:
 
-    // Complete static constructor
+    // Complete constructor
     ProjSurface(vector<double> box, vector<double> vel, double dx);
 
     // Resets the surface between steps
@@ -76,7 +76,7 @@ class ProjSurface{
     vector<vector<double>> GetH(){return H;}
     vector<double> GetV(){return rays[0].GetV();}
 
-    // Prints all the origins of the rays to file
+    // Prints all the origins of the active rays to file
     void PrintR( ofstream &fout );
     void PrintR( string outfile );
 

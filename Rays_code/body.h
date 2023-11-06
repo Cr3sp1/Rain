@@ -38,7 +38,7 @@ class Body {
     // Default constructor
 	Body(): t(0), w(0), SuperBody(nullptr) {};
 	// Dynamic constructor
-	Body( vector<vector<double>> Rot, double W, vector<vector<double>> Trans ): t(0), rot(Rot), w(W), trans(Trans) {} 
+	Body( vector<vector<double>> Rot, double W, vector<vector<double>> Trans ): t(0), rot(Rot), w(W), trans(Trans), SuperBody(nullptr) {} 
 	// Copy constructor
     Body(const Body& other);
 	// Copy assignment operator
@@ -92,8 +92,6 @@ class Sphere: public Body {
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override;
-	// Prints to file the state (all the bodies and their parameters)
-	void PrintState();
 	// Gets stuff
 	vector<double> GetCent(){return cent;}
 	double GetRad(){return rad;}
@@ -130,8 +128,9 @@ class Pippo: public Body {
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override;
 	// Gets stuff
-	vector<double> GetCent(){return cent;}
-	vector<vector<double>>  GetSide(){return side;}
+	vector<double> GetCent() {return cent;}
+	vector<vector<double>>  GetSide() {return side;}
+	vector<vector<double>>  GetVertices();
 
 };
 
@@ -193,6 +192,9 @@ class ManyBody: public Body {
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
+	// Prints to file the state (all the bodies and their parameters)
+	void PrintState( ofstream &fout );
+	void PrintState( string outfile );
 
 };
 

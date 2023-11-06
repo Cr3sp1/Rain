@@ -85,13 +85,13 @@ template <typename T> vector<T> Read ( unsigned int size , char* filename ) {
 
 
 template <typename T> void Print( ofstream &fout, const vector<T> & v ) {
-  for ( long unsigned int i = 0; i < v.size(); i++ ) {
+  for ( size_t i = 0; i < v.size(); i++ ) {
     fout << v[i] << endl;
   }  
 }
 
 template <typename T> void Print( const vector<T> & v ) {
-  for ( long unsigned int i = 0; i < v.size(); i++ ) {
+  for ( size_t i = 0; i < v.size(); i++ ) {
     cout << v[i] << endl;
   } 
 }
@@ -108,12 +108,7 @@ template <typename T> void Print( ofstream &fout, const vector<vector<T>> &matri
 
 template <typename T> void Print( string outfile, const vector<vector<T>> &matrix ) {
   ofstream fout(outfile);
-  for (const auto &row : matrix) {
-      for (const auto &element : row) {
-          fout << element << " ";
-      }
-      cout << endl;
-    }
+  Print( fout, matrix );
   fout.close();
 }
 
