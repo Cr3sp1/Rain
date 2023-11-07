@@ -29,7 +29,7 @@ void ProjSurface::reset() {
 
 
 // Complete constructor
-ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
+ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double Dx): dx(Dx) {
 
     // Checks validity of arguments
     if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
@@ -43,14 +43,6 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double dx){
     // Finds vertex between three "seen" faces and projects the other vertices on the plane passing by it perpendicular to vel
     vector<vector<double>> sides = { {box[0],0,0}, {0,box[1],0}, {0,0,box[2]} };
     H = FindHexProj( {0,0,0}, sides, vel, FindMiddle({0,0,0}, sides, vel) );
-
-
-    // Evaluates the surface
-    surf = 0;
-    for( int i = 1; i < 7; i+=2 ) {
-        surf += Norm( CrossProduct( H[0]-H[i], H[i]-H[i+1] ) );
-    }
-    // cout << "Tot Surface = " << surf << endl;
 
 
     // Generates the rays on a square grid along directions u1 and u2 (u1 and ud perpendicular and belonging to surface)
@@ -134,5 +126,5 @@ double ProjSurface::BodyProj( Body& body ) {
         if( body.Check( rays[i]) ) nhit++;
     }
     // cout << "nhit = " << nhit << endl;
-    return surf*nhit/rays.size();
+    return nhit*dx*dx;
 }

@@ -184,7 +184,7 @@ void Sphere::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<d
 
 // Primes the body to be checked (finds hexagonal projection on the same plane as the origins of the rays)
 void Pippo::Prime( vector<double> P, vector<double> V ) {
-    vector<double> p = cent + (double)0.5*(side[0] + side[1] + side[2]);
+    vector<double> p = cent - (double)0.5*(side[0] + side[1] + side[2]);
     H = FindHexProj( p, side, V, P );
 }
 
@@ -381,11 +381,12 @@ void ManyBody::PrintState( ofstream &fout ) {
     }
 
     for( Pippo pippo : pippos ) {
-        vector<vector<double>> vertices = pippo.GetVertices();
-        fout << "P,";
-        for( size_t i = 0; i < vertices.size(); i++ ) {
-            fout << vertices[i][0] << "," << vertices[i][1] << "," << vertices[i][2];
-            if( i+1 != vertices.size() ) fout << ",";
+        vector<vector<double>> Side = pippo.GetSide();
+        vector<double> cent = pippo.GetCent();
+        fout << "P," << cent[0] << "," << cent[1] << "," << cent[2] << ",";
+        for( size_t i = 0; i < Side.size(); i++ ) {
+            fout << Side[i][0] << "," << Side[i][1] << "," << Side[i][2];
+            if( i+1 != Side.size() ) fout << ",";
         }
         fout << endl;
     }
@@ -394,7 +395,7 @@ void ManyBody::PrintState( ofstream &fout ) {
         vector<double> l1 = capsule.GetL1();
         vector<double> l2 = capsule.GetL2();
         double rad = capsule.GetRad();
-        fout << "S," << l1[0] << "," << l1[1] << "," << l1[2] << "," << l2[0] << "," << l2[1] << "," << l2[2] << "," << rad << endl;
+        fout << "C," << l1[0] << "," << l1[1] << "," << l1[2] << "," << l2[0] << "," << l2[1] << "," << l2[2] << "," << rad << endl;
     }
     
 }

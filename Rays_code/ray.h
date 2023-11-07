@@ -58,15 +58,15 @@ class ProjSurface{
     
     // Vertices of the hexagon
     vector<vector<double>> H;
-    // Total surface
-    double surf;
+    // Precision (distance between ray origins)
+    double dx;
     // Rays
     vector<Ray> rays;
 
   public:
 
     // Complete constructor
-    ProjSurface(vector<double> box, vector<double> vel, double dx);
+    ProjSurface(vector<double> box, vector<double> vel, double Dx);
 
     // Resets the surface between steps
     void reset();
