@@ -5,50 +5,9 @@ using namespace std;
 
 
 
-// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
-void Body::Move( double T ) {
-    if( T == t ) return;
-
-    SuperBody->Move(T);
-
-    // Calculate the total translation for the step
-    vector<double> delta({0,0,0});
-    for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
-    }
-    // Translate 
-    for( vector<double> point : rot ){
-        point += delta;
-    }
-
-    // Generate rotation matrix
-    vector<vector<double>> rotmat;
-    if( w != 0 and rotmat.size() == 2 ) {
-        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
-        rotmat =  RotMat( rot[1]-rot[0], theta );
-    } else {
-        rotmat = IdMat(3);
-    }
-
-    // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
-}
-
-// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
-    // Translate
-    for( vector<double> point : rot ) point += Delta;
-
-    // Rotate
-    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
-    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
-
-    // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
-}
 
 // Copy constructor
-Body::Body(const Body& other) : t(other.t), rot(other.rot), w(other.w), trans(other.trans) {
+Body::Body(const Body& other) : name(other.name), t(other.t), rot(other.rot), w(other.w), trans(other.trans) {
     // Deep copy sub-bodies
     for (const Body* body : other.SubBodies) {
         SubBodies.push_back(new Body(*body));
@@ -88,6 +47,7 @@ Body& Body::operator=(const Body& other) {
         }
 
         // Copy other stuff
+        name = other.name;
         t = other.t;
         rot = other.rot;
         w = other.w;
@@ -96,7 +56,6 @@ Body& Body::operator=(const Body& other) {
     return *this;
 }
 
-
 // Destructor
 Body::~Body() {
     // cout << "Destroying" << endl;
@@ -104,6 +63,50 @@ Body::~Body() {
         delete body;
     }
     delete SuperBody;
+}
+
+// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
+void Body::Move( double T ) {
+    if( T == t ) return;
+
+    SuperBody->Move(T);
+
+    // Calculate the total translation for the step
+    vector<double> delta({0,0,0});
+    for( size_t i = 0; i < trans.size(); i++ ){
+        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+    }
+    // Translate 
+    for( vector<double> point : rot ){
+        point += delta;
+    }
+
+    // Generate rotation matrix
+    vector<vector<double>> rotmat;
+    if( w != 0 and rotmat.size() == 2 ) {
+        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+        rotmat =  RotMat( rot[1]-rot[0], theta );
+    } else {
+        rotmat = IdMat(3);
+    }
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+
+    t = T;
+}
+
+// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
+void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
+    // Translate
+    for( vector<double> point : rot ) point += Delta;
+
+    // Rotate
+    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+
+    // Move sub-bodies
+    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }
 
 // Adds a sub-body
@@ -162,6 +165,8 @@ void Sphere::Move( double T ) {
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+
+    t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
@@ -233,6 +238,8 @@ void Pippo::Move( double T ) {
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+
+    t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
@@ -342,7 +349,7 @@ void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<
 
 
 // Complete ManyBody constructor 
-ManyBody::ManyBody( vector<Sphere> Spheres, vector<Pippo> Pippos, vector<Capsule> Capsules ): Body() {
+ManyBody::ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, const vector<Capsule>& Capsules ): Body() {
     spheres = Spheres;
     pippos = Pippos;
     capsules = Capsules;
@@ -370,6 +377,13 @@ void ManyBody::Move( double T ) {
     for( Sphere sphere : spheres ) sphere.Move(T);
     for( Pippo pippo : pippos ) pippo.Move(T);
     for( Capsule capsule : capsules ) capsule.Move(T);
+    t = T;
+}
+
+// Attaches the sub-body to the super-body
+void Attach( Body& SubBody, Body& SuperBody ) {
+    SubBody.SetSuperBody( &SuperBody );
+    SuperBody.AddSubBody( &SubBody );
 }
 
 // Prints to file the state (all the bodies and their parameters)
