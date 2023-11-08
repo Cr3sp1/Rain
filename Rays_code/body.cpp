@@ -77,7 +77,7 @@ void Body::Move( double T ) {
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate 
-    for( vector<double> point : rot ){
+    for( vector<double>& point : rot ){
         point += delta;
     }
 
@@ -99,11 +99,11 @@ void Body::Move( double T ) {
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
 void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double> point : rot ) point += Delta;
+    for( vector<double>& point : rot ) point += Delta;
 
     // Rotate
-    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
-    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<double>& vec : trans ) Rotate( vec, Rot0, Rotmat );
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
@@ -153,7 +153,7 @@ void Sphere::Move( double T ) {
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate
-    for( vector<double> point : rot ) point += delta;
+    for( vector<double>& point : rot ) point += delta;
     cent += delta;
 
     // Generate rotation matrix
@@ -172,12 +172,12 @@ void Sphere::Move( double T ) {
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
 void Sphere::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double> point : rot ) point += Delta;
+    for( vector<double>& point : rot ) point += Delta;
     cent += Delta;
 
     // Rotate
-    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
-    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<double>& vec : trans ) Rotate( vec, Rot0, Rotmat );
     Rotate( cent, Rot0, Rotmat );
 
     // Move sub-bodies
@@ -224,17 +224,20 @@ void Pippo::Move( double T ) {
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate
-    for( vector<double> point : rot ) point += delta;
+    for( vector<double>& point : rot ) point += delta;
     cent += delta;
-    for( vector<double> point : side ) point += delta;
 
     // Generate rotation matrix
     double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
     vector<vector<double>> rotmat = RotMat( rot[1]-rot[0], theta );
 
     // Rotate
+    for( vector<double>& point : side ) {
+        point += cent;
+        Rotate( point, rot[0], rotmat );
+    }
     Rotate( cent, rot[0], rotmat );
-    for( vector<double> point : side ) Rotate( point, rot[0], rotmat );
+    for( vector<double>& point : side ) point -= cent;
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
@@ -245,15 +248,19 @@ void Pippo::Move( double T ) {
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
 void Pippo::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double> point : rot ) point += Delta;
+    for( vector<double>& point : rot ) point += Delta;
     cent += Delta;
-    for( vector<double> point : side ) point += Delta;
 
     // Rotate
-    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
-    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<double>& vec : trans ) Rotate( vec, Rot0, Rotmat );
+    for( vector<double>& point : side ) {
+        point += cent;
+        Rotate( point, Rot0, Rotmat );
+    }
     Rotate( cent, Rot0, Rotmat );
-    for( vector<double> point : side ) Rotate( point, Rot0, Rotmat );
+    for( vector<double>& point : side ) point -= cent;
+
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
@@ -314,7 +321,7 @@ void Capsule::Move( double T ) {
         delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Translate 
-    for( vector<double> point : rot )  point += delta;
+    for( vector<double>& point : rot )  point += delta;
     l1 += delta;
     l2 += delta;
 
@@ -333,13 +340,13 @@ void Capsule::Move( double T ) {
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
 void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double> point : rot ) point += Delta;
+    for( vector<double>& point : rot ) point += Delta;
     l1 += Delta;
     l2 += Delta;
 
     // Rotate
-    for( vector<double> point : rot ) Rotate( point, Rot0, Rotmat );
-    for( vector<double> vec : trans ) Rotate( vec, Rot0, Rotmat );
+    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    for( vector<double>& vec : trans ) Rotate( vec, Rot0, Rotmat );
     Rotate( l1, Rot0, Rotmat );
     Rotate( l2, Rot0, Rotmat );
     // Move sub-bodies
@@ -374,9 +381,9 @@ bool ManyBody::Check( Ray& ray ) {
 void ManyBody::Move( double T ) {
     if( T == t ) return;
     // Move parts
-    for( Sphere sphere : spheres ) sphere.Move(T);
-    for( Pippo pippo : pippos ) pippo.Move(T);
-    for( Capsule capsule : capsules ) capsule.Move(T);
+    for( Sphere& sphere : spheres ) sphere.Move(T);
+    for( Pippo& pippo : pippos ) pippo.Move(T);
+    for( Capsule& capsule : capsules ) capsule.Move(T);
     t = T;
 }
 
@@ -388,13 +395,13 @@ void Attach( Body& SubBody, Body& SuperBody ) {
 
 // Prints to file the state (all the bodies and their parameters)
 void ManyBody::PrintState( ofstream &fout ) {
-    for( Sphere sphere : spheres ) {
+    for( Sphere& sphere : spheres ) {
         vector<double> cent = sphere.GetCent();
         double rad = sphere.GetRad();
         fout << "S," << cent[0] << "," << cent[1] << "," << cent[2] << "," << rad << endl;
     }
 
-    for( Pippo pippo : pippos ) {
+    for( Pippo& pippo : pippos ) {
         vector<vector<double>> Side = pippo.GetSide();
         vector<double> cent = pippo.GetCent();
         fout << "P," << cent[0] << "," << cent[1] << "," << cent[2] << ",";
@@ -405,7 +412,7 @@ void ManyBody::PrintState( ofstream &fout ) {
         fout << endl;
     }
 
-    for( Capsule capsule : capsules ) {
+    for( Capsule& capsule : capsules ) {
         vector<double> l1 = capsule.GetL1();
         vector<double> l2 = capsule.GetL2();
         double rad = capsule.GetRad();

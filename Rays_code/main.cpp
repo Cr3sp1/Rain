@@ -56,11 +56,11 @@ int main (int argc, char *argv[]){
     
 
     // Draw shadow
-    ProjSurface Plz( box, rel_vel, dx );
-    Plz.PrintH("../data/H.dat");
-    Plz.PrintR("../data/RayOrigins.dat");
+    // ProjSurface Plz( box, rel_vel, dx );
+    // Plz.PrintH("../data/H.dat");
+    // Plz.PrintR("../data/RayOrigins.dat");
     // Plz.BodyProj(trialM1);
-    Plz.PrintR("../data/RayOriginsCap.dat");
+    // Plz.PrintR("../data/RayOriginsCap.dat");
 
     
 

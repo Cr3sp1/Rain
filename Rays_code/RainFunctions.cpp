@@ -195,7 +195,7 @@ vector<vector<double>> RotMat( vector<double> axis, double theta ) {
 
 
 
-void Rotate( vector<double>& Point, vector<double> Rot0, const vector<vector<double>>& Rotmat ){
+void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vector<double>>& Rotmat ){
     Point -= Rot0;
     Point = Rotmat*Point;
     Point += Rot0; 

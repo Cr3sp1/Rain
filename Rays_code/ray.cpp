@@ -88,7 +88,7 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double Dx): dx(
 
 // Prints all the origins of the active rays to file
 void ProjSurface::PrintR( ofstream &fout ){
-    for( Ray ray : rays ) {
+    for( Ray& ray : rays ) {
         if( ray.IsOn() ){
             vector<double> r = ray.GetR0();
             fout << r[0] << ", " << r[1] << ", " << r[2] << endl;
@@ -122,8 +122,8 @@ double ProjSurface::BodyProj( Body& body ) {
     unsigned int nhit = 0;
     // cout << "Projecting on " << rays.size() << " rays" << endl;
     body.Prime( H[0], Ray::V );
-    for( size_t i = 0; i < rays.size(); i++ ){
-        if( body.Check( rays[i]) ) nhit++;
+    for( Ray& ray : rays ){
+        if( body.Check( ray ) ) nhit++;
     }
     // cout << "nhit = " << nhit << endl;
     return nhit*dx*dx;
