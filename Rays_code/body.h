@@ -58,9 +58,11 @@ class Body {
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	virtual void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat );
 	// Sets SuperBody
-	virtual void SetSuperBody(Body* body) { SuperBody = body; }
+	virtual void SetSuperBody( Body* SupBody ) { SuperBody = SupBody; }
 	// Adds a Body to SubBodies
-	virtual void AddSubBody(Body* body);
+	virtual void AddSubBody( Body& SubBody );
+	// Attaches the Body to a SuperBody
+	virtual void AttachTo( Body& SupBody );
 
 
 };
@@ -199,7 +201,8 @@ class ManyBody: public Body {
 	void AddPippo( const Pippo& pippo ) { pippos.push_back(pippo); }
 	void AddSphere( const Capsule& capsule ) { capsules.push_back(capsule); }
 	// Attaches the sub-body to the super-body
-	void Attach( Body& SubBody, Body& SuperBody );
+	void Attach( Body SubBody, string SuperName );
+	void Attach( string SubName, string SuperName );
 	// Prints to file the state (all the bodies and their parameters)
 	void PrintState( ofstream &fout );
 	void PrintState( string outfile );

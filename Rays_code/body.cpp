@@ -110,9 +110,14 @@ void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<dou
 }
 
 // Adds a sub-body
-void Body::AddSubBody(Body* subbody) { 
-    SubBodies.push_back(subbody); 
-    subbody->SetSuperBody(this);
+void Body::AddSubBody(Body& subbody) { 
+    SubBodies.push_back(&subbody); 
+    subbody.SetSuperBody(this);
+}
+
+// Attaches the Body to a SuperBody
+void Body::AttachTo( Body& SupBody ){
+    SupBody.AddSubBody(*this);
 }
 
     
@@ -385,12 +390,6 @@ void ManyBody::Move( double T ) {
     for( Pippo& pippo : pippos ) pippo.Move(T);
     for( Capsule& capsule : capsules ) capsule.Move(T);
     t = T;
-}
-
-// Attaches the sub-body to the super-body
-void Attach( Body& SubBody, Body& SuperBody ) {
-    SubBody.SetSuperBody( &SuperBody );
-    SuperBody.AddSubBody( &SubBody );
 }
 
 // Prints to file the state (all the bodies and their parameters)
