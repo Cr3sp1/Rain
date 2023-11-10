@@ -1,0 +1,14 @@
+2 2 2
+0.001
+1
+20
+0 0 -1
+
+
+
+
+  ReadInput >> box(0) >> box(1) >> box(2) (lenght of the sides of the box)
+  ReadInput >> dx (distance between each ray origin)
+  ReadInput >> body_vel (velocity of the object, oriented on the 0 axis)
+  ReadInput >> nstep (number of steps in the simulation)
+  ReadInput >> rain_vel(0) >> rain_vel(1) >> rain_vel(2) (velocity of the rain)
