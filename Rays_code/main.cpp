@@ -44,16 +44,23 @@ int main (int argc, char *argv[]){
     double W = 0.5*M_PI;
 
     ManyBody Mb;
-    Sphere S1(  (double)0.7*box, (double)0.25*box[0], "S1", Rot, W, {});
     Mb.AddBody( Sphere((double)0.7*box, (double)0.25*box[0], "S1", Rot, W, {}) );
     Mb.AddBody(Pippo( box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/5, 0}, {0, 0, box[2]/6} }, "P1", {box*(double)0.5, box*(double)0.5+ vector<double>{0,1,0} }, W, {} ));
     Mb.AddBody( Capsule( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0], "C1", {}, 0, {} ));
-    cout << "ok"<< endl;
+    cout << "ok1"<< endl;
     Mb.PrintState("Mb1.dat");
-    cout << "ok"<< endl;
-    Mb.Move(0.5);
-    cout << "ok"<< endl;
+    cout << "ok2"<< endl;
+    Mb.Move(0.25);
+    cout << "ok3"<< endl;
     Mb.PrintState("Mb2.dat");
+
+    Mb.Move(0);
+    Mb.Attach("P1", "C1");
+    cout << "ok4"<< endl;
+    Mb.Move(0.25);
+    cout << "ok5"<< endl;
+    Mb.PrintState("Mb3.dat");
+    cout << "ok6"<< endl;
 
      
     // Builds objects

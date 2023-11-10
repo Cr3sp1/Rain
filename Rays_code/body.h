@@ -31,22 +31,13 @@ class Body {
 	vector<vector<double>> trans;
 	// Pointers to all the bodies that move relative to this one
 	vector<Body*> SubBodies;
-	// Pointer to the body this moves relative to 
-    Body* SuperBody; 
-
 
 
   public:
     // Default constructor
-	Body(): t(0), w(0), SuperBody(nullptr) {};
+	Body(): t(0), w(0) {};
 	// Dynamic constructor
-	Body( string Name, vector<vector<double>> Rot, double W, vector<vector<double>> Trans ): name(Name), t(0), rot(Rot), w(W), trans(Trans), SuperBody(nullptr) {} 
-	// Copy constructor
-    Body(const Body& other);
-	// Copy assignment operator
-	Body& operator=(const Body& other);
-	// Destructor
-    virtual ~Body();
+	Body( string Name, vector<vector<double>> Rot, double W, vector<vector<double>> Trans ): name(Name), t(0), rot(Rot), w(W), trans(Trans) {} 
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	virtual void Prime( vector<double> p, vector<double> v ) {}
 	// Checks if the body is making contact with a ray
@@ -57,12 +48,12 @@ class Body {
 	virtual void Move( double T );
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	virtual void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat );
-	// Sets SuperBody
-	virtual void SetSuperBody( Body* SupBody ) { SuperBody = SupBody; }
 	// Adds a Body to SubBodies
-	virtual void AddSubBody( Body& SubBody );
+	virtual void AddSubBody( Body& SubBody ) { SubBodies.push_back(&SubBody); }
 	// Attaches the Body to a SuperBody
-	virtual void AttachTo( Body& SupBody );
+	virtual void AttachTo( Body& SupBody ) { SupBody.AddSubBody(*this); }
+	// Get stuff
+	virtual string GetName() { return name; }
 
 
 };

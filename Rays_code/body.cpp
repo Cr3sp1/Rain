@@ -6,70 +6,10 @@ using namespace std;
 
 
 
-// Copy constructor
-Body::Body(const Body& other) : name(other.name), t(other.t), rot(other.rot), w(other.w), trans(other.trans) {
-    // Deep copy sub-bodies
-    for (const Body* body : other.SubBodies) {
-        SubBodies.push_back(new Body(*body));
-    }
-
-    // Deep copy super-body
-    if (other.SuperBody) {
-        SuperBody= new Body(*other.SuperBody);
-    } else {
-        SuperBody = nullptr;
-    }
-}
-
-
-// Copy assignment operator
-Body& Body::operator=(const Body& other) {
-    if (this != &other) {
-        // Clean up existing sub-bodies
-        for (Body* body : SubBodies) {
-            delete body;
-        }
-        SubBodies.clear();
-
-        // Deep copy connected bodies
-        for (const Body* body : other.SubBodies) {
-            SubBodies.push_back(new Body(*body));
-        }
-
-        // Clean up existing linked body
-        delete SuperBody;
-
-        // Deep copy linked body
-        if (other.SuperBody) {
-            SuperBody = new Body(*other.SuperBody);
-        } else {
-            SuperBody = nullptr;
-        }
-
-        // Copy other stuff
-        name = other.name;
-        t = other.t;
-        rot = other.rot;
-        w = other.w;
-        trans = other.trans;
-    }
-    return *this;
-}
-
-// Destructor
-Body::~Body() {
-    // cout << "Destroying" << endl;
-    for (Body* body : SubBodies) {
-        delete body;
-    }
-    delete SuperBody;
-}
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 void Body::Move( double T ) {
     if( T == t ) return;
-
-    SuperBody->Move(T);
 
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
@@ -88,6 +28,7 @@ void Body::Move( double T ) {
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
+        rot = {{0,0,0}};
     }
 
     // Move sub-bodies
@@ -107,20 +48,8 @@ void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<dou
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
-}
+}    
 
-// Adds a sub-body
-void Body::AddSubBody(Body& subbody) { 
-    SubBodies.push_back(&subbody); 
-    subbody.SetSuperBody(this);
-}
-
-// Attaches the Body to a SuperBody
-void Body::AttachTo( Body& SupBody ){
-    SupBody.AddSubBody(*this);
-}
-
-    
 
 
 
@@ -150,8 +79,6 @@ double Sphere::Anal( vector<double> v, double bodyvel ) {
 void Sphere::Move( double T ) {
     if( T == t ) return;
 
-    SuperBody->Move(T);
-
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
@@ -168,6 +95,7 @@ void Sphere::Move( double T ) {
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
+        rot = {{0,0,0}};
     }
 
     // Rotate
@@ -226,8 +154,6 @@ double Pippo::Anal( vector<double> v, double bodyvel  ) {
 void Pippo::Move( double T ) {
     if( T == t ) return;
 
-    SuperBody->Move(T);
-
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
@@ -244,6 +170,7 @@ void Pippo::Move( double T ) {
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
+        rot = {{0,0,0}};
     }
 
     // Rotate
@@ -328,8 +255,7 @@ double Capsule::Anal( vector<double> v, double bodyvel ) {
 void Capsule::Move( double T ) {
     if( T == t ) return;
 
-    SuperBody->Move(T);
-
+    cout << "okC1" << endl;
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
@@ -339,7 +265,7 @@ void Capsule::Move( double T ) {
     for( vector<double>& point : rot )  point += delta;
     l1 += delta;
     l2 += delta;
-
+    cout << "okC2" << endl;
     // Generate rotation matrix
     vector<vector<double>> rotmat;
     if( w != 0 and rot.size() == 2 ) {
@@ -347,7 +273,9 @@ void Capsule::Move( double T ) {
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
+        rot = {{0,0,0}};
     }
+    cout << "okC3" << endl;
 
     // Rotate
     Rotate( l1, rot[0], rotmat);
@@ -401,10 +329,48 @@ bool ManyBody::Check( Ray& ray ) {
 void ManyBody::Move( double T ) {
     if( T == t ) return;
     // Move parts
+    cout << "okM1" << endl;
     for( Sphere& sphere : spheres ) sphere.Move(T);
+    cout << "okM2" << endl;
     for( Pippo& pippo : pippos ) pippo.Move(T);
+    cout << "okM3" << endl;
     for( Capsule& capsule : capsules ) capsule.Move(T);
+    cout << "okM4" << endl;
     t = T;
+}
+
+// Attaches the sub-body to the super-body
+void ManyBody::Attach( Body SubBody, string SuperName ){
+    cout << "okAA" << endl;
+    for( Sphere& sphere : spheres ){
+        if( sphere.GetName() == SuperName ) sphere.AddSubBody( SubBody );
+    }
+    cout << "okAA2"<< endl;
+    for( Pippo& pippo : pippos ){
+        if( pippo.GetName() == SuperName ) pippo.AddSubBody( SubBody );
+    }
+    cout << "okAA3"<< endl;
+    for( Capsule& capsule : capsules ){
+        if( capsule.GetName() == SuperName ) capsule.AddSubBody( SubBody );
+    }
+    cout << "okAA4"<< endl;
+}
+
+void ManyBody::Attach( string SubName, string SuperName ){
+    for( Sphere& sphere : spheres ){
+        if( sphere.GetName() == SubName ) Attach( sphere, SuperName );
+        cout << "okA"<< endl;
+    }
+    cout << "okAo"<< endl;
+    for( Pippo& pippo : pippos ){
+        cout << "okA0"<< endl;
+        if( pippo.GetName() == SubName ) Attach( pippo, SuperName );
+        cout << "okA1"<< endl;
+    }
+    for( Capsule& capsule : capsules ){
+        if( capsule.GetName() == SubName ) Attach( capsule, SuperName );
+        cout << "okA2"<< endl;
+    }
 }
 
 // Prints to file the state (all the bodies and their parameters)
