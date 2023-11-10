@@ -45,7 +45,7 @@ int main (int argc, char *argv[]){
     double W = 0.5*M_PI;
 
     ManyBody Mb;
-    Mb.AddBody( Sphere((double)0.2*box, (double)0.2*box[0], "S1", Rot, W, Tran) );
+    Mb.AddBody( Sphere((double)0.2*box, (double)0.2*box[0], "S1", {}, 0, {} ) );
     Mb.AddBody(Pippo( box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/5, 0}, {0, 0, box[2]/6} }, "P1", {box*(double)0.5, box*(double)0.5+ vector<double>{0,1,0} }, W, {} ));
     Mb.AddBody( Capsule( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0], "C1", {}, 0, {} ));
     Mb.PrintState("../data/Mb1.dat");
@@ -53,19 +53,10 @@ int main (int argc, char *argv[]){
     Mb.PrintState("../data/Mb2.dat");
 
     Mb.Move(0);
-    Mb.spheres[0].AttachTo(Mb.pippos[0]);
-    // Mb.spheres[0].AddSubBody(Mb.pippos[0]);
-    // cout << "ok1"<< endl;
-    // // Mb.Attach( "P1", "S1");
-    // Mb.pippos[0].AttachTo(Mb.spheres[0]);
-    // cout << "ok2"<< endl;
-    // // Mb.Attach( "C1", "S1");
-    // Mb.capsules[0].AttachTo(Mb.pippos[0]);
-    // cout << "ok3"<< endl;
-    // Mb.Move(0.25);
-    // cout << "ok4"<< endl;
-    // Mb.PrintState("../data/Mb3.dat");
-    // cout << "ok5"<< endl;
+    Mb.Attach( "S1", "P1");
+    Mb.Attach( "C1", "S1");
+    Mb.Move(0.25);
+    Mb.PrintState("../data/Mb3.dat");
 
 
      
