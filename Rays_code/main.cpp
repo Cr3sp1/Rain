@@ -43,7 +43,18 @@ int main (int argc, char *argv[]){
     vector<vector<double>> Rot({{0,0,0}, {0,0,1}});
     double W = 0.5*M_PI;
 
-    Sphere S1(  {1,0,0}, 1, "", Rot, W, {});
+    ManyBody Mb;
+    Sphere S1(  (double)0.7*box, (double)0.25*box[0], "S1", Rot, W, {});
+    Mb.AddBody( Sphere((double)0.7*box, (double)0.25*box[0], "S1", Rot, W, {}) );
+    Mb.AddBody(Pippo( box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/5, 0}, {0, 0, box[2]/6} }, "P1", {box*(double)0.5, box*(double)0.5+ vector<double>{0,1,0} }, W, {} ));
+    Mb.AddBody( Capsule( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0], "C1", {}, 0, {} ));
+    cout << "ok"<< endl;
+    Mb.PrintState("Mb1.dat");
+    cout << "ok"<< endl;
+    Mb.Move(0.5);
+    cout << "ok"<< endl;
+    Mb.PrintState("Mb2.dat");
+
      
     // Builds objects
     // Sphere trialS( (double)0.7*box, (double)0.25*box[0] );

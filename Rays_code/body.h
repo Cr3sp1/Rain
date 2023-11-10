@@ -186,6 +186,9 @@ class ManyBody: public Body {
 	vector<Sphere> spheres;
 	vector<Pippo> pippos;
 	vector<Capsule> capsules;
+
+	// Empty constructor
+	ManyBody(): Body() {}
 	// Complete constructor 
 	ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, const vector<Capsule>& Capsules );
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
@@ -197,9 +200,9 @@ class ManyBody: public Body {
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
 	// Add bodies
-	void AddSphere( const Sphere& sphere ) { spheres.push_back(sphere); }
-	void AddPippo( const Pippo& pippo ) { pippos.push_back(pippo); }
-	void AddSphere( const Capsule& capsule ) { capsules.push_back(capsule); }
+	void AddBody( const Sphere& sphere ) { spheres.push_back(sphere); }
+	void AddBody( const Pippo& pippo ) { pippos.push_back(pippo); }
+	void AddBody( const Capsule& capsule ) { capsules.push_back(capsule); }
 	// Attaches the sub-body to the super-body
 	void Attach( Body SubBody, string SuperName );
 	void Attach( string SubName, string SuperName );

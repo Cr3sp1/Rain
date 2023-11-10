@@ -83,7 +83,7 @@ void Body::Move( double T ) {
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w != 0 and rotmat.size() == 2 ) {
+    if( w != 0 and rot.size() == 2 ) {
         double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
@@ -162,8 +162,13 @@ void Sphere::Move( double T ) {
     cent += delta;
 
     // Generate rotation matrix
-    double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
-    vector<vector<double>> rotmat = RotMat( rot[1]-rot[0], theta );
+    vector<vector<double>> rotmat;
+    if( w != 0 and rot.size() == 2 ) {
+        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+        rotmat =  RotMat( rot[1]-rot[0], theta );
+    } else {
+        rotmat = IdMat(3);
+    }
 
     // Rotate
     Rotate( cent, rot[0], rotmat );
@@ -233,8 +238,13 @@ void Pippo::Move( double T ) {
     cent += delta;
 
     // Generate rotation matrix
-    double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
-    vector<vector<double>> rotmat = RotMat( rot[1]-rot[0], theta );
+    vector<vector<double>> rotmat;
+    if( w != 0 and rot.size() == 2 ) {
+        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+        rotmat =  RotMat( rot[1]-rot[0], theta );
+    } else {
+        rotmat = IdMat(3);
+    }
 
     // Rotate
     for( vector<double>& point : side ) {
@@ -331,8 +341,13 @@ void Capsule::Move( double T ) {
     l2 += delta;
 
     // Generate rotation matrix
-    double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
-    vector<vector<double>> rotmat = RotMat( rot[1]-rot[0], theta );
+    vector<vector<double>> rotmat;
+    if( w != 0 and rot.size() == 2 ) {
+        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+        rotmat =  RotMat( rot[1]-rot[0], theta );
+    } else {
+        rotmat = IdMat(3);
+    }
 
     // Rotate
     Rotate( l1, rot[0], rotmat);
