@@ -161,7 +161,6 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Returns distance between p and the closest point belonging to the segment
     if( proj <= 0 )  return Norm(p);
     if( proj >= Norm(l2) ) return Norm(p-l2);
-    // cout << "ok" << endl;
     return Norm( p - proj*l2/Norm(l2));
 }
 
@@ -197,7 +196,6 @@ vector<vector<double>> RotMat( vector<double> axis, double theta ) {
 
 // Rotates a Point relative to the point Rot0
 void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vector<double>>& Rotmat ){
-    if( Rotmat == IdMat(3) ) return;
     Point -= Rot0;
     Point = Rotmat*Point;
     Point += Rot0; 

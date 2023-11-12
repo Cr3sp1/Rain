@@ -57,10 +57,10 @@ int main (int argc, char *argv[]){
     Mb.Attach( "C1", "S1");
     Mb.Move(0.25);
     Mb.PrintState("../data/Mb3.dat");
-    cout << Mb.Find("S1")->GetName() << endl;
+
 
      
-    // Builds objects
+    // // Builds objects
     // Sphere trialS( (double)0.7*box, (double)0.25*box[0] );
     // Pippo trialP(box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/4, 0}, {0, 0, box[2]/4} });
     // Capsule trialC( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0] );
@@ -70,7 +70,7 @@ int main (int argc, char *argv[]){
     // ManyBody trialM2( {trialS, inner}, {trialP}, {trialC} );
     
 
-    // Draw shadow
+    // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
     // Plz.PrintH("../data/H.dat");
     // Plz.PrintR("../data/RayOrigins.dat");
@@ -79,14 +79,14 @@ int main (int argc, char *argv[]){
 
     
 
-    // Simulate different body velocities
+    // // Simulate different body velocities
     // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep, dx );
 
 
-    // output
+    // // output
     // Print("../data/CompareSphere.dat", resultsS);
     // Print("../data/ComparePippo.dat", resultsP);
     // Print("../data/CompareCapsule.dat", resultsC);
