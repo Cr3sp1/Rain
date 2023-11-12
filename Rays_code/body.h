@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
+#include <string>
+#include <sstream>
 #include "VectorOperations.h"
 
 
@@ -186,6 +188,8 @@ class ManyBody: public Body {
 	ManyBody(): Body() {}
 	// Complete constructor 
 	ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, const vector<Capsule>& Capsules );
+	// Constructor from file
+	ManyBody( string filename );
 	// Destructor
 	~ManyBody() override;
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
@@ -203,8 +207,8 @@ class ManyBody: public Body {
 	// Pointer to the body with that name
 	Body* Find( string name );
 	// Attaches the sub-body to the super-body
-	void Attach( Body SubBody, string SuperName ){ Find(SuperName)->AddSubBody( SubBody ); }
-	void Attach( string SubName, string SuperName ) { Find(SuperName)->AddSubBody(*Find(SubName)); }
+	void Attach( Body SubBody, string SuperName );
+	void Attach( string SubName, string SuperName );
 	// Prints to file the state (all the bodies and their parameters)
 	void PrintState( ofstream &fout );
 	void PrintState( string outfile );

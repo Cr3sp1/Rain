@@ -304,6 +304,122 @@ ManyBody::ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, 
     for( Capsule capsule : Capsules ) AddBody(capsule);
 }
 
+// Constructor from file
+ManyBody::ManyBody( string filename ): Body() {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+
+    string line;
+    // Skip header
+    for( size_t i = 0; i < 6; i++ ) getline( file, line );
+
+    // Get bodies
+    while( getline( file, line ) ) {
+        istringstream iss(line);
+        string type, name, superbody;
+        iss >> type;
+    
+        if( type == "Sphere" ) {
+            vector<vector<double>> rot, trans;
+            vector<double> cent(3);
+            double rad, w;
+            size_t trans_size;
+            for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
+            iss >> rad;
+
+            iss >> name;
+            iss >> superbody;
+            iss >> w;
+            if( w != 0 ) {
+                rot = {{0,0,0}, {0,0,0}};
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+            }
+            iss >> trans_size;
+            for( size_t i = 0; i < trans_size; i++ ){
+                vector<double> temp(3);
+                for( size_t j = 0; j < 3; j++ ) {
+                    iss >> temp[j];
+                }
+                trans.push_back(temp);
+            }
+
+            AddBody( Sphere( cent, rad, name, rot, w, trans ));
+            if( superbody != "None" ) Attach( name, superbody );
+        }
+
+        if( type == "Pippo" ) {
+            vector<vector<double>> rot, trans, sides;
+            vector<double> cent(3);
+            double w;
+            size_t trans_size;
+            for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
+            for( size_t i = 0; i < 3; i++ ){
+                vector<double> temp(3);
+                for( size_t j = 0; j < 3; j++ ) {
+                    iss >> temp[j];
+                }
+                sides.push_back(temp);
+            }
+
+            iss >> name;
+            iss >> superbody;
+            iss >> w;
+            if( w != 0 ) {
+                rot = {{0,0,0}, {0,0,0}};
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+            }
+            iss >> trans_size;
+            for( size_t i = 0; i < trans_size; i++ ){
+                vector<double> temp(3);
+                for( size_t j = 0; j < 3; j++ ) {
+                    iss >> temp[j];
+                }
+                trans.push_back(temp);
+            }
+
+            AddBody( Pippo( cent, sides, name, rot, w, trans ));
+            if( superbody != "None" ) Attach( name, superbody );
+        }
+
+        if( type == "Capsule" ) {
+            vector<vector<double>> rot, trans;
+            vector<double> cent(3), l1(3), l2(3);
+            double rad, w;
+            size_t trans_size;
+            for( size_t i = 0; i < 3; i++ ) iss >> l1[i];
+            for( size_t i = 0; i < 3; i++ ) iss >> l2[i];
+            iss >> rad;
+
+            iss >> name;
+            iss >> superbody;
+            iss >> w;
+            if( w != 0 ) {
+                rot = {{0,0,0}, {0,0,0}};
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
+                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+            }
+            iss >> trans_size;
+            for( size_t i = 0; i < trans_size; i++ ){
+                vector<double> temp(3);
+                for( size_t j = 0; j < 3; j++ ) {
+                    iss >> temp[j];
+                }
+                trans.push_back(temp);
+            }
+
+            AddBody( Capsule( l1, l2, rad, name, rot, w, trans ));
+            if( superbody != "None" ) Attach( name, superbody );
+        }
+    }
+
+    file.close();
+}
+
 // Destructor
 ManyBody::~ManyBody() {
     // cout << "Destroying ManyBody" << endl;
@@ -360,7 +476,20 @@ Body* ManyBody::Find( string name ) {
     for( size_t i = 0; i < capsules.size(); i++ ) {
         if( capsules[i]->GetName() == name ) return capsules[i];
     }
+    cout << name << " not found!" << endl;
     return nullptr;
+}
+
+// Attaches the sub-body to the super-body
+void ManyBody::Attach( Body SubBody, string SuperName ){
+    Body* Super = Find(SuperName);
+    if(Super) Super->AddSubBody( SubBody );
+}
+
+void ManyBody::Attach( string SubName, string SuperName ) { 
+    Body* Super = Find(SuperName);
+    Body* Sub = Find(SubName);
+    if( Super and Sub ) Super->AddSubBody(*Sub);
 }
 
 // Prints to file the state (all the bodies and their parameters)
