@@ -40,30 +40,27 @@ int main (int argc, char *argv[]){
     // cout << "Time = " << tot_time << " s" << endl;
 
     // Check many-body and motion
-    vector<vector<double>> Rot({{0,0,0}, {0,0,1}});
+    vector<vector<double>> Rot({{1,1,1}, {1,1,2}});
+    vector<vector<double>> Tran{{0,0,0.5}};
     double W = 0.5*M_PI;
 
     ManyBody Mb;
-    Mb.AddBody( Sphere((double)0.7*box, (double)0.25*box[0], "S1", Rot, W, {}) );
+    Mb.AddBody( Sphere((double)0.2*box, (double)0.2*box[0], "S1", {}, 0, {} ) );
     Mb.AddBody(Pippo( box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/5, 0}, {0, 0, box[2]/6} }, "P1", {box*(double)0.5, box*(double)0.5+ vector<double>{0,1,0} }, W, {} ));
     Mb.AddBody( Capsule( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0], "C1", {}, 0, {} ));
-    cout << "ok1"<< endl;
-    Mb.PrintState("Mb1.dat");
-    cout << "ok2"<< endl;
+    Mb.PrintState("../data/Mb1.dat");
     Mb.Move(0.25);
-    cout << "ok3"<< endl;
-    Mb.PrintState("Mb2.dat");
+    Mb.PrintState("../data/Mb2.dat");
 
     Mb.Move(0);
-    Mb.Attach("P1", "C1");
-    cout << "ok4"<< endl;
+    Mb.Attach( "S1", "P1");
+    Mb.Attach( "C1", "S1");
     Mb.Move(0.25);
-    cout << "ok5"<< endl;
-    Mb.PrintState("Mb3.dat");
-    cout << "ok6"<< endl;
+    Mb.PrintState("../data/Mb3.dat");
+
 
      
-    // Builds objects
+    // // Builds objects
     // Sphere trialS( (double)0.7*box, (double)0.25*box[0] );
     // Pippo trialP(box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/4, 0}, {0, 0, box[2]/4} });
     // Capsule trialC( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0] );
@@ -73,7 +70,7 @@ int main (int argc, char *argv[]){
     // ManyBody trialM2( {trialS, inner}, {trialP}, {trialC} );
     
 
-    // Draw shadow
+    // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
     // Plz.PrintH("../data/H.dat");
     // Plz.PrintR("../data/RayOrigins.dat");
@@ -82,14 +79,14 @@ int main (int argc, char *argv[]){
 
     
 
-    // Simulate different body velocities
+    // // Simulate different body velocities
     // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
     // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep, dx );
 
 
-    // output
+    // // output
     // Print("../data/CompareSphere.dat", resultsS);
     // Print("../data/ComparePippo.dat", resultsP);
     // Print("../data/CompareCapsule.dat", resultsC);
