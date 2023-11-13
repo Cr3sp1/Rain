@@ -57,7 +57,9 @@ int main (int argc, char *argv[]){
     Mb.Attach( "C1", "S1");
     Mb.Move(0.25);
     Mb.PrintState("../data/Mb3.dat");
-    cout << Mb.Find("S1")->GetName() << endl;
+    ManyBody FromFile("trial.in");
+    FromFile.Move(0.25);
+    FromFile.PrintState("../data/Fmb4.dat");
 
      
     // Builds objects

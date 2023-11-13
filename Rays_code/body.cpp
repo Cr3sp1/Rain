@@ -347,7 +347,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Sphere( cent, rad, name, rot, w, trans ));
+            AddBody( Sphere( cent, rad, name, rot, w*M_PI, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
@@ -382,7 +382,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Pippo( cent, sides, name, rot, w, trans ));
+            AddBody( Pippo( cent, sides, name, rot, w*M_PI, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
@@ -412,7 +412,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Capsule( l1, l2, rad, name, rot, w, trans ));
+            AddBody( Capsule( l1, l2, rad, name, rot, w*M_PI, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
     }
