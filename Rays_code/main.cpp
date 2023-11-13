@@ -37,30 +37,16 @@ int main (int argc, char *argv[]){
     // Outputs settings and stuff
     cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
     cout << "Object velocity = " << body_vel  << ", nstep = " << nstep << ", dx = " << dx << endl;
-    // cout << "Time = " << tot_time << " s" << endl;
 
-    // Check many-body and motion
-    vector<vector<double>> Rot({{1,1,1}, {1,1,2}});
-    vector<vector<double>> Tran{{0,0,0.5}};
-    double W = 0.5*M_PI;
 
-    ManyBody Mb;
-    Mb.AddBody( Sphere((double)0.2*box, (double)0.2*box[0], "S1", {}, 0, {} ) );
-    Mb.AddBody(Pippo( box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/5, 0}, {0, 0, box[2]/6} }, "P1", {box*(double)0.5, box*(double)0.5+ vector<double>{0,1,0} }, W, {} ));
-    Mb.AddBody( Capsule( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0], "C1", {}, 0, {} ));
-    Mb.PrintState("../data/Mb1.dat");
-    Mb.Move(0.25);
-    Mb.PrintState("../data/Mb2.dat");
 
-    Mb.Move(0);
-    Mb.Attach( "S1", "P1");
-    Mb.Attach( "C1", "S1");
-    Mb.Move(0.25);
-    Mb.PrintState("../data/Mb3.dat");
-    ManyBody FromFile("trial.in");
-    FromFile.Move(0.25);
-    FromFile.PrintState("../data/Fmb4.dat");
-
+    // Walking man
+    ManyBody Walk("../Bodies/WalkinMan.in");
+    for( size_t i = 0; i < 10; i++ ){
+        Walk.Move(0.1*i);
+        Walk.PrintState( ("../data/Walk" + to_string(i) + ".dat"));
+    }
+    
      
     // Builds objects
     // Sphere trialS( (double)0.7*box, (double)0.25*box[0] );
