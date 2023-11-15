@@ -42,28 +42,31 @@ int main (int argc, char *argv[]){
 
     // Walking man
     ManyBody Walk("../Bodies/WalkinMan.in");
-    for( size_t i = 0; i < 10; i++ ){
-        Walk.Move(0.1*i);
+    ProjSurface BodSurf( box, rel_vel, dx );
+    BodSurf.BodyProj( Walk );
+    BodSurf.PrintR("../data/WalkProj.dat");
+    BodSurf.PrintRaysFlat("../data/WalkProjF.dat");
+    for( size_t i = 0; i < 11; i++ ){
+        Walk.Move(0.025*i);
         Walk.PrintState( ("../data/Walk" + to_string(i) + ".dat"));
     }
     
      
     // Builds objects
-    // Sphere trialS( (double)0.7*box, (double)0.25*box[0] );
-    // Pippo trialP(box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/4, 0}, {0, 0, box[2]/4} });
-    // Capsule trialC( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0] );
-    // ManyBody trialM1( {trialS}, {trialP}, {trialC} );
-    // trialM1.PrintState("../data/BodyState1.dat");
-    // Sphere inner( (double)0.7*box, (double)0.15*box[0] );
-    // ManyBody trialM2( {trialS, inner}, {trialP}, {trialC} );
+    Sphere trialS( (double)0.7*box, (double)0.25*box[0] );
+    Pippo trialP(box*(double)0.5, { {box[0]/4, 0, 0}, {0, box[1]/4, 0}, {0, 0, box[2]/4} });
+    Capsule trialC( (double)0.25*box, (double)0.75*box,  (double)0.1*box[0] );
+    ManyBody trialM1( {trialS}, {trialP}, {trialC} );
+    trialM1.PrintState("../data/BodyState1.dat");
+    Sphere inner( (double)0.7*box, (double)0.15*box[0] );
+    ManyBody trialM2( {trialS, inner}, {trialP}, {trialC} );
     
 
     // Draw shadow
-    // ProjSurface Plz( box, rel_vel, dx );
-    // Plz.PrintH("../data/H.dat");
-    // Plz.PrintR("../data/RayOrigins.dat");
-    // Plz.BodyProj(trialM1);
-    // Plz.PrintR("../data/RayOriginsCap.dat");
+    ProjSurface Plz( box, rel_vel, dx );
+    Plz.BodyProj(trialM1);
+    Plz.PrintR("../data/RayOriginsCap.dat");
+    Plz.PrintRaysFlat("../data/RayOriginsCapF.dat");
 
     
 

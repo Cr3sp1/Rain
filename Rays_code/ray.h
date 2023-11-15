@@ -7,6 +7,7 @@
 #include <cmath>
 #include <vector>
 #include "VectorOperations.h"
+#include "VectorStat.h"
 #include "RainFunctions.h"
 
 using namespace std;
@@ -79,6 +80,10 @@ class ProjSurface{
     // Prints all the origins of the active rays to file
     void PrintR( ofstream &fout );
     void PrintR( string outfile );
+
+    // Prints all the origins of the active rays projected on the x-y plane to file
+    void PrintRaysFlat( ofstream &fout );
+    void PrintRaysFlat( string outfile );
 
     // Prints H to file
     void PrintH( ofstream &fout );

@@ -103,14 +103,42 @@ void ProjSurface::PrintR( string outfile ){
 }
 
 
-// Prints H to file
-void ProjSurface::PrintH( ofstream &fout ){
-    for( size_t i = 0; i < H.size(); i++ ){
-        fout << H[i][0] << ", " << H[i][1] << ", " << H[i][2] << endl;
+// Prints all the origins of the active rays projected on the x-y plane to file
+void ProjSurface::PrintRaysFlat( ofstream &fout ) {
+    // Finds rotation to make points parallel to x-y
+    vector<double> uz = {0,0,1};
+    vector<double> v = Ray::V/Norm(Ray::V);
+    vector<double> axis = CrossProduct(v,uz);
+    double theta = acos( v*uz );
+    vector<vector<double>> rotmat = RotMat( axis, theta );
+
+    // Finds translation that brings H[0] to 0 after rotation
+    vector<double> trans = rotmat*H[0];
+
+    for( Ray& ray : rays ) {
+        if( ray.IsOn() ){
+            vector<double> r = ray.GetR0();
+            r = rotmat*r ;
+            r -= trans;
+            fout << r[0] << "," << r[1]  << endl;
+        }
     }
 }
 
-void ProjSurface::PrintH( string outfile ){
+void ProjSurface::PrintRaysFlat( string outfile ) {
+    ofstream fout(outfile);
+    PrintRaysFlat(fout);
+    fout.close();
+}
+
+// Prints H to file
+void ProjSurface::PrintH( ofstream &fout ) {
+    for( size_t i = 0; i < H.size(); i++ ){
+        fout << H[i][0] << "," << H[i][1] << "," << H[i][2] << endl;
+    }
+}
+
+void ProjSurface::PrintH( string outfile ) {
     ofstream fout(outfile);
     PrintH(fout);
     fout.close();

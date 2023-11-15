@@ -27,7 +27,7 @@ class Body {
 	double t;
 	// Points used for rotation in time evolution: rot[0] is center, rot[1]-rot[0] is the axis of rotation
 	vector<vector<double>> rot;
-	// Amplitude of oscillation in radiants (should go from 0 to pi)
+	// Amplitude of oscillation in radiants 
 	double w;
 	// Vectors used for periodic translation in time evolution (coefficient in sin expasion of periodic motion)
 	vector<vector<double>> trans;

@@ -276,6 +276,8 @@ void Capsule::Move( double T ) {
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+
+    t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
@@ -333,10 +335,13 @@ ManyBody::ManyBody( string filename ): Body() {
             iss >> name;
             iss >> superbody;
             iss >> w;
+            w *= M_PI/180;
             if( w != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
+                rot[1] = rot[0] + axis;
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -347,7 +352,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Sphere( cent, rad, name, rot, w*M_PI, trans ));
+            AddBody( Sphere( cent, rad, name, rot, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
@@ -367,11 +372,14 @@ ManyBody::ManyBody( string filename ): Body() {
 
             iss >> name;
             iss >> superbody;
-            iss >> w;
+            iss >> w; 
+            w *= M_PI/180;
             if( w != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
+                rot[1] = rot[0] + axis;
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -382,7 +390,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Pippo( cent, sides, name, rot, w*M_PI, trans ));
+            AddBody( Pippo( cent, sides, name, rot, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
@@ -397,11 +405,15 @@ ManyBody::ManyBody( string filename ): Body() {
 
             iss >> name;
             iss >> superbody;
-            iss >> w;
+            iss >> w; 
+            w *= M_PI/180;
             if( w != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[1][i];
+                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
+                rot[1] = rot[0] + axis;
+
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -412,7 +424,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Capsule( l1, l2, rad, name, rot, w*M_PI, trans ));
+            AddBody( Capsule( l1, l2, rad, name, rot, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
     }
