@@ -50,6 +50,14 @@ int main (int argc, char *argv[]){
         Walk.Move(0.025*i);
         Walk.PrintState( ("../data/Walk" + to_string(i) + ".dat"));
     }
+
+    // Running man
+    ManyBody Run("../Bodies/RunningMan.in");
+    ProjSurface BodSurf( box, rel_vel, dx );
+    for( size_t i = 0; i < 11; i++ ){
+        Run.Move(0.025*i);
+        Run.PrintState( ("../data/Run" + to_string(i) + ".dat"));
+    }
     
      
     // // Builds objects
