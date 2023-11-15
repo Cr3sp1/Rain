@@ -17,7 +17,7 @@ void Body::Move( double T ) {
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+        delta += trans[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
     }
     // Translate 
     for( vector<double>& point : rot ){
@@ -26,8 +26,11 @@ void Body::Move( double T ) {
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w != 0 and rot.size() == 2 ) {
-        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    if( w.size() > 0 and rot.size() == 2 ) {
+        double theta = 0;
+        for( size_t i = 0; i < w.size(); i++ ) {
+            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+        }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
@@ -93,8 +96,11 @@ void Sphere::Move( double T ) {
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w != 0 and rot.size() == 2 ) {
-        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    if( w.size() > 0 and rot.size() == 2 ) {
+        double theta = 0;
+        for( size_t i = 0; i < w.size(); i++ ) {
+            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+        }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
@@ -168,8 +174,11 @@ void Pippo::Move( double T ) {
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w != 0 and rot.size() == 2 ) {
-        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    if( w.size() > 0 and rot.size() == 2 ) {
+        double theta = 0;
+        for( size_t i = 0; i < w.size(); i++ ) {
+            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+        }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
@@ -262,8 +271,11 @@ void Capsule::Move( double T ) {
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w != 0 and rot.size() == 2 ) {
-        double theta = w*( sin(T*2*M_PI) - sin(t*2*M_PI) );
+    if( w.size() > 0 and rot.size() == 2 ) {
+        double theta = 0;
+        for( size_t i = 0; i < w.size(); i++ ) {
+            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+        }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
@@ -327,16 +339,18 @@ ManyBody::ManyBody( string filename ): Body() {
         if( type == "Sphere" ) {
             vector<vector<double>> rot, trans;
             vector<double> cent(3);
-            double rad, w;
-            size_t trans_size;
+            double rad;
+            size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
             iss >> rad;
 
             iss >> name;
             iss >> superbody;
-            iss >> w;
-            w *= M_PI/180;
-            if( w != 0 ) {
+            iss >> w_size;
+            vector<double> w(w_size);
+            for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
+            w = w*(M_PI/180);
+            if( w_size != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
                 vector<double> axis(3);
@@ -359,8 +373,7 @@ ManyBody::ManyBody( string filename ): Body() {
         if( type == "Pippo" ) {
             vector<vector<double>> rot, trans, sides;
             vector<double> cent(3);
-            double w;
-            size_t trans_size;
+            size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
             for( size_t i = 0; i < 3; i++ ){
                 vector<double> temp(3);
@@ -372,9 +385,11 @@ ManyBody::ManyBody( string filename ): Body() {
 
             iss >> name;
             iss >> superbody;
-            iss >> w; 
-            w *= M_PI/180;
-            if( w != 0 ) {
+            iss >> w_size;
+            vector<double> w(w_size);
+            for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
+            w = w*(M_PI/180);
+            if( w_size != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
                 vector<double> axis(3);
@@ -397,23 +412,24 @@ ManyBody::ManyBody( string filename ): Body() {
         if( type == "Capsule" ) {
             vector<vector<double>> rot, trans;
             vector<double> cent(3), l1(3), l2(3);
-            double rad, w;
-            size_t trans_size;
+            double rad;
+            size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> l1[i];
             for( size_t i = 0; i < 3; i++ ) iss >> l2[i];
             iss >> rad;
 
             iss >> name;
             iss >> superbody;
-            iss >> w; 
-            w *= M_PI/180;
-            if( w != 0 ) {
+            iss >> w_size;
+            vector<double> w(w_size);
+            for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
+            w = w*(M_PI/180);
+            if( w_size != 0 ) {
                 rot = {{0,0,0}, {0,0,0}};
                 for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
                 vector<double> axis(3);
                 for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
                 rot[1] = rot[0] + axis;
-
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
