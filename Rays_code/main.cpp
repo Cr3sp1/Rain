@@ -42,20 +42,19 @@ int main (int argc, char *argv[]){
 
     // Walking man
     ManyBody Walk("../Bodies/WalkinMan.in");
-    ProjSurface BodSurf( box, rel_vel, dx );
-    BodSurf.BodyProj( Walk );
-    BodSurf.PrintR("../data/WalkProj.dat");
-    BodSurf.PrintRaysFlat("../data/WalkProjF.dat");
+    ProjSurface BodSurfW( box, rel_vel, dx );
+    BodSurfW.BodyProj( Walk );
+    BodSurfW.PrintR("../data/WalkProj.dat");
+    BodSurfW.PrintRaysFlat("../data/WalkProjF.dat");
     for( size_t i = 0; i < 11; i++ ){
-        Walk.Move(0.025*i);
+        Walk.Move(0.1*i);
         Walk.PrintState( ("../data/Walk" + to_string(i) + ".dat"));
     }
 
     // Running man
     ManyBody Run("../Bodies/RunningMan.in");
-    ProjSurface BodSurf( box, rel_vel, dx );
     for( size_t i = 0; i < 11; i++ ){
-        Run.Move(0.025*i);
+        Run.Move(0.1*i);
         Run.PrintState( ("../data/Run" + to_string(i) + ".dat"));
     }
     

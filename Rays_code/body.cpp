@@ -17,7 +17,7 @@ void Body::Move( double T ) {
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+        delta += trans[i]*( sin(T*M_PI*(i+1)) - sin(t*M_PI*(i+1) ));
     }
     // Translate 
     for( vector<double>& point : rot ){
@@ -29,7 +29,7 @@ void Body::Move( double T ) {
     if( w.size() > 0 and rot.size() == 2 ) {
         double theta = 0;
         for( size_t i = 0; i < w.size(); i++ ) {
-            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+            theta += w[i]*( sin(T*M_PI*(i+1)) - sin(t*M_PI*(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
@@ -88,7 +88,7 @@ void Sphere::Move( double T ) {
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+        delta += trans[i]*( sin(T*M_PI/(i+1)) - sin(t*M_PI/(i+1) ));
     }
     // Translate
     for( vector<double>& point : rot ) point += delta;
@@ -99,7 +99,7 @@ void Sphere::Move( double T ) {
     if( w.size() > 0 and rot.size() == 2 ) {
         double theta = 0;
         for( size_t i = 0; i < w.size(); i++ ) {
-            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+            theta += w[i]*( sin(T*M_PI*(i+1)) - sin(t*M_PI*(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
@@ -166,7 +166,7 @@ void Pippo::Move( double T ) {
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+        delta += trans[i]*( sin(T*M_PI/(i+1)) - sin(t*M_PI/(i+1) ));
     }
     // Translate
     for( vector<double>& point : rot ) point += delta;
@@ -177,7 +177,7 @@ void Pippo::Move( double T ) {
     if( w.size() > 0 and rot.size() == 2 ) {
         double theta = 0;
         for( size_t i = 0; i < w.size(); i++ ) {
-            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+            theta += w[i]*( sin(T*M_PI*(i+1)) - sin(t*M_PI*(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
@@ -262,7 +262,7 @@ void Capsule::Move( double T ) {
     // Calculate the total translation for the step
     vector<double> delta({0,0,0});
     for( size_t i = 0; i < trans.size(); i++ ){
-        delta += trans[i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
+        delta += trans[i]*( sin(T*M_PI/(i+1)) - sin(t*M_PI/(i+1) ));
     }
     // Translate 
     for( vector<double>& point : rot )  point += delta;
@@ -274,7 +274,7 @@ void Capsule::Move( double T ) {
     if( w.size() > 0 and rot.size() == 2 ) {
         double theta = 0;
         for( size_t i = 0; i < w.size(); i++ ) {
-            theta += w[i]*( sin(T*2*M_PI*(i+1)) - sin(t*2*M_PI*(i+1) ));
+            theta += w[i]*( sin(T*M_PI*(i+1)) - sin(t*M_PI*(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
