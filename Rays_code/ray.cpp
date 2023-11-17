@@ -82,7 +82,7 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double Dx): dx(
     // Sets the rain speed
     Ray::V = vel;
 
-    // cout << "Number of rays generated: " <<  rays.size()  << endl;
+    cout << "Number of rays generated: " <<  rays.size()  << endl;
 }
 
 
@@ -155,4 +155,24 @@ double ProjSurface::BodyProj( Body& body ) {
     }
     // cout << "nhit = " << nhit << endl;
     return nhit*dx*dx;
+}
+
+
+// Returns an estimate of the projection of the dynamic body on the plane
+double ProjSurface::BodyProj( Body& body, double tmin, double tmax, unsigned int nstep ) {
+    if( nstep == 0 ) return 0;
+    double dt = ( tmax - tmin )/nstep;
+    unsigned int nhit = 0;
+    double t = tmin;
+    // cout << "Projecting on " << rays.size() << " rays" << endl;
+    for( unsigned int i = 0; i < nstep; i++ ){
+        body.Move(t);
+        body.Prime( H[0], Ray::V );
+        for( Ray& ray : rays ){
+            if( body.Check( ray ) ) nhit++;
+        }
+        t += dt;
+    }
+    // cout << "nhit = " << nhit << endl;
+    return nhit*dx*dx/nstep;
 }

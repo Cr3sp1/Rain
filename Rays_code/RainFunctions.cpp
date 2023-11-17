@@ -109,6 +109,21 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
     return {body_v, wetness};
 }
 
+// Estimates wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
+vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep ) {
+    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
+    vector<double> body_v(N);
+    vector<double> wetness(N);
+    for( size_t i = 0; i < N; i++ ){
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        vector<double> relvel = rain_v;
+        relvel[0] -= body_v[i];
+        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep )/body_v[i];
+    }
+    return {body_v, wetness};
+}
+
+
 
 // Estimates wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
 vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {

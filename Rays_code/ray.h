@@ -92,6 +92,9 @@ class ProjSurface{
     // Returns an estimate of the projection of the body on the plane
     double BodyProj( Body& body );
 
+    // Returns an estimate of the projection of the dynamic body on the plane
+    double BodyProj( Body& body, double tmin, double tmax, unsigned int nstep );
+
 };
 
 

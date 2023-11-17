@@ -18,7 +18,7 @@ int main (int argc, char *argv[]){
     vector<double> rel_vel(3);
     vector<double> box(3); 
     double body_vel, dx;
-    int nstep;
+    unsigned int nstep_v, nstep_t;
     
 
     // Reads the input file
@@ -27,7 +27,8 @@ int main (int argc, char *argv[]){
     ReadInput >> box[0] >> box[1] >> box[2];
     ReadInput >> dx;
     ReadInput >> body_vel;
-    ReadInput >> nstep;
+    ReadInput >> nstep_v;
+    ReadInput >> nstep_t;
     ReadInput >> rain_vel[0] >> rain_vel[1] >> rain_vel[2];
     rel_vel = rain_vel;
     rel_vel[0] -= body_vel;
@@ -36,7 +37,7 @@ int main (int argc, char *argv[]){
 
     // Outputs settings and stuff
     cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
-    cout << "Object velocity = " << body_vel  << ", nstep = " << nstep << ", dx = " << dx << endl;
+    cout << "Object velocity = " << body_vel  << ", nstep_v = " << nstep_v << ", dx = " << dx << endl;
 
 
 
@@ -44,19 +45,21 @@ int main (int argc, char *argv[]){
     ManyBody Walk("../Bodies/WalkinMan.in");
     ProjSurface BodSurfW( box, rel_vel, dx );
     BodSurfW.BodyProj( Walk );
-    BodSurfW.PrintR("../data/WalkProj.dat");
-    BodSurfW.PrintRaysFlat("../data/WalkProjF.dat");
+    BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
     for( size_t i = 0; i < 11; i++ ){
         Walk.Move(0.1*i);
-        Walk.PrintState( ("../data/Walk" + to_string(i) + ".dat"));
+        Walk.PrintState( ("../data/Walk/Walk" + to_string(i) + ".dat"));
     }
 
     // Running man
     ManyBody Run("../Bodies/RunningMan.in");
     for( size_t i = 0; i < 11; i++ ){
         Run.Move(0.1*i);
-        Run.PrintState( ("../data/Run" + to_string(i) + ".dat"));
+        Run.PrintState( ("../data/Run/Run" + to_string(i) + ".dat"));
     }
+
+    vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
+    Print("../data/Walk/WalkWet.dat", resultsWalk);
     
      
     // // Builds objects
@@ -78,10 +81,10 @@ int main (int argc, char *argv[]){
     
 
     // Simulate different body velocities
-    // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep, dx );
-    // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep, dx );
+    // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep_v, dx );
+    // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep_v, dx );
+    // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep_v, dx );
+    // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep_v, dx );
 
 
     // output
