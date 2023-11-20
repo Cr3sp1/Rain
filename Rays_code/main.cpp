@@ -58,8 +58,13 @@ int main (int argc, char *argv[]){
         Run.PrintState( ("../data/Run/Run" + to_string(i) + ".dat"));
     }
 
-    vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
-    Print("../data/Walk/WalkWet.dat", resultsWalk);
+    // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
+    // Print("../data/Walk/WalkWet.dat", resultsWalk);
+
+
+    // Temp
+    ManyBody Temp("../Bodies/BaseMan.in");
+    Temp.PrintState("../data/Temp/Base.dat");
     
      
     // // Builds objects
