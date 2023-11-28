@@ -69,8 +69,8 @@ plot_geometric_bodies('../data/Temp/Base.dat')
 
 
 # Adjust camera position and orientation
-scene.camera.pos = vector(10, 1, 0.84)
-scene.camera.axis = vector(-10, 0, 0)
+scene.camera.pos = vector(5, 1, 0.84)
+scene.camera.axis = vector(-5, 0, 0)
 scene.camera.up = vector(0, 0, 1)
 
 # Capture the scene as an image and save it to file
