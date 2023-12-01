@@ -73,6 +73,9 @@ scene.camera.pos = vector(5, 1, 0.84)
 scene.camera.axis = vector(-5, 0, 0)
 scene.camera.up = vector(0, 0, 1)
 
+# Change background color
+scene.background = color.white
+
 # Capture the scene as an image and save it to file
 # img = scene.get_image()
 # img.save("scene_image.png")
