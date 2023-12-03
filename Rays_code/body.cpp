@@ -56,6 +56,15 @@ void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<dou
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }    
 
+// Prints to file the state of the body
+void Body::PrintState( ofstream &fout ) {}
+
+void Body::PrintState( string outfile ) {
+    ofstream fout(outfile);
+    PrintState( fout );
+    fout.close();
+} 
+
 
 
 
@@ -130,7 +139,18 @@ void Sphere::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<d
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }
-	
+
+// Prints to file the state of the body
+void Sphere::PrintState( ofstream &fout ) {;
+    fout << "S," << cent[0] << "," << cent[1] << "," << cent[2] << "," << rad << endl;
+}
+
+void Sphere::PrintState( string outfile ) {
+    ofstream fout(outfile);
+    PrintState( fout );
+    fout.close();
+} 
+
 
 
 
@@ -225,10 +245,26 @@ vector<vector<double>>  Pippo::GetVertices() {
     return vertices;
 }
 
+// Prints to file the state of the body
+void Pippo::PrintState( ofstream &fout ) {;
+    fout << "P," << cent[0] << "," << cent[1] << "," << cent[2] << ",";
+        for( size_t i = 0; i < side.size(); i++ ) {
+            fout << side[i][0] << "," << side[i][1] << "," << side[i][2];
+            if( i+1 != side.size() ) fout << ",";
+        }
+        fout << endl;
+}
+
+void Pippo::PrintState( string outfile ) {
+    ofstream fout(outfile);
+    PrintState( fout );
+    fout.close();
+} 
 
 
 
-// Primes the body to be checked (projects the center of the sphere onto the surface)
+
+// Primes the body to be checked (projects l1 and l2 onto the surface)
 void Capsule::Prime( vector<double> p, vector<double> v  ) {
     H1 = Project( l1, p, v);
     H2 = Project( l2, p, v);
@@ -308,6 +344,16 @@ void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }
 
+// Prints to file the state of the body
+void Capsule::PrintState( ofstream &fout ) {;
+    fout << "C," << l1[0] << "," << l1[1] << "," << l1[2] << "," << l2[0] << "," << l2[1] << "," << l2[2] << "," << rad << endl;
+}
+
+void Capsule::PrintState( string outfile ) {
+    ofstream fout(outfile);
+    PrintState( fout );
+    fout.close();
+}
 
 
 
@@ -327,8 +373,6 @@ ManyBody::ManyBody( string filename ): Body() {
     }
 
     string line;
-    // Skip header
-    for( size_t i = 0; i < 6; i++ ) getline( file, line );
 
     // Get bodies
     while( getline( file, line ) ) {
@@ -451,34 +495,20 @@ ManyBody::ManyBody( string filename ): Body() {
 // Destructor
 ManyBody::~ManyBody() {
     // cout << "Destroying ManyBody" << endl;
-    // Delete all dynamically allocated Sphere objects
-    for (Sphere* sphere : spheres) {
-        delete sphere;
-    }
-
-    // Delete all dynamically allocated Pippo objects
-    for (Pippo* pippo : pippos) {
-        delete pippo;
-    }
-
-    // Delete all dynamically allocated Capsule objects
-    for (Capsule* capsule : capsules) {
-        delete capsule;
+    // Delete all dynamically allocated Body objects
+    for (Body* body : bodies) {
+        delete body;
     }
 }
 
 // Primes the body to be checked. Primes each body
 void ManyBody::Prime( vector<double> p, vector<double> v  ) {
-    for( size_t i = 0; i < spheres.size(); i++ ) spheres[i]->Prime( p, v );
-    for( size_t i = 0; i < pippos.size(); i++ ) pippos[i]->Prime( p, v );
-    for( size_t i = 0; i < capsules.size(); i++ ) capsules[i]->Prime( p, v );
+    for(Body* body : bodies) body->Prime( p, v );
 }
 
 // Checks if the ManyBody is making contact with a ray
 bool ManyBody::Check( Ray& ray ) {
-    for( size_t i = 0; i < spheres.size(); i++ ) if(spheres[i]->Check( ray )) return true;
-    for( size_t i = 0; i < pippos.size(); i++ ) if(pippos[i]->Check( ray )) return true;
-    for( size_t i = 0; i < capsules.size(); i++ ) if(capsules[i]->Check( ray )) return true;
+    for(Body* body : bodies) if(body->Check( ray )) return true;
     return false;
 }
 
@@ -486,24 +516,15 @@ bool ManyBody::Check( Ray& ray ) {
 void ManyBody::Move( double T ) {
     if( T == t ) return;
     // Move parts
-    for( Sphere* sphere : spheres ) sphere->Move(T);
-    for( Pippo*  pippo : pippos ) pippo->Move(T);
-    for( Capsule* capsule : capsules ) capsule->Move(T);
+    for(Body* body : bodies) body->Move(T);
 
     t = T;
 }
 
 // Pointer to the body with that name
 Body* ManyBody::Find( string name ) {
-    for( size_t i = 0; i < spheres.size(); i++ ) {
-        if( spheres[i]->GetName() == name ) return spheres[i];
-    }
-    for( size_t i = 0; i < pippos.size(); i++ ) {
-        if( pippos[i]->GetName() == name ) return pippos[i];
-    }
-    for( size_t i = 0; i < capsules.size(); i++ ) {
-        if( capsules[i]->GetName() == name ) return capsules[i];
-    }
+    for(Body* body : bodies) if( body->GetName() == name ) return body;
+
     cout << name << " not found!" << endl;
     return nullptr;
 }
@@ -522,30 +543,9 @@ void ManyBody::Attach( string SubName, string SuperName ) {
 
 // Prints to file the state (all the bodies and their parameters)
 void ManyBody::PrintState( ofstream &fout ) {
-    for( Sphere* sphere : spheres ) {
-        vector<double> cent = sphere->GetCent();
-        double rad = sphere->GetRad();
-        fout << "S," << cent[0] << "," << cent[1] << "," << cent[2] << "," << rad << endl;
+    for( Body* body : bodies ) {
+        body->PrintState(fout);
     }
-
-    for( Pippo* pippo : pippos ) {
-        vector<vector<double>> Side = pippo->GetSide();
-        vector<double> cent = pippo->GetCent();
-        fout << "P," << cent[0] << "," << cent[1] << "," << cent[2] << ",";
-        for( size_t i = 0; i < Side.size(); i++ ) {
-            fout << Side[i][0] << "," << Side[i][1] << "," << Side[i][2];
-            if( i+1 != Side.size() ) fout << ",";
-        }
-        fout << endl;
-    }
-
-    for( Capsule* capsule : capsules ) {
-        vector<double> l1 = capsule->GetL1();
-        vector<double> l2 = capsule->GetL2();
-        double rad = capsule->GetRad();
-        fout << "C," << l1[0] << "," << l1[1] << "," << l1[2] << "," << l2[0] << "," << l2[1] << "," << l2[2] << "," << rad << endl;
-    }
-    
 }
 
 void ManyBody::PrintState( string outfile ) {

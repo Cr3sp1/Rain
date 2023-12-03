@@ -58,7 +58,9 @@ class Body {
 	virtual void AttachTo( Body& SupBody ) { SupBody.AddSubBody(*this); }
 	// Get stuff
 	virtual string GetName() { return name; }
-
+	// Prints to file the state of the body
+	virtual void PrintState( ofstream &fout );
+	virtual void PrintState( string outfile );
 
 };
 
@@ -94,6 +96,9 @@ class Sphere: public Body {
 	// Gets stuff
 	vector<double> GetCent(){return cent;}
 	double GetRad(){return rad;}
+	// Prints to file the state of the body
+	virtual void PrintState( ofstream &fout );
+	virtual void PrintState( string outfile );
 
 };
 
@@ -130,6 +135,9 @@ class Pippo: public Body {
 	vector<double> GetCent() {return cent;}
 	vector<vector<double>>  GetSide() {return side;}
 	vector<vector<double>>  GetVertices();
+	// Prints to file the state of the body
+	virtual void PrintState( ofstream &fout );
+	virtual void PrintState( string outfile );
 
 };
 
@@ -166,6 +174,9 @@ class Capsule: public Body {
 	vector<double> GetL1(){return l1;}
 	vector<double> GetL2(){return l2;}
 	double GetRad(){return rad;}
+	// Prints to file the state of the body
+	virtual void PrintState( ofstream &fout );
+	virtual void PrintState( string outfile );
 
 };
 
@@ -178,10 +189,8 @@ class ManyBody: public Body {
   protected:
 
 	// Bodies contained in ManyBody
-	vector<Sphere*> spheres;
-	vector<Pippo*> pippos;
-	vector<Capsule*> capsules;
-
+	vector<Body*> bodies;
+	
   public:
 
 	// Empty constructor
@@ -201,9 +210,9 @@ class ManyBody: public Body {
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
 	// Add bodies
-	void AddBody( Sphere sphere ) { spheres.push_back( new Sphere(sphere) ); }
-	void AddBody( Pippo pippo ) { pippos.push_back( new Pippo(pippo) ); }
-	void AddBody( Capsule capsule ) { capsules.push_back( new Capsule(capsule) ); }
+	void AddBody( Sphere sphere ) { bodies.push_back( new Sphere(sphere) ); }
+	void AddBody( Pippo pippo ) { bodies.push_back( new Pippo(pippo) ); }
+	void AddBody( Capsule capsule ) { bodies.push_back( new Capsule(capsule) ); }
 	// Pointer to the body with that name
 	Body* Find( string name );
 	// Attaches the sub-body to the super-body

@@ -69,8 +69,8 @@ plot_geometric_bodies('../data/Temp/Base.dat')
 
 
 # Adjust camera position and orientation
-scene.camera.pos = vector(5, 1, 0.84)
-scene.camera.axis = vector(-5, 0, 0)
+scene.camera.pos = vector(4, 1, 0.84)
+scene.camera.axis = vector(-4, 0, 0)
 scene.camera.up = vector(0, 0, 1)
 
 # Change background color
