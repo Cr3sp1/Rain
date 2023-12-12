@@ -65,7 +65,8 @@ def plot_geometric_bodies(filename):
 
                 sphere(pos=point2, radius=radius, color=color.red)
 
-plot_geometric_bodies('../data/Temp/Base.dat')
+plot_geometric_bodies('../data/Temp/Vit.dat')
+# plot_geometric_bodies('../data/Temp/TempVit.dat')
 
 
 # Adjust camera position and orientation
@@ -76,7 +77,5 @@ scene.camera.up = vector(0, 0, 1)
 # Change background color
 scene.background = color.white
 
-# Capture the scene as an image and save it to file
-# img = scene.get_image()
-# img.save("scene_image.png")
+
 

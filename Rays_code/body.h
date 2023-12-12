@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <iomanip>
 #include "VectorOperations.h"
 
 
@@ -27,7 +28,7 @@ class Body {
 	double t;
 	// Points used for rotation in time evolution: rot[0] is center, rot[1]-rot[0] is the axis of rotation
 	vector<vector<double>> rot;
-	// Amplitude of oscillation in radiants (coefficients in sin expasion of periodic motion)
+	// Amplitude of oscillation in radiants (coefficients in fourier series expansion of periodic motion, structured as [0]sin [1]cos [2]sin ...)
 	vector<double> w;
 	// Vectors used for periodic translation in time evolution (coefficients in sin expasion of periodic motion)
 	vector<vector<double>> trans;

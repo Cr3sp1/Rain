@@ -63,8 +63,13 @@ int main (int argc, char *argv[]){
 
 
     // Temp
-    ManyBody Temp("../Bodies/BaseMan.in");
-    Temp.PrintState("../data/Temp/Base.dat");
+    ManyBody Temp("../Bodies/TempMan.in");
+    Temp.Move(0.5);
+    Temp.PrintState("../data/Temp/TempVit.dat");
+
+    // Vitruvian
+    ManyBody Vit("../Bodies/VitruvianMan.in");
+    Vit.PrintState("../data/Temp/Vit.dat");
     
      
     // // Builds objects

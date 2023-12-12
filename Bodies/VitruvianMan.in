@@ -1,0 +1,35 @@
+##########################################################################################################################################################################################################################
+# Type ... Name Superbody("None" if it is independent) w.size w[i](in degrees, put rot[i] and axis[i] only if w.size>0) rot0[0] rot0[1] rot0[2] axis[0] axis[1] axis[2] trans.size trans[i][0] trans[i][1] trans[i][2]   #
+# Sphere cent[0] cent[1] cent[2] rad ...                                                                                                                                                                                 #
+# Pippo cent[0] cent[1] cent[2] side[0][0] side[0][1] side[0][2] side[1][0] side[1][1] side[1][2] side[1][2] side[2][1] side[2][2] ...                                                                                   #
+# Capsule l1[0] l1[1] l1[2] l2[0] l2[1] l2[2] rad ...                                                                                                                                                                    #
+# Note: box  =  2 2 2                                                                                                                                                                                                    #                                                                                                                                #
+##########################################################################################################################################################################################################################
+Pippo   1 1 1.12   0.14 0 0   0 0.28 0   0 0 0.56   Torso   None   0   0
+Capsule   1 1 1.4   1 1 1.575   0.07   Neck Torso 0 0
+Sphere   1 1 1.575   0.105   Head   Neck   0   0
+Capsule   1 1.14 1.35   1 1.21 1.35   0.05   ShoulderL1   Torso   0   0
+Capsule   1 1.21 1.35   1 1.42 1.35   0.042   UppArmL1   ShoulderL1   0   0
+Capsule   1 1.42 1.35   1 1.798 1.35   0.042   ForearmL1   UppArmL1   0   0
+Capsule   1 0.86 1.35   1 0.79 1.35   0.05   ShoulderR2   Torso   0   0
+Capsule   1 0.79 1.35   1 0.58 1.35   0.042   UppArmR1   ShoulderR2   0   0
+Capsule   1 0.58 1.35   1 0.202 1.35   0.042   ForearmR1   UppArmR1   0   0
+Capsule   1 1.07 0.84   1 1.07 0.42   0.07   ThighL1   Torso   0   0
+Capsule   1 1.07 0.42   1 1.07 0.042   0.042   CalfL1   ThighL1   0   0
+Capsule   1 1.056 0.028   1 1.24 0.028   0.028   FootL1   CalfL1   0   0
+Capsule   1 0.93 0.84   1 0.93 0.42   0.07   ThighR1   Torso   0   0
+Capsule   1 0.93 0.42   1 0.93 0.042   0.042   CalfR1   ThighR1   0   0
+Capsule   0.986 0.93 0.028   1.17 0.93 0.028   0.028   FootR1   CalfR1   0   0
+#
+Capsule   1 1.14 1.35   1 1.202 1.382   0.05   ShoulderL2   Torso   0   0
+Capsule   1 1.202 1.382   1 1.389 1.477   0.042   UppArmL2   ShoulderL2   0   0
+Capsule   1 1.389 1.477   1 1.726 1.649   0.042   ForearmL2   UppArmL2   0   0
+Capsule   1 0.86 1.35   1 0.7976 1.382   0.05   ShoulderR2   Torso   0   0
+Capsule   1 0.7976 1.382   1 0.6105 1.477   0.042   UppArmR2   ShoulderR2   0   0
+Capsule   1 0.6105 1.477   1 0.2737 1.649   0.042   ForearmR2   UppArmR2   0   0
+Capsule   1 1.07 0.84   1 1.280.4763   0.07   ThighL2   Torso   0   0
+Capsule   1 1.280.4763   1 1.469 0.1489   0.042   CalfL2   ThighL2   0   0
+Capsule   0.9879 1.47 0.1333   1.147 1.55 0.1793   0.028   FootL2   CalfL2   0   0
+Capsule   1 0.93 0.84   1 0.72 0.4763   0.07   ThighR2   Torso   0   0
+Capsule   1 0.72 0.4763   1 0.531 0.1489   0.042   CalfR2   ThighR2   0   0
+Capsule   0.986 0.524 0.1368   1.17 0.524 0.1368   0.028   FootR2   CalfR2   0   0
