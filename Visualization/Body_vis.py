@@ -28,24 +28,15 @@ def plot_geometric_bodies(filename):
 
 
             elif body_type == 'P':  # Parallelepiped
-
                 center = vector(params[0], params[1], params[2])
-
                 axis1 = vector(params[3], params[4], params[5])
-
                 axis2 = vector(params[6], params[7], params[8])
-
                 axis3 = vector(params[9], params[10], params[11])
 
-                # VPython does not have a native parallelepiped object, so we approximate it with a box
+                # Define the box
+                box(pos=center, size=vector(mag(axis1), mag(axis2), mag(axis3)), 
+                    axis=axis1, up=axis2, color=color.green)
 
-                size = vector(abs(axis1.x) + abs(axis2.x) + abs(axis3.x),
-
-                              abs(axis1.y) + abs(axis2.y) + abs(axis3.y),
-
-                              abs(axis1.z) + abs(axis2.z) + abs(axis3.z))
-
-                box(pos=center, size=size, color=color.green)
 
 
 
@@ -65,8 +56,8 @@ def plot_geometric_bodies(filename):
 
                 sphere(pos=point2, radius=radius, color=color.red)
 
-plot_geometric_bodies('../data/Temp/Vit.dat')
-# plot_geometric_bodies('../data/Temp/TempVit.dat')
+# plot_geometric_bodies('../data/Temp/Walk.dat')
+plot_geometric_bodies('../data/Run/Run0.75.dat')
 
 
 # Adjust camera position and orientation

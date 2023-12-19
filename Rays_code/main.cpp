@@ -41,22 +41,24 @@ int main (int argc, char *argv[]){
 
 
 
-    // // Walking man
-    // ManyBody Walk("../Bodies/WalkinMan.in");
+    // Walking man
+    ManyBody Walk("../Bodies/WalkingMan.in");
     // ProjSurface BodSurfW( box, rel_vel, dx );
     // BodSurfW.BodyProj( Walk );
-    // BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
-    // for( size_t i = 0; i < 11; i++ ){
-    //     Walk.Move(0.1*i);
-    //     Walk.PrintState( ("../data/Walk/Walk" + to_string(i) + ".dat"));
-    // }
+    //BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
+    for( size_t i = 0; i < 101; i++ ){
+        double t = 0.01*i;
+        Walk.Move(t);
+        Walk.PrintState( ("../data/Walk/Walk" + to_string(t).substr(0,4) + ".dat"));
+    }
 
-    // // Running man
-    // ManyBody Run("../Bodies/RunningMan.in");
-    // for( size_t i = 0; i < 11; i++ ){
-    //     Run.Move(0.1*i);
-    //     Run.PrintState( ("../data/Run/Run" + to_string(i) + ".dat"));
-    // }
+    // Running man
+    ManyBody Run("../Bodies/RunningMan.in");
+    for( size_t i = 0; i < 101; i++ ){
+        double t = 0.01*i;
+        Run.Move(t);
+        Run.PrintState( ("../data/Run/Run" + to_string(t).substr(0,4) + ".dat"));
+    }
 
     // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
     // Print("../data/Walk/WalkWet.dat", resultsWalk);
@@ -65,11 +67,7 @@ int main (int argc, char *argv[]){
     // Temp
     ManyBody Temp("../Bodies/TempMan.in");
     Temp.Move(0.25);
-    Temp.PrintState("../data/Temp/TempWalk.dat");
-
-    // // Walk
-    // ManyBody Walk("../Bodies/WalkingMan.in");
-    // Walk.PrintState("../data/Temp/Walk.dat");
+    Temp.PrintState("../data/Temp/TempRun.dat"); 
     
      
     // // Builds objects
