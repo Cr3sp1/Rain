@@ -59,6 +59,8 @@ class Body {
 	virtual void AttachTo( Body& SupBody ) { SupBody.AddSubBody(*this); }
 	// Get stuff
 	virtual string GetName() { return name; }
+	// Finds smallest box around the body
+	virtual void FindBox( vector<double> &min, vector<double> &max );
 	// Prints to file the state of the body
 	virtual void PrintState( ofstream &fout );
 	virtual void PrintState( string outfile );
@@ -97,9 +99,11 @@ class Sphere: public Body {
 	// Gets stuff
 	vector<double> GetCent(){return cent;}
 	double GetRad(){return rad;}
+	// Finds smallest box around the body
+	void FindBox( vector<double> &min, vector<double> &max ) override;
 	// Prints to file the state of the body
-	virtual void PrintState( ofstream &fout );
-	virtual void PrintState( string outfile );
+	void PrintState( ofstream &fout ) override;
+	void PrintState( string outfile ) override;
 
 };
 
@@ -136,9 +140,11 @@ class Pippo: public Body {
 	vector<double> GetCent() {return cent;}
 	vector<vector<double>>  GetSide() {return side;}
 	vector<vector<double>>  GetVertices();
+	// Finds smallest box around the body
+	void FindBox( vector<double> &min, vector<double> &max ) override;
 	// Prints to file the state of the body
-	virtual void PrintState( ofstream &fout );
-	virtual void PrintState( string outfile );
+	void PrintState( ofstream &fout ) override;
+	void PrintState( string outfile ) override;
 
 };
 
@@ -175,9 +181,11 @@ class Capsule: public Body {
 	vector<double> GetL1(){return l1;}
 	vector<double> GetL2(){return l2;}
 	double GetRad(){return rad;}
+	// Finds smallest box around the body
+	void FindBox( vector<double> &min, vector<double> &max ) override;
 	// Prints to file the state of the body
-	virtual void PrintState( ofstream &fout );
-	virtual void PrintState( string outfile );
+	void PrintState( ofstream &fout ) override;
+	void PrintState( string outfile ) override;
 
 };
 
@@ -219,9 +227,11 @@ class ManyBody: public Body {
 	// Attaches the sub-body to the super-body
 	void Attach( Body SubBody, string SuperName );
 	void Attach( string SubName, string SuperName );
+	// Finds smallest box around the body
+	void FindBox( vector<double> &min, vector<double> &max ) override;
 	// Prints to file the state (all the bodies and their parameters)
-	void PrintState( ofstream &fout );
-	void PrintState( string outfile );
+	void PrintState( ofstream &fout ) override;
+	void PrintState( string outfile ) override;
 
 };
 

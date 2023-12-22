@@ -66,6 +66,13 @@ void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<dou
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
 }    
 
+// Finds smallest box around body
+void Body::FindBox( vector<double> &min, vector<double> &max ) {
+    if( min.size() != 3 or max.size() != 3 ) {
+        cout << "Error in FindBox: min and max must be of size 3" << endl;
+    }
+}
+
 // Prints to file the state of the body
 void Body::PrintState( ofstream &fout ) {}
 
@@ -158,6 +165,17 @@ void Sphere::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<d
 
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
+
+// Finds smallest box around body
+void Sphere::FindBox( vector<double> &min, vector<double> &max ) {
+    if( min.size() != 3 or max.size() != 3 ) {
+        cout << "Error in FindBox: min and max must be of size 3" << endl;
+    }
+    for( size_t i = 0; i < 3; i++ ) {
+        if( cent[i] - rad < min[i] ) min[i] = cent[i] - rad;
+        if( cent[i] + rad > max[i] ) max[i] = cent[i] + rad;
+    }
 }
 
 // Prints to file the state of the body
@@ -276,6 +294,22 @@ vector<vector<double>>  Pippo::GetVertices() {
     return vertices;
 }
 
+// Finds smallest box around body
+void Pippo::FindBox( vector<double> &min, vector<double> &max ) {
+    if( min.size() != 3 or max.size() != 3 ) {
+        cout << "Error in FindBox: min and max must be of size 3" << endl;
+    }
+    vector<vector<double>> vertices = GetVertices();
+    for( vector<double> vertex : vertices ){
+        for( size_t i = 0; i < 3; i++ ) {
+            if( vertex[i] < min[i] ) min[i] = vertex[i];
+            if( vertex[i] > max[i] ) max[i] = vertex[i];
+        }
+    }
+    
+}
+
+
 // Prints to file the state of the body
 void Pippo::PrintState( ofstream &fout ) {
     fout << setprecision(4);
@@ -384,6 +418,21 @@ void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<
     Rotate( l2, Rot0, Rotmat );
     // Move sub-bodies
     for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+}
+
+// Finds smallest box around body
+void Capsule::FindBox( vector<double> &min, vector<double> &max ) {
+    if( min.size() != 3 or max.size() != 3 ) {
+        cout << "Error in FindBox: min and max must be of size 3" << endl;
+    }
+    for( size_t i = 0; i < 3; i++ ) {
+        if( l1[i] - rad < min[i] ) min[i] = l1[i] - rad;
+        if( l1[i] + rad > max[i] ) max[i] = l1[i] + rad;
+    }
+    for( size_t i = 0; i < 3; i++ ) {
+        if( l2[i] - rad < min[i] ) min[i] = l2[i] - rad;
+        if( l2[i] + rad > max[i] ) max[i] = l2[i] + rad;
+    }
 }
 
 // Prints to file the state of the body
@@ -582,6 +631,16 @@ void ManyBody::Attach( string SubName, string SuperName ) {
     Body* Super = Find(SuperName);
     Body* Sub = Find(SubName);
     if( Super and Sub ) Super->AddSubBody(*Sub);
+}
+
+// Finds smallest box around body
+void ManyBody::FindBox( vector<double> &min, vector<double> &max ) {
+    if( min.size() != 3 or max.size() != 3 ) {
+        cout << "Error in FindBox: min and max must be of size 3" << endl;
+    }
+    for( Body* body : bodies ) {
+        body->FindBox( min, max );
+    }
 }
 
 // Prints to file the state (all the bodies and their parameters)

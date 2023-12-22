@@ -56,8 +56,8 @@ def plot_geometric_bodies(filename):
 
                 sphere(pos=point2, radius=radius, color=color.red)
 
-# plot_geometric_bodies('../data/Temp/Walk.dat')
-plot_geometric_bodies('../data/Run/Run0.75.dat')
+plot_geometric_bodies('../data/Temp/TempWalk.dat')
+plot_geometric_bodies('../data/Walk/Walk0.00.dat')
 
 
 # Adjust camera position and orientation

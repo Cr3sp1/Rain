@@ -39,6 +39,10 @@ int main (int argc, char *argv[]){
     cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
     cout << "Object velocity = " << body_vel  << ", nstep_v = " << nstep_v << ", dx = " << dx << endl;
 
+    vector<double> WalkMin{100.,100.,100.};
+    vector<double> WalkMax{-100.,-100.,-100.};
+    vector<double> RunMin{100.,100.,100.};
+    vector<double> RunMax{-100.,-100.,-100.};
 
 
     // Walking man
@@ -46,28 +50,29 @@ int main (int argc, char *argv[]){
     // ProjSurface BodSurfW( box, rel_vel, dx );
     // BodSurfW.BodyProj( Walk );
     //BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
-    for( size_t i = 0; i < 101; i++ ){
-        double t = 0.01*i;
+    for( size_t i = 0; i < 1001; i++ ){
+        double t = 0.001*i;
         Walk.Move(t);
-        Walk.PrintState( ("../data/Walk/Walk" + to_string(t).substr(0,4) + ".dat"));
+        Walk.FindBox(WalkMin, WalkMax);
     }
 
     // Running man
     ManyBody Run("../Bodies/RunningMan.in");
-    for( size_t i = 0; i < 101; i++ ){
-        double t = 0.01*i;
+    for( size_t i = 0; i < 1001; i++ ){
+        double t = 0.001*i;
         Run.Move(t);
-        Run.PrintState( ("../data/Run/Run" + to_string(t).substr(0,4) + ".dat"));
+        Run.FindBox(RunMin,RunMax);
     }
 
-    // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
-    // Print("../data/Walk/WalkWet.dat", resultsWalk);
+    cout << "box for walk is: (" << WalkMin[0] << ", " << WalkMax[0] << ") (" << WalkMin[1] << ", " << WalkMax[1] << ") (" << WalkMin[2] << ", " << WalkMax[2] << ")" << endl;
+    cout << "box for Run is: (" << RunMin[0] << ", " << RunMax[0] << ") (" << RunMin[1] << ", " << RunMax[1] << ") (" << RunMin[2] << ", " << RunMax[2] << ")" << endl;
 
 
-    // Temp
     ManyBody Temp("../Bodies/TempMan.in");
     Temp.Move(0.25);
-    Temp.PrintState("../data/Temp/TempRun.dat"); 
+    Temp.PrintState("../data/Temp/TempRun.dat");
+    // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
+    // Print("../data/Walk/WalkWet.dat", resultsWalk);
     
      
     // // Builds objects
