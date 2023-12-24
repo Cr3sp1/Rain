@@ -39,33 +39,25 @@ int main (int argc, char *argv[]){
     cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
     cout << "Object velocity = " << body_vel  << ", nstep_v = " << nstep_v << ", dx = " << dx << endl;
 
-    vector<double> WalkMin{100.,100.,100.};
-    vector<double> WalkMax{-100.,-100.,-100.};
-    vector<double> RunMin{100.,100.,100.};
-    vector<double> RunMax{-100.,-100.,-100.};
-
 
     // Walking man
     ManyBody Walk("../Bodies/WalkingMan.in");
     // ProjSurface BodSurfW( box, rel_vel, dx );
     // BodSurfW.BodyProj( Walk );
     //BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
-    for( size_t i = 0; i < 1001; i++ ){
-        double t = 0.001*i;
+    for( size_t i = 0; i < 9; i++ ){
+        double t = 0.125*i;
         Walk.Move(t);
-        Walk.FindBox(WalkMin, WalkMax);
+        Walk.PrintState("../data/Walk/Walk"+to_string(t)+".dat");
     }
 
     // Running man
     ManyBody Run("../Bodies/RunningMan.in");
-    for( size_t i = 0; i < 1001; i++ ){
-        double t = 0.001*i;
+    for( size_t i = 0; i < 9; i++ ){
+        double t = 0.125*i;
         Run.Move(t);
-        Run.FindBox(RunMin,RunMax);
+        Walk.PrintState("../data/Run/Run"+to_string(t)+".dat");
     }
-
-    cout << "box for walk is: (" << WalkMin[0] << ", " << WalkMax[0] << ") (" << WalkMin[1] << ", " << WalkMax[1] << ") (" << WalkMin[2] << ", " << WalkMax[2] << ")" << endl;
-    cout << "box for Run is: (" << RunMin[0] << ", " << RunMax[0] << ") (" << RunMin[1] << ", " << RunMax[1] << ") (" << RunMin[2] << ", " << RunMax[2] << ")" << endl;
 
 
     ManyBody Temp("../Bodies/TempMan.in");
