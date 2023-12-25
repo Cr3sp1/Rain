@@ -48,7 +48,7 @@ int main (int argc, char *argv[]){
     for( size_t i = 0; i < 9; i++ ){
         double t = 0.125*i;
         Walk.Move(t);
-        Walk.PrintState("../data/Walk/Walk"+to_string(t)+".dat");
+        Walk.PrintState("../data/Walk/Walk"+to_string(t).substr(0,5)+".dat");
     }
 
     // Running man
@@ -56,7 +56,7 @@ int main (int argc, char *argv[]){
     for( size_t i = 0; i < 9; i++ ){
         double t = 0.125*i;
         Run.Move(t);
-        Walk.PrintState("../data/Run/Run"+to_string(t)+".dat");
+        Run.PrintState("../data/Run/Run"+to_string(t).substr(0,5)+".dat");
     }
 
 

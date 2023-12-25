@@ -56,17 +56,19 @@ def plot_geometric_bodies(filename):
 
                 sphere(pos=point2, radius=radius, color=color.red)
 
-plot_geometric_bodies('../data/Temp/TempWalk.dat')
-plot_geometric_bodies('../data/Walk/Walk0.00.dat')
+# plot_geometric_bodies('../data/Walk/Walk0.000.dat')
+plot_geometric_bodies('../data/Run/Run0.000.dat')
 
 
 # Adjust camera position and orientation
-scene.camera.pos = vector(4, 1, 0.84)
-scene.camera.axis = vector(-4, 0, 0)
+scene.camera.pos = vector(0.7, -2, 1.25)
+scene.camera.axis = vector(0, 2, 0)
 scene.camera.up = vector(0, 0, 1)
 
 # Change background color
 scene.background = color.white
 
+# Add a distant light
+distant_light(direction=vector(0, -1, 1), color=vector(0.7,0.7,0.7))
 
 
