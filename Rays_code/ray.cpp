@@ -168,6 +168,7 @@ double ProjSurface::BodyProj( Body& body, double tmin, double tmax, unsigned int
     for( unsigned int i = 0; i < nstep; i++ ){
         body.Move(t);
         body.Prime( H[0], Ray::V );
+        reset();
         for( Ray& ray : rays ){
             if( body.Check( ray ) ) nhit++;
         }
