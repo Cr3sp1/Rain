@@ -68,11 +68,20 @@ int main (int argc, char *argv[]){
     
 
     // Error analysis
-    Sphere Trial( {0.5, 0.5, 0.5}, 0.5 );
-    vector<vector<double>> results = SimErr( box, Trial, rel_vel, body_vel, 100, 0.001, 1 );
-    Print( "../data/Sphere/Error", results);
-    
+    ManyBody TrialS("../Bodies/Sphere.in");
+    vector<vector<double>> resultsS = SimErr( box, TrialS, rel_vel, body_vel, 100, 0.01, 1 );
+    Print( "../data/Sphere/ErrorS.dat", resultsS);
+        
+    // Error analysis
+    ManyBody TrialP("../Bodies/Pippo.in");
+    vector<vector<double>> resultsP = SimErr( box, TrialP, rel_vel, body_vel, 100, 0.01, 1 );
+    Print( "../data/Pippo/ErrorP.dat", resultsP);
 
+    // Error analysis
+    ManyBody TrialC("../Bodies/Capsule.in");
+    vector<vector<double>> resultsC = SimErr( box, TrialC, rel_vel, body_vel, 100, 0.01, 1 );
+    Print( "../data/Capsule/ErrorC.dat", resultsC);
+    
     // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
     // Plz.BodyProj(trialM1);
@@ -82,16 +91,14 @@ int main (int argc, char *argv[]){
     
 
     // Simulate different body velocities
-    // vector<vector<double>> resultsS = CompareAN( box, trialS, rain_vel, 2, 7, nstep_v, dx );
-    // vector<vector<double>> resultsP = CompareAN( box, trialP, rain_vel, 2, 7, nstep_v, dx );
-    // vector<vector<double>> resultsC = CompareAN( box, trialC, rain_vel, 2, 7, nstep_v, dx );
+    resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
+    resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
+    resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep_v, dx );
 
-
-    // output
-    // Print("../data/CompareSphere.dat", resultsS);
-    // Print("../data/ComparePippo.dat", resultsP);
-    // Print("../data/CompareCapsule.dat", resultsC);
+    Print("../data/Sphere/CompareS.dat", resultsS);
+    Print("../data/Pippo/CompareP.dat", resultsP);
+    Print("../data/Capsule/CompareC.dat", resultsC);
     // Print("../data/CompareManyBody.dat", resultsM);
 
     return 0;
