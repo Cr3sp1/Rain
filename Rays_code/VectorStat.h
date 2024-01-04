@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream> 
+#include <iomanip>
 
 using namespace std;
 
@@ -96,6 +97,33 @@ template <typename T> void Print( const vector<T> & v ) {
   } 
 }
 
+template <typename T> void Print( ofstream &fout, const vector<T> & v, unsigned int precision ) {
+  for ( size_t i = 0; i < v.size(); i++ ) {
+    fout << setprecision(precision) << v[i] << endl;
+  }  
+}
+
+template <typename T> void Print( const vector<T> & v, unsigned int precision ) {
+  for ( size_t i = 0; i < v.size(); i++ ) {
+    cout << setprecision(precision) << v[i] << endl;
+  } 
+}
+
+
+template <typename T> void Print( ofstream &fout, const vector<vector<T>> &matrix, unsigned int precision  ) {
+  for (const auto &row : matrix) {
+      for (const auto &element : row) {
+          fout << setprecision(precision) << element << " ";
+      }
+      fout << endl;
+  }
+}
+
+template <typename T> void Print( string outfile, const vector<vector<T>> &matrix, unsigned int precision  ) {
+  ofstream fout(outfile);
+  Print( fout, matrix, precision  );
+  fout.close();
+}
 
 template <typename T> void Print( ofstream &fout, const vector<vector<T>> &matrix ) {
   for (const auto &row : matrix) {
@@ -121,6 +149,14 @@ template <typename T> void Print(const vector<vector<T>> &matrix) {
   }
 }
 
+template <typename T> void Print(const vector<vector<T>> &matrix, unsigned int precision) {
+  for (const auto &row : matrix) {
+    for (const auto &element : row) {
+        cout << setprecision(precision) << element << " ";
+    }
+    cout << endl;
+  }
+}
 
 
 #endif

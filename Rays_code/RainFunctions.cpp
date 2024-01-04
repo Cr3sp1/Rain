@@ -11,7 +11,7 @@ vector<double> Project( vector<double> Point, vector<double> p, vector<double> v
     return ( Point + v*(diff*v)/(v*v) );
 }
 
-// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
+// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont p and three sides 
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v ){
     for( size_t i = 0; i < sides.size(); i++ ){
         if( sides[i]*v < 0 ) p += sides[i];
@@ -19,7 +19,7 @@ vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vecto
     return p;
 }
 
-// Finds the hexagonal projection H of a parallelepiped defined by p nad sides on a plane perpendicular to v and passing through P0
+// Finds the hexagonal projection H of a parallelepiped defined by a vertex p and sides on a plane perpendicular to v and passing through P0
 vector<vector<double>> FindHexProj(  vector<double> p, vector<vector<double>> Side, vector<double> v, vector<double> P0){
     vector<vector<double>> H = {FindMiddle( p, Side, v )};
     vector<vector<double>> delta(3, vector<double>(3, 0.0));        // Used to calculate the position of the vertices to project
@@ -128,11 +128,10 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
     vector<double> d = {dxmax};
     vector<double> S = {ProjSurface( box, relvel, d[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
     double k = pow(dxmin/dxmax, (double)1/(N-1));
-    cout << "k:"<< k <<endl;
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
-        cout << d[i] <<endl;
+        cout << "dx = " << d[i] <<endl;
         S.push_back(ProjSurface( box, relvel, d[i] ).BodyProj(body)*Norm(relvel)/bodyvel);
     }
 

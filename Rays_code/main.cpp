@@ -69,18 +69,18 @@ int main (int argc, char *argv[]){
 
     // Error analysis
     ManyBody TrialS("../Bodies/Sphere.in");
-    vector<vector<double>> resultsS = SimErr( box, TrialS, rel_vel, body_vel, 100, 0.01, 1 );
-    Print( "../data/Sphere/ErrorS.dat", resultsS);
+    vector<vector<double>> resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
+    Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
     // Error analysis
     ManyBody TrialP("../Bodies/Pippo.in");
-    vector<vector<double>> resultsP = SimErr( box, TrialP, rel_vel, body_vel, 100, 0.01, 1 );
-    Print( "../data/Pippo/ErrorP.dat", resultsP);
+    vector<vector<double>> resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
+    Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
 
     // Error analysis
     ManyBody TrialC("../Bodies/Capsule.in");
-    vector<vector<double>> resultsC = SimErr( box, TrialC, rel_vel, body_vel, 100, 0.01, 1 );
-    Print( "../data/Capsule/ErrorC.dat", resultsC);
+    vector<vector<double>> resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
+    Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
     
     // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
@@ -96,9 +96,9 @@ int main (int argc, char *argv[]){
     resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep_v, dx );
 
-    Print("../data/Sphere/CompareS.dat", resultsS);
-    Print("../data/Pippo/CompareP.dat", resultsP);
-    Print("../data/Capsule/CompareC.dat", resultsC);
+    Print("../data/Sphere/CompareS.dat", resultsS, 15);
+    Print("../data/Pippo/CompareP.dat", resultsP, 15);
+    Print("../data/Capsule/CompareC.dat", resultsC, 15);
     // Print("../data/CompareManyBody.dat", resultsM);
 
     return 0;
