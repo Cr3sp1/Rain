@@ -60,27 +60,30 @@ int main (int argc, char *argv[]){
     // }
 
 
-    ManyBody Temp("../Bodies/TempMan.in");
-    Temp.Move(0.25);
-    Temp.PrintState("../data/Temp/TempRun.dat");
+    // ManyBody Temp("../Bodies/TempMan.in");
+    // Temp.Move(0.25);
+    // Temp.PrintState("../data/Temp/TempRun.dat");
     // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
     // Print("../data/Walk/WalkWet.dat", resultsWalk);
     
 
     // Error analysis
     ManyBody TrialS("../Bodies/Sphere.in");
-    vector<vector<double>> resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
-    Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
+    vector<vector<double>> resultsS;
+    // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
+    // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
     // Error analysis
     ManyBody TrialP("../Bodies/Pippo.in");
-    vector<vector<double>> resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
-    Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
+    vector<vector<double>> resultsP;
+    // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
+    // Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
 
     // Error analysis
     ManyBody TrialC("../Bodies/Capsule.in");
-    vector<vector<double>> resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
-    Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
+    vector<vector<double>> resultsC;
+    // resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
+    // Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
     
     // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
@@ -88,18 +91,35 @@ int main (int argc, char *argv[]){
     // Plz.PrintR("../data/RayOriginsCap.dat");
     // Plz.PrintRaysFlat("../data/RayOriginsCapF.dat");
 
-    
 
     // Simulate different body velocities
-    resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    // vector<vector<double>> resultsM = CompareBB( box, trialM1, trialM2, rain_vel, 2, 7, nstep_v, dx );
+    // resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Sphere/CompareS.dat", resultsS, 15);
+    // resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Pippo/CompareP.dat", resultsP, 15);
+    // resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Capsule/CompareC.dat", resultsC, 15);
 
-    Print("../data/Sphere/CompareS.dat", resultsS, 15);
-    Print("../data/Pippo/CompareP.dat", resultsP, 15);
-    Print("../data/Capsule/CompareC.dat", resultsC, 15);
-    // Print("../data/CompareManyBody.dat", resultsM);
+
+    // Simulation of two pippos compenetrating
+    ManyBody Trial2P("../Bodies/DoublePippo.in");
+    vector<double> dist;
+    vector<double> wet2P;
+    ProjSurface Surf2P( box, rel_vel, dx );
+    for( size_t i = 0; i < nstep_t; i++ ) {
+        Trial2P.Move( asin( (double)i/(nstep_t-1))/(2*M_PI));   // it just works ;)
+        vector<double> cent1 = dynamic_cast<Pippo*>(Trial2P.Find("Still"))->GetCent();
+        vector<double> cent2 = dynamic_cast<Pippo*>(Trial2P.Find("Moving"))->GetCent();
+        dist.push_back( Norm( cent1 - cent2 ));
+        Surf2P.reset();
+        wet2P.push_back(Surf2P.BodyProj(Trial2P)*Norm(rel_vel)/body_vel);
+        // Surf2P.PrintRaysFlat("../data/Pippo/Proj2P/dist" + to_string(dist[i]) + ".dat");
+    }
+
+    vector<vector<double>> results2P = { dist, wet2P};
+    results2P = Transpose(results2P);
+    Print("../data/Pippo/DoubleP.dat", results2P, 12 );
+    
 
     return 0;
 }
