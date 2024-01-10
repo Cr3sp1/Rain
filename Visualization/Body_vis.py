@@ -35,7 +35,7 @@ def plot_geometric_bodies(filename):
 
                 # Define the box
                 box(pos=center, size=vector(mag(axis1), mag(axis2), mag(axis3)), 
-                    axis=axis1, up=axis2, color=color.green)
+                    axis=axis1, up=axis2, texture='checkers.png')
 
 
 
@@ -50,11 +50,11 @@ def plot_geometric_bodies(filename):
 
                 axis = point2 - point1
 
-                cylinder(pos=point1, axis=axis, radius=radius, color=color.red)
+                cylinder(pos=point1, axis=axis, radius=radius, texture='stripes.png')
 
-                sphere(pos=point1, radius=radius, color=color.red)
+                sphere(pos=point1, radius=radius, texture='stripes.png')
 
-                sphere(pos=point2, radius=radius, color=color.red)
+                sphere(pos=point2, radius=radius, texture='stripes.png')
 
 # plot_geometric_bodies('../data/Walk/Walk0.000.dat')
 plot_geometric_bodies('../data/Run/Run0.000.dat')
