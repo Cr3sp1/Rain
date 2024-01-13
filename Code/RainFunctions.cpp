@@ -127,7 +127,7 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
 vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax) {
     vector<double> d = {dxmax};
     vector<double> S = {ProjSurface( box, relvel, d[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
-    double k = pow(dxmin/dxmax, (double)1/(N-1));
+    double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
@@ -142,7 +142,7 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
 vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep) {
     vector<double> d = {dxmax};
     vector<double> S = {ProjSurface( box, relvel, d[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
-    double k = pow(dxmin/dxmax, 1/(N-1));
+    double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
@@ -156,19 +156,45 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
 vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> relvel, double bodyvel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax) {
     vector<double> nstep = {(double) nstepmin};
     vector<double> S = {ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[0] )*Norm(relvel)/bodyvel};
-    double k = (double)(nstepmax-nstepmin)/(N-1);
+    double k =  N == 0 ? 0  :  (double)(nstepmax-nstepmin)/(N-1);
     
     for( size_t i = 1; i < N; i++ ) {
         nstep.push_back(nstep[i-1]+k);
         S.push_back(ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[i] )*Norm(relvel)/bodyvel);
     }
 
-    for( double n : nstep ) n = floor(n);
-    return { nstep, S};
+    for( double& n : nstep ) n = floor(n);
+    return Transpose(vector<vector<double>>{ nstep, S});
+}
+
+// Estimate wetness for N_dx values of dx between dxmin and dxmax, and N_t values of nstep between nstepmin and nstepmax, and returns a matrix where first column is the nstep and first row is the dx
+vector<vector<double>> SimErrTdx( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N_dx, double dxmin, double dxmax, unsigned int N_t, unsigned int nstepmin, unsigned int nstepmax) {
+    double k_dx =  N_dx == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N_dx-1));
+    double k_t =  N_t == 0 ? 0  :  (double)(nstepmax-nstepmin)/(N_t-1);
+
+    // Build indices
+    vector<double> index_dx = { 0, dxmax };
+    for( size_t i = 1; i < N_dx; i++ ) index_dx.push_back(index_dx[i]*k_dx);
+
+    vector<double> index_t = { (double)nstepmin };
+    for( size_t i = 1; i < N_t; i++ ) index_t.push_back(index_t[i-1]+k_t);
+
+    vector<vector<double>> results = {index_dx};
+    for( double& nstep : index_t ) results.push_back({floor(nstep)});
+
+    // Fill the matrix
+    for( size_t i = 1; i <= N_t; i++ ) {
+        cout << "Nstep = " << results[i][0] << endl;
+        for( size_t j = 1; j <= N_dx; j++) {
+            results[i].push_back(ProjSurface( box, relvel, results[0][j] ).BodyProj(body, 0, 1, results[i][0] )*Norm(relvel)/bodyvel);
+        }
+    }
+
+    return results;
 }
 
 
-// Estimates wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
+// Estimate wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
 vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
     

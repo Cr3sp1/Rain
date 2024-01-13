@@ -41,7 +41,6 @@ def plot_geometric_bodies(filename):
 
 
             elif body_type == 'C':  # Capsule
-
                 point1 = vector(params[0], params[1], params[2])
 
                 point2 = vector(params[3], params[4], params[5])
@@ -56,19 +55,20 @@ def plot_geometric_bodies(filename):
 
                 sphere(pos=point2, radius=radius, texture='stripes.png')
 
-# plot_geometric_bodies('../data/Walk/Walk0.000.dat')
-plot_geometric_bodies('../data/Run/Run0.000.dat')
+# plot_geometric_bodies('../data/Temp/Vit.dat')
+plot_geometric_bodies('../data/Run/Run1.000.dat')
 
 
 # Adjust camera position and orientation
-scene.camera.pos = vector(0.7, -2, 1.25)
-scene.camera.axis = vector(0, 2, 0)
+scene.camera.pos = vector(0.7, -2.2, 1.4)
+scene.camera.axis = vector(0, 1, 0)
 scene.camera.up = vector(0, 0, 1)
 
 # Change background color
 scene.background = color.white
 
 # Add a distant light
-distant_light(direction=vector(0, -1, 1), color=vector(0.7,0.7,0.7))
+distant_light(direction=vector(0, -1, 0.3), color=vector(1,1,1))
+distant_light(direction=vector(1, 0, 1), color=vector(0.7,0.7,0.7))
 
 

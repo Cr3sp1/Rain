@@ -40,18 +40,15 @@ int main (int argc, char *argv[]){
     cout << "Object velocity = " << body_vel  << ", nstep_v = " << nstep_v << ", dx = " << dx << endl;
 
 
-    // // Walking man
-    // ManyBody Walk("../Bodies/WalkingMan.in");
-    // // ProjSurface BodSurfW( box, rel_vel, dx );
-    // // BodSurfW.BodyProj( Walk );
-    // //BodSurfW.PrintRaysFlat("../data/Walk/WalkProjF.dat");
+    // Walking man
+    ManyBody Walk("../Bodies/WalkingMan.in");
     // for( size_t i = 0; i < 9; i++ ){
     //     double t = 0.125*i;
     //     Walk.Move(t);
     //     Walk.PrintState("../data/Walk/Walk"+to_string(t).substr(0,5)+".dat");
     // }
 
-    // // Running man
+    // Running man
     // ManyBody Run("../Bodies/RunningMan.in");
     // for( size_t i = 0; i < 9; i++ ){
     //     double t = 0.125*i;
@@ -59,6 +56,13 @@ int main (int argc, char *argv[]){
     //     Run.PrintState("../data/Run/Run"+to_string(t).substr(0,5)+".dat");
     // }
 
+
+    // Walking & running error analysis
+    // vector<vector<double>> WalkResT = SimErrT( box, Walk, rel_vel, body_vel, dx, 0, 1, nstep_t, 2, 50);
+    // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
+
+    vector<vector<double>> WalkResDxT = SimErrTdx(box, Walk, rel_vel, body_vel, nstep_v, dx, 0.5, nstep_t-1, 1, nstep_t );
+    Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
 
     // ManyBody Temp("../Bodies/TempMan.in");
     // Temp.Move(0.25);
@@ -68,20 +72,20 @@ int main (int argc, char *argv[]){
     
 
     // Error analysis
-    ManyBody TrialS("../Bodies/Sphere.in");
-    vector<vector<double>> resultsS;
+    // ManyBody TrialS("../Bodies/Sphere.in");
+    // vector<vector<double>> resultsS;
     // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
     // Error analysis
-    ManyBody TrialP("../Bodies/Pippo.in");
-    vector<vector<double>> resultsP;
+    // ManyBody TrialP("../Bodies/Pippo.in");
+    // vector<vector<double>> resultsP;
     // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
 
     // Error analysis
-    ManyBody TrialC("../Bodies/Capsule.in");
-    vector<vector<double>> resultsC;
+    // ManyBody TrialC("../Bodies/Capsule.in");
+    // vector<vector<double>> resultsC;
     // resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
     
@@ -101,24 +105,24 @@ int main (int argc, char *argv[]){
     // Print("../data/Capsule/CompareC.dat", resultsC, 15);
 
 
-    // Simulation of two pippos compenetrating
-    ManyBody Trial2P("../Bodies/DoublePippo.in");
-    vector<double> dist;
-    vector<double> wet2P;
-    ProjSurface Surf2P( box, rel_vel, dx );
-    for( size_t i = 0; i < nstep_t; i++ ) {
-        Trial2P.Move( asin( (double)i/(nstep_t-1))/(2*M_PI));   // it just works ;)
-        vector<double> cent1 = dynamic_cast<Pippo*>(Trial2P.Find("Still"))->GetCent();
-        vector<double> cent2 = dynamic_cast<Pippo*>(Trial2P.Find("Moving"))->GetCent();
-        dist.push_back( Norm( cent1 - cent2 ));
-        Surf2P.reset();
-        wet2P.push_back(Surf2P.BodyProj(Trial2P)*Norm(rel_vel)/body_vel);
-        // Surf2P.PrintRaysFlat("../data/Pippo/Proj2P/dist" + to_string(dist[i]) + ".dat");
-    }
+    // // Simulation of two pippos compenetrating
+    // ManyBody Trial2P("../Bodies/DoublePippo.in");
+    // vector<double> dist;
+    // vector<double> wet2P;
+    // ProjSurface Surf2P( box, rel_vel, dx );
+    // for( size_t i = 0; i < nstep_t; i++ ) {
+    //     Trial2P.Move( asin( (double)i/(nstep_t-1))/(2*M_PI));   // it just works ;)
+    //     vector<double> cent1 = dynamic_cast<Pippo*>(Trial2P.Find("Still"))->GetCent();
+    //     vector<double> cent2 = dynamic_cast<Pippo*>(Trial2P.Find("Moving"))->GetCent();
+    //     dist.push_back( Norm( cent1 - cent2 ));
+    //     Surf2P.reset();
+    //     wet2P.push_back(Surf2P.BodyProj(Trial2P)*Norm(rel_vel)/body_vel);
+    //     // Surf2P.PrintRaysFlat("../data/Pippo/Proj2P/dist" + to_string(dist[i]) + ".dat");
+    // }
 
-    vector<vector<double>> results2P = { dist, wet2P};
-    results2P = Transpose(results2P);
-    Print("../data/Pippo/DoubleP.dat", results2P, 12 );
+    // vector<vector<double>> results2P = { dist, wet2P};
+    // results2P = Transpose(results2P);
+    // Print("../data/Pippo/DoubleP.dat", results2P, 12 );
     
 
     return 0;

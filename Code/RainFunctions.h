@@ -53,6 +53,9 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
 // Estimates wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
 vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> relvel, double bodyvel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax);
 
+// Estimates wetness for N_dx values of dx between dxmin and dxmax, and N_T values of nstep between nstepmin and nstepmax, and returns a matrix where first column is the nstep and first row is the dx
+vector<vector<double>> SimErrTdx( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N_dx, double dxmin, double dxmax, unsigned int N_T, unsigned int nstepmin, unsigned int nstepmax);
+
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
 vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx);
 
