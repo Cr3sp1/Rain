@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include "VectorStat.h"
 
 
 // ===============================================================================
@@ -68,6 +69,12 @@ template <typename T> std::vector<T> CrossProduct(const std::vector<T> &a, const
 // ===============================================================================
 template <typename T>
 std::vector<T> operator*(const std::vector<std::vector<T>>& matrix, const std::vector<T>& vec) {
+    if(matrix.size() <= 0 or matrix[0].size() != vec.size()){
+      cout << "Error: tried applying matrix: " << endl;
+      Print(matrix);
+      cout << "To vector : " << endl;
+      Print(vec);
+    }
     assert(matrix.size() > 0 && matrix[0].size() == vec.size());
 
     std::vector<T> result(matrix.size(), T(0));  // Initialize result vector with zeros

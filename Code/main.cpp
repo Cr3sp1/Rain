@@ -41,31 +41,32 @@ int main (int argc, char *argv[]){
 
 
     // Walking man
-    // ManyBody Walk("../Bodies/WalkingMan.in");
-    // for( size_t i = 0; i < 9; i++ ){
-    //     double t = 0.125*i;
-    //     Walk.Move(t);
-    //     Walk.PrintState("../data/Walk/Walk"+to_string(t).substr(0,5)+".dat");
-    // }
+    ManyBody Walk("../Bodies/WalkingMan.in");
+    vector<double> boxW = {0.90, 0.56, 1.74 };
 
     // Running man
     ManyBody Run("../Bodies/RunningMan.in");
-    // for( size_t i = 0; i < 9; i++ ){
-    //     double t = 0.125*i;
-    //     Run.Move(t);
-    //     Run.PrintState("../data/Run/Run"+to_string(t).substr(0,5)+".dat");
-    // }
+    vector<double> boxR = {1.13, 0.58, 1.82};
+
+    // Check boxes
+    PrintShadow(boxR, Run, {0, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xy" );
+    PrintShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
+    PrintShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
+    PrintShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
+    PrintShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
+    PrintShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
+
 
 
     // Walking & running error analysis
     // vector<vector<double>> WalkResT = SimErrT( box, Walk, rel_vel, body_vel, dx, 0, 1, nstep_t, 2, 50);
     // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
 
-    // vector<vector<double>> WalkResDxT = SimErrTdx(box, Walk, rel_vel, body_vel, nstep_v, dx, 0.5, nstep_t, 1, nstep_t );
+    // vector<vector<double>> WalkResDxT = SimErrTdx(box, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
 
-    vector<vector<double>> RunResDxT = SimErrTdx(box, Run, rel_vel, body_vel, nstep_v, dx, 0.5, nstep_t, 1, nstep_t );
-    Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
+    // vector<vector<double>> RunResDxT = SimErrTdx(box, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
 
     // ManyBody Temp("../Bodies/TempMan.in");
     // Temp.Move(0.25);

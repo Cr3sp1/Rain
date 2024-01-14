@@ -266,7 +266,7 @@ vector<vector<double>> IdMat( unsigned int N ) {
 
 // Returns the rotation matrix
 vector<vector<double>> RotMat( vector<double> axis, double theta ) {
-    if ( Norm(axis) == 0 or axis.size() != 3 ) return {}; // Handle zero-length vector to avoid division by zero
+    if ( Norm(axis) == 0 or axis.size() != 3 ) return IdMat(axis.size()); // Handle zero-length vector to avoid division by zero
     axis = axis/Norm(axis);
     double s = sin(theta);
     double c = cos(theta);
@@ -285,4 +285,22 @@ void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vec
     Point -= Rot0;
     Point = Rotmat*Point;
     Point += Rot0; 
+}
+
+
+
+// Prints the shadow of a body at nstep different time steps in its period
+void PrintShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile){
+    ProjSurface canvas(box, relvel, dx);
+    double dt = nstep < 2 ? 0 : ( tmax - tmin )/nstep;
+    double t = tmin;
+
+    for( unsigned int i = 0; i < nstep; i++ ){
+        body.Move(t);
+        canvas.BodyProj(body);
+        string out = outfile + to_string(t) + ".dat";
+        cout << "Printing to " << out << endl;
+        canvas.PrintRaysFlat(out);
+        t += dt;
+    }
 }

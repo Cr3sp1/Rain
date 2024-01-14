@@ -51,7 +51,7 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double Dx): dx(
     // cout << "dx = " << dx << endl;
     vector<double> u1 = (Norm(H[5] - H[0]) > Norm(H[3] - H[0])) ? H[5] - H[0] : H[3] - H[0] ;      // makes sure that u1 isn't infinitesimal
     u1 = (u1/Norm(u1))*dx;
-     double maxu1 = MaxU( H, u1 );
+    double maxu1 = MaxU( H, u1 );
     // cout << "|u1| = " << Norm(u1) << endl;
     // cout << "steps1 = " << Norm(u1) << endl;
     vector<double> u2 = CrossProduct(u1, vel);
@@ -147,6 +147,7 @@ void ProjSurface::PrintH( string outfile ) {
 
 // Returns an estimate of the projection of the body on the plane
 double ProjSurface::BodyProj( Body& body ) {
+    reset();
     unsigned int nhit = 0;
     // cout << "Projecting on " << rays.size() << " rays" << endl;
     body.Prime( H[0], Ray::V );
