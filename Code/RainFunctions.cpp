@@ -289,8 +289,8 @@ void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vec
 
 
 
-// Prints the shadow of a body at nstep different time steps in its period
-void PrintShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile){
+// Prints the shadow of a body at nstep different time steps in [tmin, tmax)
+void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile){
     ProjSurface canvas(box, relvel, dx);
     double dt = nstep < 2 ? 0 : ( tmax - tmin )/nstep;
     double t = tmin;
@@ -301,6 +301,22 @@ void PrintShadow( vector<double> box, Body& body, vector<double> relvel, double 
         string out = outfile + to_string(t) + ".dat";
         cout << "Printing to " << out << endl;
         canvas.PrintRaysFlat(out);
+        t += dt;
+    }
+}
+
+
+
+// Prints the state of a body at nstep different time steps in [tmin, tmax)
+void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, string outfile ) {
+    double dt = nstep < 2 ? 0 : ( tmax - tmin )/nstep;
+    double t = tmin;
+
+    for( unsigned int i = 0; i < nstep; i++ ){
+        body.Move(t);
+        string out = outfile + to_string(t) + ".dat";
+        cout << "Printing to " << out << endl;
+        body.PrintState(out);
         t += dt;
     }
 }

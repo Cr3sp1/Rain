@@ -74,7 +74,11 @@ vector<vector<double>> RotMat( vector<double> axis, double theta );
 // Rotates a Point relative to the point Rot0
 void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vector<double>>& Rotmat );
 
-// Prints the shadow of a body at nstep different time steps in its period
-void PrintShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile );
+// Prints the shadow of a body at nstep different time steps in [tmin, tmax)
+void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile );
+
+// Prints the state of a body at nstep different time steps in [tmin, tmax)
+void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, string outfile );
+
 
 #endif

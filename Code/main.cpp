@@ -49,30 +49,23 @@ int main (int argc, char *argv[]){
     vector<double> boxR = {1.13, 0.58, 1.82};
 
     // Check boxes
-    PrintShadow(boxR, Run, {0, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xy" );
-    PrintShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
-    PrintShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
-    PrintShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
-    PrintShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
-    PrintShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
+    // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
+    // PrintDynShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
+    // PrintDynShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
+    // PrintDynShadow(boxR, Run, {0, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xy" );
+    // PrintDynShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
+    // PrintDynShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
 
-
+    // Print dynamic state
+    PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
+    PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
 
     // Walking & running error analysis
-    // vector<vector<double>> WalkResT = SimErrT( box, Walk, rel_vel, body_vel, dx, 0, 1, nstep_t, 2, 50);
-    // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
-
-    // vector<vector<double>> WalkResDxT = SimErrTdx(box, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
 
-    // vector<vector<double>> RunResDxT = SimErrTdx(box, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
-
-    // ManyBody Temp("../Bodies/TempMan.in");
-    // Temp.Move(0.25);
-    // Temp.PrintState("../data/Temp/TempRun.dat");
-    // vector<vector<double>> resultsWalk = Simulate( box, Walk, rain_vel, 2, 7, nstep_v, dx, 0, 1, nstep_t );
-    // Print("../data/Walk/WalkWet.dat", resultsWalk);
     
 
     // Error analysis
