@@ -20,7 +20,7 @@ class ProjSurface;
 // Projects the Point on a plane perpendicular to v and passing through p
 vector<double> Project( vector<double> Point, vector<double> p, vector<double> v );
 
-// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont and three sides 
+// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a point p and three sides 
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v );
 
 // Finds the hexagonal projection H of a parallelepiped on a plane perpendicular to v and passing through P
