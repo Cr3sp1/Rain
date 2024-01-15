@@ -11,7 +11,7 @@ vector<double> Project( vector<double> Point, vector<double> p, vector<double> v
     return ( Point + v*(diff*v)/(v*v) );
 }
 
-// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a pont p and three sides 
+// Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a point p and three sides 
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v ){
     for( size_t i = 0; i < sides.size(); i++ ){
         if( sides[i]*v < 0 ) p += sides[i];
@@ -53,7 +53,7 @@ double MaxU(vector<vector<double>> H, vector<double> u ) {
 
 
 
-// Returns wether the Point is inside the hexagon H using triangles
+// Returns wether the Point is inside the hexagon H using triangles and baycentric coordinates
 bool PointIsInsideT( vector<double> Point, vector<vector<double>> H ){
     // Centers on p
     Point -= H[0];

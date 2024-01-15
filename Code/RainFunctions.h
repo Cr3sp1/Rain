@@ -29,7 +29,7 @@ vector<vector<double>> FindHexProj( vector<double> p, vector<vector<double>> Sid
 /// Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
 double MaxU(vector<vector<double>> H, vector<double> u );
 
-// Checks wether a point is inside the hexagon using triangles
+// Checks wether a point is inside the hexagon using triangles and baycentric coordinates
 bool PointIsInsideT( vector<double> Point, vector<vector<double>> H );
 
 // Periodic Boundary conditions for the index of H
