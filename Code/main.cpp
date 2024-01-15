@@ -56,16 +56,15 @@ int main (int argc, char *argv[]){
     // PrintDynShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
     // PrintDynShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
 
-    // Print dynamic state
-    PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
-    PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
+    // // Print dynamic state
+    // PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
+    // PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
 
     // Walking & running error analysis
-    // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
-
-    // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
+    vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
+    vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
     
 
     // Error analysis

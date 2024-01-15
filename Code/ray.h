@@ -69,7 +69,7 @@ class ProjSurface{
     // Complete constructor
     ProjSurface(vector<double> box, vector<double> vel, double Dx);
 
-    // Resets the surface between steps
+    // Resets the surface between steps (activates each ray)
     void reset();
 
     // Get stuff
