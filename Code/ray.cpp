@@ -164,16 +164,16 @@ double ProjSurface::BodyProj( Body& body, double tmin, double tmax, unsigned int
     if( nstep == 0 ) return 0;
     double dt = ( tmax - tmin )/nstep;
     unsigned int nhit = 0;
-    double t = tmin;
+    
     // cout << "Projecting on " << rays.size() << " rays" << endl;
     for( unsigned int i = 0; i < nstep; i++ ){
+        double t = tmin + i*dt;
         body.Move(t);
         body.Prime( H[0], Ray::V );
         reset();
         for( Ray& ray : rays ){
             if( body.Check( ray ) ) nhit++;
         }
-        t += dt;
     }
     // cout << "nhit = " << nhit << endl;
     return nhit*dx*dx/nstep;
