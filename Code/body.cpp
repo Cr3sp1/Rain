@@ -22,7 +22,7 @@ void Body::Move( double T ) {
         delta += trans[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Add cos terms
-    for( size_t i = 0; 2*i+1 < trans.size(); i+=2 ){
+    for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate 
@@ -39,13 +39,12 @@ void Body::Move( double T ) {
         theta += w[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
         }
         // Add cos terms
-        for( size_t i = 0; 2*i+1 < w.size(); i+=2 ){
+        for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
     } else {
         rotmat = IdMat(3);
-        rot = {{0,0,0}};
     }
 
     // Move sub-bodies
@@ -119,7 +118,7 @@ void Sphere::Move( double T ) {
         delta += trans[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Add cos terms
-    for( size_t i = 0; 2*i+1 < trans.size(); i+=2 ){
+    for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate
@@ -135,7 +134,7 @@ void Sphere::Move( double T ) {
         theta += w[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
         }
         // Add cos terms
-        for( size_t i = 0; 2*i+1 < w.size(); i+=2 ){
+        for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
@@ -230,7 +229,7 @@ void Pippo::Move( double T ) {
         delta += trans[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Add cos terms
-    for( size_t i = 0; 2*i+1 < trans.size(); i+=2 ){
+    for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate
@@ -246,7 +245,7 @@ void Pippo::Move( double T ) {
         theta += w[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
         }
         // Add cos terms
-        for( size_t i = 0; 2*i+1 < w.size(); i+=2 ){
+        for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
@@ -368,7 +367,7 @@ void Capsule::Move( double T ) {
         delta += trans[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
     }
     // Add cos terms
-    for( size_t i = 0; 2*i+1 < trans.size(); i+=2 ){
+    for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate 
@@ -385,7 +384,7 @@ void Capsule::Move( double T ) {
         theta += w[2*i]*( sin(T*2*M_PI/(i+1)) - sin(t*2*M_PI/(i+1) ));
         }
         // Add cos terms
-        for( size_t i = 0; 2*i+1 < w.size(); i+=2 ){
+        for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
         rotmat =  RotMat( rot[1]-rot[0], theta );
