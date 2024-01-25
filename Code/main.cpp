@@ -61,10 +61,15 @@ int main (int argc, char *argv[]){
     // PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
 
     // Walking & running error analysis
-    vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
-    vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
+    // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
+    vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, nstep_t, 1, nstep_t);
+    Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
+
+    // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
+    // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
+    vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, nstep_t, 1, nstep_t);
+    Print( "../data/Run/ErrT.dat", RunResT, 12 );
     
 
     // Error analysis
