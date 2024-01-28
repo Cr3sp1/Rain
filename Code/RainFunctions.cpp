@@ -131,7 +131,7 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
-        cout << "dx = " << d[i] <<endl;
+        cout << "dx = " << d[i] << endl;
         S.push_back(ProjSurface( box, relvel, d[i] ).BodyProj(body)*Norm(relvel)/bodyvel);
     }
 
@@ -146,6 +146,7 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
+        cout << "dx = " << d[i] << endl;
         S.push_back(ProjSurface( box, relvel, d[i] ).BodyProj(body, tmin, tmax, nstep )*Norm(relvel)/bodyvel);
     }
 
@@ -160,6 +161,7 @@ vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> r
     
     for( size_t i = 1; i < N; i++ ) {
         nstep.push_back(nstep[i-1]+k);
+        cout << "Nstep = " << nstep[i] << endl;
         S.push_back(ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[i] )*Norm(relvel)/bodyvel);
     }
 

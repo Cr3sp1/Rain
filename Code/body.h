@@ -26,8 +26,10 @@ class Body {
 	string name;
   	// Time (should go from 0 to 1)
 	double t;
-	// Points used for rotation in time evolution: rot[0] is center, rot[1]-rot[0] is the axis of rotation
-	vector<vector<double>> rot;
+	// Center of rotation
+	vector<double> rotcent;
+	// Axis of rotation
+	vector<double> rotax;
 	// Amplitude of oscillation in radiants (coefficients in fourier series expansion of periodic motion, structured as [0]sin [1]cos [2]sin ...)
 	vector<double> w;
 	// Vectors used for periodic translation in time evolution (coefficients in sin expasion of periodic motion)
@@ -40,7 +42,7 @@ class Body {
     // Default constructor
 	Body(): t(0), w(0) {};
 	// Dynamic constructor
-	Body( string Name, vector<vector<double>> Rot, vector<double> W, vector<vector<double>> Trans ): name(Name), t(0), rot(Rot), w(W), trans(Trans) {} 
+	Body( string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans ): name(Name), t(0), rotcent(Rotcent),  rotax(Rotax), w(W), trans(Trans) {} 
 	// Virtual destructor
     virtual ~Body();
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
@@ -85,7 +87,7 @@ class Sphere: public Body {
 	// Complete static constructor
 	Sphere( vector<double> center, double radius ): Body(), cent(center), rad(radius) {}
 	// Complete dynamic constructor
-	Sphere( vector<double> center, double radius, string Name, vector<vector<double>> Rot, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rot, W, Trans ), cent(center), rad(radius) {}
+	Sphere( vector<double> center, double radius, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(center), rad(radius) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
@@ -125,7 +127,7 @@ class Pippo: public Body {
 	// Complete static constructor 
 	Pippo( vector<double> Center, vector<vector<double>> Side ): Body(), cent(Center), side(Side) {}
 	// Complete dynamic constructor
-	Pippo( vector<double> Center, vector<vector<double>> Side, string Name, vector<vector<double>> Rot, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rot, W, Trans ), cent(Center), side(Side) {}
+	Pippo( vector<double> Center, vector<vector<double>> Side, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(Center), side(Side) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray
@@ -166,7 +168,7 @@ class Capsule: public Body {
 	// Complete static constructor 
 	Capsule( vector<double> L1, vector<double> L2, double Radius ): Body(), l1(L1), l2(L2), rad(Radius) {} 
 	// Complete dynamic constructor
-	Capsule( vector<double> L1, vector<double> L2, double Radius, string Name, vector<vector<double>> Rot, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rot, W, Trans ), l1(L1), l2(L2), rad(Radius) {}
+	Capsule( vector<double> L1, vector<double> L2, double Radius, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), l1(L1), l2(L2), rad(Radius) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness

@@ -26,13 +26,11 @@ void Body::Move( double T ) {
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate 
-    for( vector<double>& point : rot ){
-        point += delta;
-    }
+    if( w.size() > 0 ) rotcent += delta;
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w.size() > 0 and rot.size() == 2 ) {
+    if( w.size() > 0 ) {
         double theta = 0;
         // Add sin terms
         for( size_t i = 0; 2*i < w.size(); i++ ){
@@ -42,28 +40,31 @@ void Body::Move( double T ) {
         for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
-        rotmat =  RotMat( rot[1]-rot[0], theta );
+        rotmat =  RotMat( rotax, theta );
     } else {
         rotmat = IdMat(3);
     }
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( delta, rotcent, rotmat );
 
     t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Body::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
+void Body::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double>& point : rot ) point += Delta;
+    if( w.size() != 0 ) rotcent += Delta;
 
     // Rotate
-    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    if( w.size() != 0 ) {
+        Rotate( rotcent, RotCent, Rotmat );
+        rotax = Rotmat*rotax;
+    }
     for( vector<double>& vec : trans ) vec = Rotmat*vec;
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( Delta, RotCent, Rotmat );
 }    
 
 // Finds smallest box around body
@@ -121,13 +122,13 @@ void Sphere::Move( double T ) {
     for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
-    // Translate
-    for( vector<double>& point : rot ) point += delta;
+    // Translate 
+    if( w.size() > 0 ) rotcent += delta;;
     cent += delta;
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w.size() > 0 and rot.size() == 2 ) {
+    if( w.size() > 0 ) {
         double theta = 0;
         // Add sin terms
         for( size_t i = 0; 2*i < w.size(); i++ ){
@@ -137,34 +138,37 @@ void Sphere::Move( double T ) {
         for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
-        rotmat =  RotMat( rot[1]-rot[0], theta );
+        rotmat =  RotMat( rotax, theta );
     } else {
         rotmat = IdMat(3);
-        rot = {{0,0,0}};
     }
 
     // Rotate
-    Rotate( cent, rot[0], rotmat );
+    Rotate( cent, rotcent, rotmat );
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( delta, rotcent, rotmat );
 
     t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Sphere::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
+void Sphere::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double>& point : rot ) point += Delta;
+    if( w.size() != 0 ) rotcent += Delta;
     cent += Delta;
 
     // Rotate
-    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    // Rotate
+    if( w.size() != 0 ) {
+        Rotate( rotcent, RotCent, Rotmat );
+        rotax = Rotmat*rotax;
+    }
     for( vector<double>& vec : trans ) vec = Rotmat*vec;
-    Rotate( cent, Rot0, Rotmat );
+    Rotate( cent, RotCent, Rotmat );
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( Delta, RotCent, Rotmat );
 }
 
 // Finds smallest box around body
@@ -232,13 +236,13 @@ void Pippo::Move( double T ) {
     for( size_t i = 0; 2*i+1 < trans.size(); i++ ){
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
-    // Translate
-    for( vector<double>& point : rot ) point += delta;
+    // Translate 
+    if( w.size() > 0 ) rotcent += delta;
     cent += delta;
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w.size() > 0 and rot.size() == 2 ) {
+    if( w.size() > 0 ) {
         double theta = 0;
         // Add sin terms
         for( size_t i = 0; 2*i < w.size(); i++ ){
@@ -248,37 +252,40 @@ void Pippo::Move( double T ) {
         for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
-        rotmat =  RotMat( rot[1]-rot[0], theta );
+        rotmat =  RotMat( rotax, theta );
     } else {
         rotmat = IdMat(3);
-        rot = {{0,0,0}};
     }
 
     // Rotate
     for( vector<double>& point : side ) point = rotmat*point;
-    Rotate( cent, rot[0], rotmat );
+    Rotate( cent, rotcent, rotmat );
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( delta, rotcent, rotmat );
 
     t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Pippo::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
+void Pippo::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double>& point : rot ) point += Delta;
+    if( w.size() != 0 ) rotcent += Delta;
     cent += Delta;
 
     // Rotate
-    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    // Rotate
+    if( w.size() != 0 ) {
+        Rotate( rotcent, RotCent, Rotmat );
+        rotax = Rotmat*rotax;
+    }
     for( vector<double>& vec : trans ) vec = Rotmat*vec;
     for( vector<double>& point : side ) point = Rotmat*point; 
-    Rotate( cent, Rot0, Rotmat );
+    Rotate( cent, RotCent, Rotmat );
 
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( Delta, RotCent, Rotmat );
 }
 
 // Returns all 8 vertices of the parallelepiped
@@ -371,13 +378,13 @@ void Capsule::Move( double T ) {
         delta += trans[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
     }
     // Translate 
-    for( vector<double>& point : rot )  point += delta;
+    if( w.size() > 0 ) rotcent += delta;
     l1 += delta;
     l2 += delta;
 
     // Generate rotation matrix
     vector<vector<double>> rotmat;
-    if( w.size() > 0 and rot.size() == 2 ) {
+    if( w.size() > 0 ) {
         double theta = 0;
         // Add sin terms
         for( size_t i = 0; 2*i < w.size(); i++ ){
@@ -387,36 +394,39 @@ void Capsule::Move( double T ) {
         for( size_t i = 0; 2*i+1 < w.size(); i++ ){
             theta += w[2*i+1]*( cos(T*2*M_PI/(i+1)) - cos(t*2*M_PI/(i+1) ));
         }
-        rotmat =  RotMat( rot[1]-rot[0], theta );
+        rotmat =  RotMat( rotax, theta );
     } else {
         rotmat = IdMat(3);
-        rot = {{0,0,0}};
     }
 
     // Rotate
-    Rotate( l1, rot[0], rotmat);
-    Rotate( l2, rot[0], rotmat);
+    Rotate( l1, rotcent, rotmat);
+    Rotate( l2, rotcent, rotmat);
 
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( delta, rot[0], rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( delta, rotcent, rotmat );
 
     t = T;
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Capsule::BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) {
+void Capsule::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
     // Translate
-    for( vector<double>& point : rot ) point += Delta;
+    if( w.size() != 0 ) rotcent += Delta;
     l1 += Delta;
     l2 += Delta;
 
     // Rotate
-    for( vector<double>& point : rot ) Rotate( point, Rot0, Rotmat );
+    // Rotate
+    if( w.size() != 0 ) {
+        Rotate( rotcent, RotCent, Rotmat );
+        rotax = Rotmat*rotax;
+    }
     for( vector<double>& vec : trans ) vec = Rotmat*vec;
-    Rotate( l1, Rot0, Rotmat );
-    Rotate( l2, Rot0, Rotmat );
+    Rotate( l1, RotCent, Rotmat );
+    Rotate( l2, RotCent, Rotmat );
     // Move sub-bodies
-    for( Body* body : SubBodies ) body->BeMoved( Delta, Rot0, Rotmat );
+    for( Body* body : SubBodies ) body->BeMoved( Delta, RotCent, Rotmat );
 }
 
 // Finds smallest box around body
@@ -474,6 +484,7 @@ ManyBody::ManyBody( string filename ): Body() {
         if( type == "Sphere" ) {
             vector<vector<double>> rot, trans;
             vector<double> cent(3);
+            vector<double> rotcent(3), axis(3);
             double rad;
             size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
@@ -486,11 +497,8 @@ ManyBody::ManyBody( string filename ): Body() {
             for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
             w = w*(M_PI/180);
             if( w_size != 0 ) {
-                rot = {{0,0,0}, {0,0,0}};
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> rotcent[i];
                 for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
-                rot[1] = rot[0] + axis;
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -501,13 +509,14 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Sphere( cent, rad, name, rot, w, trans ));
+            AddBody( Sphere( cent, rad, name, rotcent, axis, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
         if( type == "Pippo" ) {
             vector<vector<double>> rot, trans, sides;
             vector<double> cent(3);
+            vector<double> rotcent(3), axis(3);
             size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> cent[i];
             for( size_t i = 0; i < 3; i++ ){
@@ -525,11 +534,8 @@ ManyBody::ManyBody( string filename ): Body() {
             for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
             w = w*(M_PI/180);
             if( w_size != 0 ) {
-                rot = {{0,0,0}, {0,0,0}};
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> rotcent[i];
                 for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
-                rot[1] = rot[0] + axis;
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -540,13 +546,14 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Pippo( cent, sides, name, rot, w, trans ));
+            AddBody( Pippo( cent, sides, name, rotcent, axis, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 
         if( type == "Capsule" ) {
             vector<vector<double>> rot, trans;
             vector<double> cent(3), l1(3), l2(3);
+            vector<double> rotcent(3), axis(3);
             double rad;
             size_t trans_size, w_size;
             for( size_t i = 0; i < 3; i++ ) iss >> l1[i];
@@ -560,11 +567,8 @@ ManyBody::ManyBody( string filename ): Body() {
             for( size_t i = 0; i < w_size; i++ ) iss >> w[i];
             w = w*(M_PI/180);
             if( w_size != 0 ) {
-                rot = {{0,0,0}, {0,0,0}};
-                for( size_t i = 0; i < 3; i++ ) iss >> rot[0][i];
-                vector<double> axis(3);
+                for( size_t i = 0; i < 3; i++ ) iss >> rotcent[i];
                 for( size_t i = 0; i < 3; i++ ) iss >> axis[i];
-                rot[1] = rot[0] + axis;
             }
             iss >> trans_size;
             for( size_t i = 0; i < trans_size; i++ ){
@@ -575,7 +579,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Capsule( l1, l2, rad, name, rot, w, trans ));
+            AddBody( Capsule( l1, l2, rad, name, rotcent, axis, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
     }
