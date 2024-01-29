@@ -164,7 +164,7 @@ vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> r
     
     for( size_t i = 1; i < N; i++ ) {
         dt.push_back(dt[i-1]*k);
-        double nstepnew = floor(1./dt[i]);
+        double nstepnew = round(1./dt[i]);
         if( nstepnew > nstep.back()) {
             cout << "Nstep = " << nstepnew << endl;
             nstep.push_back(nstepnew);

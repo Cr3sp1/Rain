@@ -63,14 +63,14 @@ int main (int argc, char *argv[]){
     // Walking & running error analysis
     // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
-    vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, nstep_t, 1, nstep_t);
+    vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
     Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
     // vector<vector<double>> WalkResDx = SimErr(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
     // Print( "../data/Walk/ErrDx.dat", WalkResDx, 12 );
 
     // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
-    vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, nstep_t, 1, nstep_t);
+    vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
     Print( "../data/Run/ErrT.dat", RunResT, 12 );
     // vector<vector<double>> RunResDx = SimErr(boxW, Run, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
     // Print( "../data/Run/ErrDx.dat", RunResDx, 12 );
@@ -110,7 +110,7 @@ int main (int argc, char *argv[]){
     // Print("../data/Capsule/CompareC.dat", resultsC, 15);
 
 
-    // // Simulation of two pippos compenetrating
+    // Simulation of two pippos compenetrating
     // ManyBody Trial2P("../Bodies/DoublePippo.in");
     // vector<double> dist;
     // vector<double> wet2P;
