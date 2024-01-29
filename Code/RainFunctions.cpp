@@ -140,32 +140,38 @@ vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> re
 
 // Estimates wetness for N values of dx between dxmin and dxmax for dynamic body, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
 vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep) {
-    vector<double> d = {dxmax};
-    vector<double> S = {ProjSurface( box, relvel, d[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
+    vector<double> dx = {dxmax};
+    vector<double> S = {ProjSurface( box, relvel, dx[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
     double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
-        d.push_back(d[i-1]*k);
-        cout << "dx = " << d[i] << endl;
-        S.push_back(ProjSurface( box, relvel, d[i] ).BodyProj(body, tmin, tmax, nstep )*Norm(relvel)/bodyvel);
+        dx.push_back(dx[i-1]*k);
+        cout << "dx = " << dx[i] << endl;
+        S.push_back(ProjSurface( box, relvel, dx[i] ).BodyProj(body, tmin, tmax, nstep )*Norm(relvel)/bodyvel);
     }
 
-    return Transpose(vector<vector<double>>{ d, S});
+    return Transpose(vector<vector<double>>{ dx, S});
 }
 
 // Estimates wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
 vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> relvel, double bodyvel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax) {
-    vector<double> nstep = {(double) nstepmin};
+    double dtmin = 1./nstepmax;
+    double dtmax = 1./nstepmin;
+    vector<double> dt = {dtmax};
+    vector<double> nstep = { (double) nstepmin};
     vector<double> S = {ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[0] )*Norm(relvel)/bodyvel};
-    double k =  N == 0 ? 0  :  (double)(nstepmax-nstepmin)/(N-1);
+    double k =  N == 0 ? 0  :  pow(dtmin/dtmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
-        nstep.push_back(nstep[i-1]+k);
-        cout << "Nstep = " << nstep[i] << endl;
-        S.push_back(ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[i] )*Norm(relvel)/bodyvel);
+        dt.push_back(dt[i-1]*k);
+        double nstepnew = floor(1./dt[i]);
+        if( nstepnew > nstep.back()) {
+            cout << "Nstep = " << nstepnew << endl;
+            nstep.push_back(nstepnew);
+            S.push_back(ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstepnew )*Norm(relvel)/bodyvel);
+        }
     }
 
-    for( double& n : nstep ) n = floor(n);
     return Transpose(vector<vector<double>>{ nstep, S});
 }
 
