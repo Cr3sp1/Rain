@@ -48,6 +48,10 @@ int main (int argc, char *argv[]){
     ManyBody Run("../Bodies/RunningMan.in");
     vector<double> boxR = {1.13, 0.58, 1.82};
 
+    // Human pippo
+    ManyBody PippoH("../Bodies/HumanPippo.in");
+    vector<double> boxHP = {0.24, 0.52, 1.78};
+
     // Check boxes
     // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
     // PrintDynShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
@@ -63,15 +67,15 @@ int main (int argc, char *argv[]){
     // Walking & running error analysis
     // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
-    vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
-    Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
+    // vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
+    // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
     // vector<vector<double>> WalkResDx = SimErr(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
     // Print( "../data/Walk/ErrDx.dat", WalkResDx, 12 );
 
     // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
-    vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
-    Print( "../data/Run/ErrT.dat", RunResT, 12 );
+    // vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
+    // Print( "../data/Run/ErrT.dat", RunResT, 12 );
     // vector<vector<double>> RunResDx = SimErr(boxW, Run, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
     // Print( "../data/Run/ErrDx.dat", RunResDx, 12 );
     
@@ -130,6 +134,23 @@ int main (int argc, char *argv[]){
     // Print("../data/Pippo/DoubleP.dat", results2P, 12 );
     
 
+
+    // Find v_opt 
+    // vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 10, 20, dx, nstep_t, -2, 8, nstep_v, -5, 5, nstep_v );
+    // Print( "../data/Walk/OptMapWide01.dat", WalkOptMap, 12 );
+
+    // vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 10, 20, dx, nstep_t, -2, 8, nstep_v, -5, 5, nstep_v );
+    // Print( "../data/Run/OptMapWide01.dat", RunOptMap, 12 );
+    
+    vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 3, nstep_v, 0, 2, nstep_v );
+    Print( "../data/Pippo/OptMap.dat", HPOptMap, 12 );
+
+    vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 2, 10, dx, nstep_t, -1, 3, nstep_v, 0, 2, nstep_v );
+    Print( "../data/Walk/OptMap.dat", WalkOptMap, 12 );
+
+    vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 2, 10, dx, nstep_t, -1, 3, nstep_v, 0, 2, nstep_v );
+    Print( "../data/Run/OptMap.dat", RunOptMap, 12 );
+    
     return 0;
 }
 

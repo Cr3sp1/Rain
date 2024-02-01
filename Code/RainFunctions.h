@@ -80,5 +80,11 @@ void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, doub
 // Prints the state of a body at nstep different time steps in [tmin, tmax)
 void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, string outfile );
 
+// Looks for the minimum of wetness between vmin and vmax with N steps and returns its value if it finds it, else returns -1.
+double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep );
+
+// Finds minimums of wetness on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, or -1 if it doesn't exist
+vector<vector<double>> OptMap( vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
+
 
 #endif

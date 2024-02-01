@@ -35,8 +35,8 @@ ProjSurface::ProjSurface(vector<double> box, vector<double> vel, double Dx): dx(
     if( box.size() != 3 or box[0] <= 0 or box[1] <= 0 or box[2] <= 0  ) {
         throw invalid_argument("Box must be of size 3 with all components positive!");
     }
-    if( vel.size() != 3 or vel[2] >= 0  ) {
-        throw invalid_argument("Velocity must be of size 3 with third component negative!");
+    if( vel.size() != 3 ) {
+        throw invalid_argument("Velocity must be of size 3!");
     }
 
     

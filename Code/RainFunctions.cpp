@@ -328,3 +328,48 @@ void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, st
         t += dt;
     }
 }
+
+
+
+// Looks for the minimum of wetness between vmin and vmax with N steps and returns its value if it finds it, else returns -1.
+double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep ) {
+    double vbest = 0;
+    double wbest = 0;
+    
+    // Finds minimum in [vmin, vmax] 
+    for( size_t i = 0; i < N; i++ ){
+        double vb = N < 2 ? vmin : vmin + i*(vmax-vmin)/(N-1);
+        vector<double> vrel = rain_v;
+        vrel[0] -= vb;
+        double wetness = Norm(vrel)*ProjSurface( box, vrel, dx ).BodyProj(body, 0, 1, nstep)/vb;
+        if ( wetness < wbest or i == 0 ) {
+            wbest = wetness;
+            vbest = vb;
+        }
+    }
+
+    // Compares minimum wetness with limit of vb to infinity
+    vector<double> vlim = { 1., 0., 0., };
+    double wlim = ProjSurface( box, vlim, dx ).BodyProj(body, 0, 1, nstep);
+    if( wbest > wlim ) return -1;
+    return vbest;
+
+}
+
+
+
+// Finds minimums of wetness on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, or -1 if it doesn't exist
+vector<vector<double>> OptMap( vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross ) {
+    vector<double> vtail, vcross, vopt;
+
+    for( size_t i = 0; i < n_tail; i++ ) {
+        for( size_t j = 0; j < n_cross; j++ ) {
+            vtail.push_back( vtail_min + i*(vtail_max-vtail_min)/(n_tail-1));
+            vcross.push_back( vcross_min + j*(vcross_max-vcross_min)/(n_cross-1));
+            vector<double> rain_v = { vtail.back(), vcross.back(), -1};
+            vopt.push_back( FindMin( box, body, rain_v, vmin, vmax, N, dx, nstep ) );
+        }
+    }
+    vector<vector<double>> results{vtail, vcross, vopt};
+    return Transpose(results);
+}
