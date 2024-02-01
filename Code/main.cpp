@@ -142,13 +142,13 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 10, 20, dx, nstep_t, -2, 8, nstep_v, -5, 5, nstep_v );
     // Print( "../data/Run/OptMapWide01.dat", RunOptMap, 12 );
     
-    vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 3, nstep_v, 0, 2, nstep_v );
+    vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 2, nstep_v, 0, 1.5, nstep_v );
     Print( "../data/Pippo/OptMap.dat", HPOptMap, 12 );
 
-    vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 2, 10, dx, nstep_t, -1, 3, nstep_v, 0, 2, nstep_v );
+    vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 2, 10, dx, nstep_t, -0.5, 2, nstep_v, 0, 1.5, nstep_v );
     Print( "../data/Walk/OptMap.dat", WalkOptMap, 12 );
 
-    vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 2, 10, dx, nstep_t, -1, 3, nstep_v, 0, 2, nstep_v );
+    vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 2, 10, dx, nstep_t, -1, 2, nstep_v, 0, 1.5, nstep_v );
     Print( "../data/Run/OptMap.dat", RunOptMap, 12 );
     
     return 0;
