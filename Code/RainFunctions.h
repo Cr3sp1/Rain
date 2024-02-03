@@ -86,5 +86,11 @@ double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vm
 // Finds minimums of wetness on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, or -1 if it doesn't exist
 vector<vector<double>> OptMap( vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
 
+// Looks for the minimum of wetness for two bodies between vmin and vmax with N steps and returns in result[0] its value, and in result[1] returns number corresponding to the body with less wetness
+vector<double> FindMinCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, vector<double> rain_v, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep );
+
+// Finds minimums of wetness between two bodies on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, on the fourth column the number corresponding to the body with less wetness
+vector<vector<double>> OptMapCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
+
 
 #endif

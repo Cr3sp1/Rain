@@ -80,29 +80,33 @@ int main (int argc, char *argv[]){
     // Print( "../data/Run/ErrDx.dat", RunResDx, 12 );
     
 
-    // Error analysis
+
+    // Error analysis sphere
     // ManyBody TrialS("../Bodies/Sphere.in");
     // vector<vector<double>> resultsS;
     // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
-    // Error analysis
+    // Error analysis pippo
     // ManyBody TrialP("../Bodies/Pippo.in");
     // vector<vector<double>> resultsP;
     // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
 
-    // Error analysis
+    // Error analysis capsule
     // ManyBody TrialC("../Bodies/Capsule.in");
     // vector<vector<double>> resultsC;
     // resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
     
+
+
     // // Draw shadow
     // ProjSurface Plz( box, rel_vel, dx );
     // Plz.BodyProj(trialM1);
     // Plz.PrintR("../data/RayOriginsCap.dat");
     // Plz.PrintRaysFlat("../data/RayOriginsCapF.dat");
+
 
 
     // Simulate different body velocities
@@ -112,6 +116,7 @@ int main (int argc, char *argv[]){
     // Print("../data/Pippo/CompareP.dat", resultsP, 15);
     // resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // Print("../data/Capsule/CompareC.dat", resultsC, 15);
+
 
 
     // Simulation of two pippos compenetrating
@@ -142,14 +147,21 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 10, 20, dx, nstep_t, -2, 8, nstep_v, -5, 5, nstep_v );
     // Print( "../data/Run/OptMapWide01.dat", RunOptMap, 12 );
     
-    vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 2, nstep_v, 0, 1.5, nstep_v );
-    Print( "../data/Pippo/OptMap.dat", HPOptMap, 12 );
+    // vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 2, nstep_v, 0, 1.5, nstep_v );
+    // Print( "../data/Pippo/OptMap.dat", HPOptMap, 12 );
 
-    vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 2, 10, dx, nstep_t, -0.5, 2, nstep_v, 0, 1.5, nstep_v );
+
+    vector<vector<double>> WalkOptMap = OptMap( boxW, Walk, 0, 2, 10, dx, nstep_t, -0, 0.8, nstep_v, 0, 0.5, nstep_v );
     Print( "../data/Walk/OptMap.dat", WalkOptMap, 12 );
 
-    vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 2, 10, dx, nstep_t, -1, 2, nstep_v, 0, 1.5, nstep_v );
+    vector<vector<double>> RunOptMap = OptMap( boxR, Run, 0, 2, 10, dx, nstep_t, 0, 2, nstep_v, 0, 1.2, nstep_v );
     Print( "../data/Run/OptMap.dat", RunOptMap, 12 );
+
+
+    // Compare walking and running
+    // vector<vector<double>> HPOptMap = OptMapCompare( boxW, Walk, boxR, Run, 0, 0.7, 2, 10, dx, nstep_t, -2, 2, nstep_v, 0, 2, nstep_v );
+    // Print( "../data/Compare/OptMapCompare.dat", HPOptMap, 12 );
+
     
     return 0;
 }

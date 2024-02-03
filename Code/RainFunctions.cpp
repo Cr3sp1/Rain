@@ -333,8 +333,10 @@ void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, st
 
 // Looks for the minimum of wetness between vmin and vmax with N steps and returns its value if it finds it, else returns -1.
 double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep ) {
-    double vbest = 0;
-    double wbest = 0;
+    // Inintialize with limit for vb to inf
+    vector<double> vlim = { 1., 0., 0., };
+    double wbest = ProjSurface( box, vlim, dx ).BodyProj(body, 0, 1, nstep);
+    double vbest = -1;
     
     // Finds minimum in [vmin, vmax] 
     for( size_t i = 0; i < N; i++ ){
@@ -342,18 +344,13 @@ double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vm
         vector<double> vrel = rain_v;
         vrel[0] -= vb;
         double wetness = Norm(vrel)*ProjSurface( box, vrel, dx ).BodyProj(body, 0, 1, nstep)/vb;
-        if ( wetness < wbest or i == 0 ) {
+        if ( wetness < wbest ) {
             wbest = wetness;
             vbest = vb;
         }
     }
 
-    // Compares minimum wetness with limit of vb to infinity
-    vector<double> vlim = { 1., 0., 0., };
-    double wlim = ProjSurface( box, vlim, dx ).BodyProj(body, 0, 1, nstep);
-    if( wbest > wlim ) return -1;
     return vbest;
-
 }
 
 
@@ -371,5 +368,63 @@ vector<vector<double>> OptMap( vector<double> box, Body& body, double vmin, doub
         }
     }
     vector<vector<double>> results{vtail, vcross, vopt};
+    return Transpose(results);
+}
+
+
+
+// Looks for the minimum of wetness for two bodies between vmin and vmax with N steps and returns in result[0] its value, and in result[1] returns number corresponding to the body with less wetness
+vector<double> FindMinCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, vector<double> rain_v, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep ) {
+    // Inintialize
+    vector<double> vlim = { 1., 0., 0., };
+    double wbest = 0;
+    vector<double> vbest = {0, 0};
+    
+    // Finds minimum in [vmin, vmax1] 
+    for( size_t i = 0; i < N; i++ ){
+        double vb = N < 2 ? vmin : vmin + i*(vmax1-vmin)/(N-1);
+        vector<double> vrel = rain_v;
+        vrel[0] -= vb;
+        double wetness = Norm(vrel)*ProjSurface( box1, vrel, dx ).BodyProj(body1, 0, 1, nstep)/vb;
+        if ( wetness < wbest or i == 0 ) {
+            wbest = wetness;
+            vbest[0] = vb;
+            vbest[1] = 1;
+        }
+    }
+
+    // Finds minimum in [vmin, vmax2] 
+    for( size_t i = 0; i < N; i++ ){
+        double vb = N < 2 ? vmin : vmin + i*(vmax2-vmin)/(N-1);
+        vector<double> vrel = rain_v;
+        vrel[0] -= vb;
+        double wetness = Norm(vrel)*ProjSurface( box2, vrel, dx ).BodyProj(body2, 0, 1, nstep)/vb;
+        if ( wetness < wbest ) {
+            wbest = wetness;
+            vbest[0] = vb;
+            vbest[1] = 2;
+        }
+    }
+
+    return vbest;
+}
+
+
+
+// Finds minimums of wetness between two bodies on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, on the fourth column the number corresponding to the body with less wetness
+vector<vector<double>> OptMapCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross ) {
+    vector<double> vtail, vcross, vopt, type;
+
+    for( size_t i = 0; i < n_tail; i++ ) {
+        for( size_t j = 0; j < n_cross; j++ ) {
+            vtail.push_back( vtail_min + i*(vtail_max-vtail_min)/(n_tail-1));
+            vcross.push_back( vcross_min + j*(vcross_max-vcross_min)/(n_cross-1));
+            vector<double> rain_v = { vtail.back(), vcross.back(), -1};
+            vector<double> res = FindMinCompare( box1, body1, box2, body2, rain_v, vmin, vmax1, vmax2, N, dx, nstep );
+            vopt.push_back( res[0] );
+            type.push_back( res[1] );
+        }
+    }
+    vector<vector<double>> results{vtail, vcross, vopt, type};
     return Transpose(results);
 }
