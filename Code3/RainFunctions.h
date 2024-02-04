@@ -6,7 +6,6 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <algorithm> 
 #include "VectorOperations.h"
 
 
@@ -93,7 +92,5 @@ vector<double> FindMinCompare( vector<double> box1, Body& body1, vector<double> 
 // Finds minimums of wetness between two bodies on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, on the fourth column the number corresponding to the body with less wetness
 vector<vector<double>> OptMapCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
 
-// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max], and calculates wetness for 5 values around it, returns all these values
-vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vcross, double vtail_min, double vtail_max, unsigned int n_tail  );
 
 #endif
