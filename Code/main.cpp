@@ -165,25 +165,25 @@ int main (int argc, char *argv[]){
 
 
     // V_opt data for fitting
-    vector<vector<double>> WalkMins = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0, 0, 0.7, nstep_v );
+    vector<vector<double>> WalkMins = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0, 0.3, 0.7, nstep_v );
     Print( "../data/Walk/OptFit0.dat", WalkMins, 12 );
 
-    vector<vector<double>> WalkMins2 = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0.15, 0, 0.7, nstep_v );
-    Print( "../data/Walk/OptFit015.dat", WalkMins2, 12 );
+    // vector<vector<double>> WalkMins2 = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0.15, 0.3, 0.7, nstep_v );
+    // Print( "../data/Walk/OptFit015.dat", WalkMins2, 12 );
 
-    vector<vector<double>> WalkMins3 = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0.25, 0, 0.7, nstep_v );
-    Print( "../data/Walk/OptFit025.dat", WalkMins3, 12 );
+    // vector<vector<double>> WalkMins3 = FindMinFit( boxW, Walk, 0, 0.7, 10, dx, nstep_t, 0.25, 0.3, 0.7, nstep_v );
+    // Print( "../data/Walk/OptFit025.dat", WalkMins3, 12 );
 
 
 
     vector<vector<double>> RunMins = FindMinFit( boxR, Run, 0, 2, 10, dx, nstep_t, 0, 0, 2, nstep_v );
     Print( "../data/Run/OptFit0.dat", RunMins, 12 );
 
-    vector<vector<double>> RunMins2 = FindMinFit( boxR, Run, 0, 2, 10, dx, nstep_t, 0.4, 0, 2, nstep_v );
-    Print( "../data/Run/OptFit04.dat", RunMins2, 12 );
+    // vector<vector<double>> RunMins2 = FindMinFit( boxR, Run, 0, 2, 10, dx, nstep_t, 0.4, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFit04.dat", RunMins2, 12 );
 
-    vector<vector<double>> RunMins3 = FindMinFit( boxR, Run, 0, 2, 10, dx, nstep_t, 0.8, 0, 2, nstep_v );
-    Print( "../data/Run/OptFit08.dat", RunMins3, 12 );
+    // vector<vector<double>> RunMins3 = FindMinFit( boxR, Run, 0, 2, 10, dx, nstep_t, 0.8, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFit08.dat", RunMins3, 12 );
 
 
     
