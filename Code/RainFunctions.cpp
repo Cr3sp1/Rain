@@ -430,8 +430,8 @@ vector<vector<double>> OptMapCompare( vector<double> box1, Body& body1, vector<d
 }
 
 
-// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max], and calculates wetness for 5 values around it, returns all these values
-vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vcross, double vtail_min, double vtail_max, unsigned int n_tail ) {
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max], and calculates wetness for n_fit values around it, returns all these values
+vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, unsigned int n_fit, double vcross, double vtail_min, double vtail_max, unsigned int n_tail ) {
     vector<double> vtail, vb, wetness;
 
     for( size_t i = 0; i < n_tail; i++ ) {
@@ -452,8 +452,9 @@ vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, d
         auto min_it = min_element(wetness_i.begin(), wetness_i.end());
         int min_index = distance(wetness_i.begin(), min_it);
 
-        // Saves up to 5 points around min
-        for( int j = min_index - 2; j <=  min_index + 2; j++ ) {
+        // Saves up to n_fit points around min
+        int jmin = min_index - n_fit/2;
+        for( int j = jmin; j < jmin + (int) n_fit; j++ ) {
             if( 0 <= j and j < (int) vb_i.size() ) {
                 vtail.push_back(vtail_i);
                 vb.push_back(vb_i[j]);
