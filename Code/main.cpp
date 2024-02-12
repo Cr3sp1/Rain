@@ -53,12 +53,12 @@ int main (int argc, char *argv[]){
     vector<double> boxHP = {0.24, 0.52, 1.78};
 
     // Check boxes
-    // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
-    // PrintDynShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
-    // PrintDynShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
-    // PrintDynShadow(boxR, Run, {0, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xy" );
-    // PrintDynShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
-    // PrintDynShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
+    PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
+    PrintDynShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
+    PrintDynShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
+    PrintDynShadow(boxR, Run, {0, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xy" );
+    PrintDynShadow(boxR, Run, {0, -100, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_xz" );
+    PrintDynShadow(boxR, Run, {-100, 0, -1}, dx, 0, 1, 60, "../data/Run/Proj/Run_yz" );
 
     // // Print dynamic state
     // PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
@@ -165,8 +165,8 @@ int main (int argc, char *argv[]){
 
 
     // V_opt data for fitting
-    vector<vector<double>> WalkMins = FindMinFit( boxW, Walk, 0.3, 0.8, 10, dx, nstep_t, 5, 0., 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptFit0.dat", WalkMins, 12 );
+    // vector<vector<double>> WalkMins = FindMinFit( boxW, Walk, 0.3, 0.8, 10, dx, nstep_t, 5, 0., 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptFit0.dat", WalkMins, 12 );
 
     // vector<vector<double>> WalkMins2 = FindMinFit( boxW, Walk, 0.3, 0.8, 10, dx, nstep_t, 5,  0.15, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptFit015.dat", WalkMins2, 12 );
