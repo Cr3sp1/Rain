@@ -185,6 +185,15 @@ int main (int argc, char *argv[]){
     // Print( "../data/Run/OptFit08.datN", RunMins3, 12 );
 
 
+
+    // For fitting graph 
+    double vtail = 0.75;
+    double vcross = 0.5;
+
+    vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, vtail, vcross );
+    Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
+
+
     
     return 0;
 }

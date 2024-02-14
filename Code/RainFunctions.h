@@ -99,5 +99,8 @@ vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, d
 // Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max], and calculates wetness for n_fit values around it, returns all these values
 vector<vector<double>> OptMapFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, unsigned int n_fit, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
 
+// Evaluates the wetness for N vb in the range [vmin, vmax] for a set vtail and vcross
+vector<vector<double>> WetFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail, double vcross );
+
 
 #endif

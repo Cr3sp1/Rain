@@ -559,3 +559,22 @@ vector<vector<double>> OptMapFit(vector<double> box, Body& body, double vmin, do
     vector<vector<double>> results{vtail, vcross, vb, wetness};
     return Transpose(results);
 }
+
+
+
+// Evaluates the wetness for N vb in the range [vmin, vmax] for a set vtail and vcross
+vector<vector<double>> WetFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail,  double vcross ) {
+    vector<double> vb, wetness;
+
+    for( size_t i = 0; i < N; i++ ) {
+        double vb_i = N > 1 ? vmin + i*(vmax-vmin)/(N-1) : vmin;
+        vb.push_back(vb_i);
+
+        vector<double> vrel = { vtail, vcross, -1};
+        vrel[0] -= vb_i;
+        wetness.push_back(Norm(vrel)*ProjSurface( box, vrel, dx ).BodyProj(body, 0, 1, nstep)/vb_i);
+    }
+
+    vector<vector<double>> results{vb, wetness};
+    return Transpose(results);
+}
