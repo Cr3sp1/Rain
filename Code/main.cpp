@@ -19,6 +19,7 @@ int main (int argc, char *argv[]){
     vector<double> box(3); 
     double body_vel, dx;
     unsigned int nstep_v, nstep_t;
+    int N_vb, N_fit;
     
 
     // Reads the input file
@@ -26,12 +27,15 @@ int main (int argc, char *argv[]){
     ReadInput.open("input.in"); 
     ReadInput >> box[0] >> box[1] >> box[2];
     ReadInput >> dx;
+    ReadInput >> nstep_t;
     ReadInput >> body_vel;
     ReadInput >> nstep_v;
-    ReadInput >> nstep_t;
+    ReadInput >> N_vb;
+    ReadInput >> N_fit;
     ReadInput >> rain_vel[0] >> rain_vel[1] >> rain_vel[2];
     rel_vel = rain_vel;
     rel_vel[0] -= body_vel;
+
     ReadInput.close();
 
 
@@ -48,9 +52,6 @@ int main (int argc, char *argv[]){
     ManyBody Run("../Bodies/RunningMan.in");
     vector<double> boxR = {1.13, 0.58, 1.82};
 
-    // Human pippo
-    ManyBody PippoH("../Bodies/HumanPippo.in");
-    vector<double> boxHP = {0.24, 0.52, 1.78};
 
     // Check boxes
     // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
@@ -141,57 +142,58 @@ int main (int argc, char *argv[]){
 
 
     // Find v_opt fit map
-    // vector<vector<double>> HPOptMap = OptMap( boxHP, PippoH, 0, 2, 10, dx, 1, -1, 2, nstep_v, 0, 1.5, nstep_v );
-    // Print( "../data/Pippo/OptMap.dat", HPOptMap, 12 );
-
-    int N_vb = 30;
-    int N_fit = 5;
+    
     // vector<vector<double>> WalkOptMapFit = OptMapFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  0, 0.7, nstep_v, 0, 0.35, nstep_v );
-    // Print( "../data/Walk/OptMapFit.dat", WalkOptMapFit, 12 );
+    // Print( "../data/Walk/OptMapFitW.dat", WalkOptMapFit, 12 );
 
-    // vector<vector<double>> RunOptMapFit = OptMapFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit, 0, 2, nstep_v, 0, 1.2, nstep_v );
-    // Print( "../data/Run/OptMapFit.dat", RunOptMapFit, 12 );
+    // vector<vector<double>> RunOptMapFit = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit, 0, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Run/OptMapFitR.dat", RunOptMapFit, 12 ); 
 
 
 
     // Compare walking and running
-    // vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
-    // Print( "../data/Walk/OptMapCompare.dat", WalkOptMapComp, 12 );
+    // vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Walk/OptMapCompareW.dat", WalkOptMapComp, 12 );
 
-    // vector<vector<double>> RunOptMapComp = OptMapFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
-    // Print( "../data/Run/OptMapCompare.dat", RunOptMapComp, 12 );
+    // vector<vector<double>> RunOptMapComp = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Run/OptMapCompareR.dat", RunOptMapComp, 12 );
 
 
 
     // V_opt fit graphs
-    // vector<vector<double>> WalkMins = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0., 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptFit0N.dat", WalkMins, 12 );
+    // vector<vector<double>> WalkMins1 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0., 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptFitW0.dat", WalkMins1, 12 );
 
     // vector<vector<double>> WalkMins2 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  0.15, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptFit015N.dat", WalkMins2, 12 );
+    // Print( "../data/Walk/OptFitW015.dat", WalkMins2, 12 );
 
     // vector<vector<double>> WalkMins3 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.25, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptFit025N.dat", WalkMins3, 12 );
+    // Print( "../data/Walk/OptFitW025.dat", WalkMins3, 12 );
+
+    // vector<vector<double>> WalkMins4 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.30, 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptFitW030.dat", WalkMins4, 12 );
 
 
 
-    // vector<vector<double>> RunMins = FindMinFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  0, 0, 2, nstep_v );
-    // Print( "../data/Run/OptFit0.datN", RunMins, 12 );
+    // vector<vector<double>> RunMins1 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFitR0.dat", RunMins1, 12 );
 
-    // vector<vector<double>> RunMins2 = FindMinFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  0.4, 0, 2, nstep_v );
-    // Print( "../data/Run/OptFit04.datN", RunMins2, 12 );
+    // vector<vector<double>> RunMins2 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0.5, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFitR05.dat", RunMins2, 12 );
 
-    // vector<vector<double>> RunMins3 = FindMinFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  0.8, 0, 2, nstep_v );
-    // Print( "../data/Run/OptFit08.datN", RunMins3, 12 );
+    // vector<vector<double>> RunMins3 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0.75, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFitR075.dat", RunMins3, 12 );
+
+    // vector<vector<double>> RunMins4 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  1, 0, 2, nstep_v );
+    // Print( "../data/Run/OptFitR1.dat", RunMins4, 12 );
+
+
 
 
 
     // For fitting graph 
-    double vtail = 0.75;
-    double vcross = 0.5;
-
-    vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, vtail, vcross );
-    Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
+    // vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
+    // Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
 
 
     
