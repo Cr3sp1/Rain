@@ -184,8 +184,8 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunMins3 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0.75, 0, 2, nstep_v );
     // Print( "../data/Run/OptFitR075.dat", RunMins3, 12 );
 
-    // vector<vector<double>> RunMins4 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  1, 0, 2, nstep_v );
-    // Print( "../data/Run/OptFitR1.dat", RunMins4, 12 );
+    vector<vector<double>> RunMins4 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  1, 0, 2, nstep_v );
+    Print( "../data/Run/OptFitR1.dat", RunMins4, 12 );
 
 
 

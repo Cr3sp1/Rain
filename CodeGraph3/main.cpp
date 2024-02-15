@@ -167,8 +167,8 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> WalkMins2 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  0.15, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptFitW015.dat", WalkMins2, 12 );
 
-    // vector<vector<double>> WalkMins3 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.25, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptFitW025.dat", WalkMins3, 12 );
+    vector<vector<double>> WalkMins3 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.25, 0., 0.7, nstep_v );
+    Print( "../data/Walk/OptFitW025.dat", WalkMins3, 12 );
 
     // vector<vector<double>> WalkMins4 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.30, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptFitW030.dat", WalkMins4, 12 );

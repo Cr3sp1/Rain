@@ -152,8 +152,8 @@ int main (int argc, char *argv[]){
 
 
     // Compare walking and running
-    // vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 0.7.*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
-    // Print( "../data/Walk/OptMapCompareW.dat", WalkOptMapComp, 12 );
+    vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 0.7*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    Print( "../data/Walk/OptMapCompareW.dat", WalkOptMapComp, 12 );
 
     // vector<vector<double>> RunOptMapComp = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
     // Print( "../data/Run/OptMapCompareR.dat", RunOptMapComp, 12 );

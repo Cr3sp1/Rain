@@ -175,8 +175,8 @@ int main (int argc, char *argv[]){
 
 
 
-    // vector<vector<double>> RunMins1 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0, 0, 2, nstep_v );
-    // Print( "../data/Run/OptFitR0.dat", RunMins1, 12 );
+    vector<vector<double>> RunMins1 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0, 0, 2, nstep_v );
+    Print( "../data/Run/OptFitR0.dat", RunMins1, 12 );
 
     // vector<vector<double>> RunMins2 = FindMinFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  0.5, 0, 2, nstep_v );
     // Print( "../data/Run/OptFitR05.dat", RunMins2, 12 );
