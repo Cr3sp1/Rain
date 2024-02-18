@@ -143,7 +143,7 @@ int main (int argc, char *argv[]){
 
     // Find v_opt fit map
     
-    // vector<vector<double>> WalkOptMapFit = OptMapFit( boxW, Walk, 0.7*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  0, 0.7, nstep_v, 0, 0.35, nstep_v );
+    // vector<vector<double>> WalkOptMapFit = OptMapFit( boxW, Walk, 0.7.*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  0, 0.7, nstep_v, 0, 0.35, nstep_v );
     // Print( "../data/Walk/OptMapFitW.dat", WalkOptMapFit, 12 );
 
     // vector<vector<double>> RunOptMapFit = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit, 0, 2, nstep_v, 0, 1.2, nstep_v );
@@ -152,11 +152,11 @@ int main (int argc, char *argv[]){
 
 
     // Compare walking and running
-    // vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 0.7*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    // vector<vector<double>> WalkOptMapComp = OptMapFit( boxW, Walk, 0.7.*30./49., 0.7, N_vb-30, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
     // Print( "../data/Walk/OptMapCompareW.dat", WalkOptMapComp, 12 );
 
-    // vector<vector<double>> RunOptMapComp = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit,  -0.5, 2, nstep_v, 0, 1.2, nstep_v );
-    // Print( "../data/Run/OptMapCompareR.dat", RunOptMapComp, 12 );
+    vector<vector<double>> RunOptMapComp = OptMapFit( boxR, Run, 2.*17./49., 2, N_vb-17, dx, nstep_t, N_fit, -0.5 , -0.5 + 2.5*9./19., nstep_v, 1.2*10./19., 1.2, nstep_v );
+    Print( "../data/Run/OptMapCompareR3.dat", RunOptMapComp, 12 );
 
 
 
@@ -192,8 +192,8 @@ int main (int argc, char *argv[]){
 
 
     // For fitting graph 
-    vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
-    Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
+    // vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
+    // Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
 
 
     
