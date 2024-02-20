@@ -102,12 +102,15 @@ int main (int argc, char *argv[]){
     
 
 
-    // // Draw shadow
-    // ProjSurface Plz( box, rel_vel, dx );
-    // Plz.BodyProj(trialM1);
-    // Plz.PrintR("../data/RayOriginsCap.dat");
-    // Plz.PrintRaysFlat("../data/RayOriginsCapF.dat");
+    // Draw shadow of capsules
+    ManyBody OneCap("../Bodies/Capsule.in");
+    ManyBody TwoCap("../Bodies/DoubleCapsule.in");
 
+    ProjSurface Canv( box, {0, 0, -1}, dx );
+    Canv.BodyProj(OneCap);
+    Canv.PrintRaysFlat("../data/Capsule/OneCapProj.dat");
+    Canv.BodyProj(TwoCap);
+    Canv.PrintRaysFlat("../data/Capsule/TwoCapProj.dat");
 
 
     // Simulate different body velocities
@@ -192,8 +195,8 @@ int main (int argc, char *argv[]){
 
 
     // For fitting graph 
-    vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
-    Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
+    // vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
+    // Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
 
 
     
