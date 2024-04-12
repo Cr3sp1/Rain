@@ -198,13 +198,13 @@ void Sphere::PrintState( string outfile ) {
 
 
 // Primes the body to be checked (finds hexagonal projection on the same plane as the origins of the rays)
-void Pippo::Prime( vector<double> P, vector<double> V ) {
+void Parallelepiped::Prime( vector<double> P, vector<double> V ) {
     vector<double> p = cent - (double)0.5*(side[0] + side[1] + side[2]);
     H = FindHexProj( p, side, V, P );
 }
 
 // Checks if the body is making contact with a ray
-bool Pippo::Check( Ray& ray ) {
+bool Parallelepiped::Check( Ray& ray ) {
     if( ray.IsOn() == false ) return false;
     if( PointIsInsideT( ray.GetR0(), H )) {
         ray.Off();
@@ -214,7 +214,7 @@ bool Pippo::Check( Ray& ray ) {
 }
 
 // Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-double Pippo::Anal( vector<double> v, double bodyvel  ) {
+double Parallelepiped::Anal( vector<double> v, double bodyvel  ) {
     double flux = 0;
     flux += abs(CrossProduct(side[0], side[1]) * v);
     flux += abs(CrossProduct(side[1], side[2]) * v);
@@ -223,7 +223,7 @@ double Pippo::Anal( vector<double> v, double bodyvel  ) {
 }
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
-void Pippo::Move( double T ) {
+void Parallelepiped::Move( double T ) {
     if( T == t ) return;
 
     // Calculate the total translation for the step
@@ -268,7 +268,7 @@ void Pippo::Move( double T ) {
 }
 
 // Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodie
-void Pippo::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
+void Parallelepiped::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector<double>> Rotmat ) {
     // Translate
     if( w.size() != 0 ) rotcent += Delta;
     cent += Delta;
@@ -289,7 +289,7 @@ void Pippo::BeMoved( vector<double> Delta, vector<double> RotCent, vector<vector
 }
 
 // Returns all 8 vertices of the parallelepiped
-vector<vector<double>>  Pippo::GetVertices() {
+vector<vector<double>>  Parallelepiped::GetVertices() {
     vector<vector<double>> vertices{};
     for( double i = -0.5; i <= 0.5; i ++ ) {
         for( double j = -0.5; j <= 0.5; j ++ ) {
@@ -302,7 +302,7 @@ vector<vector<double>>  Pippo::GetVertices() {
 }
 
 // Finds smallest box around body
-void Pippo::FindBox( vector<double> &min, vector<double> &max ) {
+void Parallelepiped::FindBox( vector<double> &min, vector<double> &max ) {
     if( min.size() != 3 or max.size() != 3 ) {
         cout << "Error in FindBox: min and max must be of size 3" << endl;
     }
@@ -318,7 +318,7 @@ void Pippo::FindBox( vector<double> &min, vector<double> &max ) {
 
 
 // Prints to file the state of the body
-void Pippo::PrintState( ofstream &fout ) {
+void Parallelepiped::PrintState( ofstream &fout ) {
     fout << setprecision(4);
     fout << "P," << cent[0] << "," << cent[1] << "," << cent[2] << ",";
         for( size_t i = 0; i < side.size(); i++ ) {
@@ -328,7 +328,7 @@ void Pippo::PrintState( ofstream &fout ) {
         fout << endl;
 }
 
-void Pippo::PrintState( string outfile ) {
+void Parallelepiped::PrintState( string outfile ) {
     ofstream fout(outfile);
     PrintState( fout );
     fout.close();
@@ -459,9 +459,9 @@ void Capsule::PrintState( string outfile ) {
 
 
 // Complete ManyBody constructor 
-ManyBody::ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, const vector<Capsule>& Capsules ): Body() {
+ManyBody::ManyBody( const vector<Sphere>& Spheres, const vector<Parallelepiped>& Parallelepipeds, const vector<Capsule>& Capsules ): Body() {
     for( Sphere sphere : Spheres ) AddBody(sphere);
-    for( Pippo pippo : Pippos ) AddBody(pippo);
+    for( Parallelepiped Parallelepiped : Parallelepipeds ) AddBody(Parallelepiped);
     for( Capsule capsule : Capsules ) AddBody(capsule);
 }
 
@@ -513,7 +513,7 @@ ManyBody::ManyBody( string filename ): Body() {
             if( superbody != "None" ) Attach( name, superbody );
         }
 
-        if( type == "Pippo" ) {
+        if( type == "Parallelepiped" ) {
             vector<vector<double>> rot, trans, sides;
             vector<double> cent(3);
             vector<double> rotcent(3), axis(3);
@@ -546,7 +546,7 @@ ManyBody::ManyBody( string filename ): Body() {
                 trans.push_back(temp);
             }
 
-            AddBody( Pippo( cent, sides, name, rotcent, axis, w, trans ));
+            AddBody( Parallelepiped( cent, sides, name, rotcent, axis, w, trans ));
             if( superbody != "None" ) Attach( name, superbody );
         }
 

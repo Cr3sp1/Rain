@@ -113,7 +113,7 @@ class Sphere: public Body {
 
 
 // Parallelepiped class
-class Pippo: public Body {
+class Parallelepiped: public Body {
 
   protected:
 	
@@ -125,9 +125,9 @@ class Pippo: public Body {
   public:
 
 	// Complete static constructor 
-	Pippo( vector<double> Center, vector<vector<double>> Side ): Body(), cent(Center), side(Side) {}
+	Parallelepiped( vector<double> Center, vector<vector<double>> Side ): Body(), cent(Center), side(Side) {}
 	// Complete dynamic constructor
-	Pippo( vector<double> Center, vector<vector<double>> Side, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(Center), side(Side) {}
+	Parallelepiped( vector<double> Center, vector<vector<double>> Side, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(Center), side(Side) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray
@@ -207,7 +207,7 @@ class ManyBody: public Body {
 	// Empty constructor
 	ManyBody(): Body() {}
 	// Complete constructor 
-	ManyBody( const vector<Sphere>& Spheres, const vector<Pippo>& Pippos, const vector<Capsule>& Capsules );
+	ManyBody( const vector<Sphere>& Spheres, const vector<Parallelepiped>& Parallelepipeds, const vector<Capsule>& Capsules );
 	// Constructor from file
 	ManyBody( string filename );
 	// Destructor
@@ -222,7 +222,7 @@ class ManyBody: public Body {
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
 	// Add bodies
 	void AddBody( Sphere sphere ) { bodies.push_back( new Sphere(sphere) ); }
-	void AddBody( Pippo pippo ) { bodies.push_back( new Pippo(pippo) ); }
+	void AddBody( Parallelepiped Parallelepiped ) { bodies.push_back( new Parallelepiped(Parallelepiped) ); }
 	void AddBody( Capsule capsule ) { bodies.push_back( new Capsule(capsule) ); }
 	// Pointer to the body with that name
 	Body* Find( string name );

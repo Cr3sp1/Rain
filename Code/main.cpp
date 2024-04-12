@@ -88,11 +88,11 @@ int main (int argc, char *argv[]){
     // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
-    // Error analysis pippo
-    // ManyBody TrialP("../Bodies/Pippo.in");
+    // Error analysis Parallelepiped
+    // ManyBody TrialP("../Bodies/Parallelepiped.in");
     // vector<vector<double>> resultsP;
     // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
-    // Print( "../data/Pippo/ErrorP.dat", resultsP, 15);
+    // Print( "../data/Parallelepiped/ErrorP.dat", resultsP, 15);
 
     // Error analysis capsule
     // ManyBody TrialC("../Bodies/Capsule.in");
@@ -117,30 +117,30 @@ int main (int argc, char *argv[]){
     // resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // Print("../data/Sphere/CompareS.dat", resultsS, 15);
     // resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    // Print("../data/Pippo/CompareP.dat", resultsP, 15);
+    // Print("../data/Parallelepiped/CompareP.dat", resultsP, 15);
     // resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // Print("../data/Capsule/CompareC.dat", resultsC, 15);
 
 
 
-    // Simulation of two pippos compenetrating
-    // ManyBody Trial2P("../Bodies/DoublePippo.in");
+    // Simulation of two Parallelepipeds compenetrating
+    // ManyBody Trial2P("../Bodies/DoubleParallelepiped.in");
     // vector<double> dist;
     // vector<double> wet2P;
     // ProjSurface Surf2P( box, rel_vel, dx );
     // for( size_t i = 0; i < nstep_t; i++ ) {
     //     Trial2P.Move( asin( (double)i/(nstep_t-1))/(2*M_PI));   // it just works ;)
-    //     vector<double> cent1 = dynamic_cast<Pippo*>(Trial2P.Find("Still"))->GetCent();
-    //     vector<double> cent2 = dynamic_cast<Pippo*>(Trial2P.Find("Moving"))->GetCent();
+    //     vector<double> cent1 = dynamic_cast<Parallelepiped*>(Trial2P.Find("Still"))->GetCent();
+    //     vector<double> cent2 = dynamic_cast<Parallelepiped*>(Trial2P.Find("Moving"))->GetCent();
     //     dist.push_back( Norm( cent1 - cent2 ));
     //     Surf2P.reset();
     //     wet2P.push_back(Surf2P.BodyProj(Trial2P)*Norm(rel_vel)/body_vel);
-    //     // Surf2P.PrintRaysFlat("../data/Pippo/Proj2P/dist" + to_string(dist[i]) + ".dat");
+    //     // Surf2P.PrintRaysFlat("../data/Parallelepiped/Proj2P/dist" + to_string(dist[i]) + ".dat");
     // }
 
     // vector<vector<double>> results2P = { dist, wet2P};
     // results2P = Transpose(results2P);
-    // Print("../data/Pippo/DoubleP.dat", results2P, 12 );
+    // Print("../data/Parallelepiped/DoubleP.dat", results2P, 12 );
     
 
 
