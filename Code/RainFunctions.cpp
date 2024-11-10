@@ -506,7 +506,7 @@ vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin,
         auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return Wetness( box, body, rain_vel, x, dx, 0., 1., nstep );};
         Brent mins(tol);
 
-        if( mins.bracket( vmin + 0.001, vmax - 0.001, vmax, wetfunc ) ) {
+        if( mins.bracket( vmin + tol, vmax - 2*tol, vmax, wetfunc ) ) {
             mins.minimize( wetfunc);
             vb.push_back( mins.xmin );
             wetness.push_back( mins.fmin );
@@ -536,7 +536,7 @@ vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, 
             auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return Wetness( box, body, rain_vel, x, dx, 0., 1., nstep );};
             Brent mins(tol);
 
-            if( mins.bracket( vmin + 0.001, vmax - 0.001, vmax, wetfunc ) ) {
+            if( mins.bracket( vmin + tol, vmax - 2*tol, vmax, wetfunc ) ) {
                 mins.minimize( wetfunc);
                 vb.push_back( mins.xmin );
                 wetness.push_back( mins.fmin );
