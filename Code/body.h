@@ -222,7 +222,7 @@ class ManyBody: public Body {
 	void BeMoved( vector<double> Delta, vector<double> Rot0, vector<vector<double>> Rotmat ) override {};
 	// Add bodies
 	void AddBody( Sphere sphere ) { bodies.push_back( new Sphere(sphere) ); }
-	void AddBody( Parallelepiped Parallelepiped ) { bodies.push_back( new Parallelepiped(Parallelepiped) ); }
+	void AddBody( Parallelepiped parallelepiped ) { bodies.push_back( new Parallelepiped(parallelepiped) ); }
 	void AddBody( Capsule capsule ) { bodies.push_back( new Capsule(capsule) ); }
 	// Pointer to the body with that name
 	Body* Find( string name );

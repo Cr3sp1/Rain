@@ -5,7 +5,8 @@
 #include <vector>
 #include "body.h"
 #include "ray.h"
-# include "VectorStat.h"
+#include "VectorStat.h"
+#include "mins.h"
 
 
 using namespace std;
@@ -22,8 +23,12 @@ int main (int argc, char *argv[]){
     int N_vb, N_fit;
     
 
-    // Reads the input file
+        // Reads the input file
     ifstream ReadInput;
+    if (!ReadInput) {
+        std::cerr << "Error opening input file." << std::endl;
+        return 1;
+    }
     ReadInput.open("input.in"); 
     ReadInput >> box[0] >> box[1] >> box[2];
     ReadInput >> dx;
@@ -40,8 +45,9 @@ int main (int argc, char *argv[]){
 
 
     // Outputs settings and stuff
-    cout << "relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
-    cout << "Object velocity = " << body_vel  << ", nstep_v = " << nstep_v << ", dx = " << dx << endl;
+    cout << "Rain velocity = [ " << rain_vel[0] << ", " << rain_vel[1] << ", " << rain_vel[2] << " ], " << " dx = " << dx << ", nstep_t = " << nstep_t << endl;
+    cout << "Object velocity = " << body_vel << endl;
+    cout << "Relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
 
 
     // Walking man
@@ -53,7 +59,7 @@ int main (int argc, char *argv[]){
     vector<double> boxR = {1.13, 0.58, 1.82};
 
 
-    // Check boxes
+    // // Check boxes
     // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
     // PrintDynShadow(boxW, Walk, {0, -100, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xz" );
     // PrintDynShadow(boxW, Walk, {-100, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_yz" );
@@ -65,7 +71,7 @@ int main (int argc, char *argv[]){
     // PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
     // PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
 
-    // Walking & running error analysis
+    // // Walking & running error analysis
     // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
     // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
     // vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
@@ -82,19 +88,19 @@ int main (int argc, char *argv[]){
     
 
 
-    // Error analysis sphere
+    // // Error analysis sphere
     // ManyBody TrialS("../Bodies/Sphere.in");
     // vector<vector<double>> resultsS;
     // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
         
-    // Error analysis Parallelepiped
+    // // Error analysis parallelepiped
     // ManyBody TrialP("../Bodies/Parallelepiped.in");
     // vector<vector<double>> resultsP;
     // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
     // Print( "../data/Parallelepiped/ErrorP.dat", resultsP, 15);
 
-    // Error analysis capsule
+    // // Error analysis capsule
     // ManyBody TrialC("../Bodies/Capsule.in");
     // vector<vector<double>> resultsC;
     // resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
@@ -102,18 +108,18 @@ int main (int argc, char *argv[]){
     
 
 
-    // Draw shadow of capsules
-    ManyBody OneCap("../Bodies/Capsule.in");
-    ManyBody TwoCap("../Bodies/DoubleCapsule.in");
+    // // Draw shadow of capsules
+    // ManyBody OneCap("../Bodies/Capsule.in");
+    // ManyBody TwoCap("../Bodies/DoubleCapsule.in");
 
-    ProjSurface Canv( box, {0, 0, -1}, dx );
-    Canv.BodyProj(OneCap);
-    Canv.PrintRaysFlat("../data/Capsule/OneCapProj.dat");
-    Canv.BodyProj(TwoCap);
-    Canv.PrintRaysFlat("../data/Capsule/TwoCapProj.dat");
+    // ProjSurface Canv( box, {0, 0, -1}, dx );
+    // Canv.BodyProj(OneCap);
+    // Canv.PrintRaysFlat("../data/Capsule/OneCapProj.dat");
+    // Canv.BodyProj(TwoCap);
+    // Canv.PrintRaysFlat("../data/Capsule/TwoCapProj.dat");
 
 
-    // Simulate different body velocities
+    // // Simulate different body velocities
     // resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
     // Print("../data/Sphere/CompareS.dat", resultsS, 15);
     // resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
@@ -123,7 +129,7 @@ int main (int argc, char *argv[]){
 
 
 
-    // Simulation of two Parallelepipeds compenetrating
+    // // Simulation of two Parallelepipeds compenetrating
     // ManyBody Trial2P("../Bodies/DoubleParallelepiped.in");
     // vector<double> dist;
     // vector<double> wet2P;
@@ -144,8 +150,7 @@ int main (int argc, char *argv[]){
     
 
 
-    // Find v_opt fit map
-    
+    // // Find v_opt fit map
     // vector<vector<double>> WalkOptMapFit = OptMapFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  0, 0.7, nstep_v, 0, 0.35, nstep_v );
     // Print( "../data/Walk/OptMapFitW.dat", WalkOptMapFit, 12 );
 
@@ -176,6 +181,9 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> WalkMins4 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.30, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptFitW030.dat", WalkMins4, 12 );
 
+    // vector<vector<double>> WalkMins1 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0., 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptW0.dat", WalkMins1, 12 );
+
 
 
     // vector<vector<double>> RunMins1 = FindMinFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  0, 0, 2, nstep_v );
@@ -190,13 +198,24 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunMins4 = FindMinFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit,  1, 0, 2, nstep_v );
     // Print( "../data/Run/OptFitR1.dat", RunMins4, 12 );
 
-
-
+    // vector<vector<double>> RunMins1 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  0, 0, 2, nstep_v );
+    // Print( "../data/Run/OptR0.dat", RunMins1, 12 );
 
 
     // For fitting graph 
-    // vector<vector<double>> RunFitGraph = WetFit(boxR, Run, 0, 2, N_vb, dx, nstep_t, rain_vel[0], rain_vel[1] );
+    // vector<vector<double>> RunFitGraph = Simulate( boxR,Run, rain_vel, 0, 2, N_vb, dx, 0, 1, nstep_t );
     // Print( "../data/Run/GraphFit.dat", RunFitGraph, 12 );
+
+
+    // // Trial
+    // auto wetfunc = [&boxR, &Run, &rain_vel, dx, nstep_t] (double x) {return Wetness( boxR, Run, rain_vel, x, dx, 0., 1., nstep_t );};
+    // Brent trial(0.001);
+    // if(trial.bracket( 0.01, 1.99, 2, wetfunc )) {
+    //     double min = trial.minimize(wetfunc);
+    //     cout << "Minumum found in vb = " << min << endl;
+    // } else {
+    //     cout << "Minimum not found." << endl;
+    // }
 
 
     

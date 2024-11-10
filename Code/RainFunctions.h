@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm> 
 #include "VectorOperations.h"
+#include "mins.h"
 
 
 using namespace std;
@@ -38,6 +39,12 @@ int PBCH( int i );
 
 // Checks rays generation 
 void RayGenCheck( string outfile, vector<double> box, vector<double> rel_vel );
+
+// Estimates wetness
+double Wetness( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx );
+
+// Estimates wetness of the dynamic body
+double Wetness( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx, double tmin, double tmax, unsigned int nstep );
 
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx );
@@ -81,26 +88,20 @@ void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, doub
 // Prints the state of a body at nstep different time steps in [tmin, tmax)
 void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, string outfile );
 
-// Looks for the minimum of wetness between vmin and vmax with N steps and returns its value if it finds it, else returns -1.
+// Looks for the minimum of wetness between vmin and vmax with grid search with N steps and returns its value if it finds it, else returns -1.
 double FindMin( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep );
 
-// Finds minimums of wetness on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, or -1 if it doesn't exist
-vector<vector<double>> OptMap( vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
-
-// Looks for the minimum of wetness for two bodies between vmin and vmax with N steps and returns in result[0] its value, and in result[1] returns number corresponding to the body with less wetness
-vector<double> FindMinCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, vector<double> rain_v, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep );
-
-// Finds minimums of wetness between two bodies on a square lattice in the space of coordinates [vtail_min, vtail_max]x[vcross_min, vcross_max], returns a matrix with vtail as first column, vcross as second and in the third column best vb, on the fourth column the number corresponding to the body with less wetness
-vector<vector<double>> OptMapCompare( vector<double> box1, Body& body1, vector<double> box2, Body& body2, double vmin, double vmax1, double vmax2, unsigned int N, double dx, unsigned int nstep, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
-
-// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max], and calculates wetness for n_fit values around it, returns all these values
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max] with grid search, and calculates wetness for n_fit values around it, returns all these values
 vector<vector<double>> FindMinFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, unsigned int n_fit, double vcross, double vtail_min, double vtail_max, unsigned int n_tail );
 
-// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max], and calculates wetness for n_fit values around it, returns all these values
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max] with grid search, and calculates wetness for n_fit values around it, returns all these values
 vector<vector<double>> OptMapFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, unsigned int n_fit, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
 
-// Evaluates the wetness for N vb in the range [vmin, vmax] for a set vtail and vcross
-vector<vector<double>> WetFit(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double vtail, double vcross );
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm
+vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double tol, double vcross, double vtail_min, double vtail_max, unsigned int n_tail );
+
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max] using Brent algorithm
+vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, double vmax, unsigned int N, double dx, unsigned int nstep, double tol, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross );
 
 
 #endif
