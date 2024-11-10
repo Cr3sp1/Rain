@@ -181,8 +181,8 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> WalkMins4 = FindMinFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit, 0.30, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptFitW030.dat", WalkMins4, 12 );
 
-    // vector<vector<double>> WalkMins1 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0., 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptW0.dat", WalkMins1, 12 );
+    vector<vector<double>> WalkMins1 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0., 0., 0.7, nstep_v );
+    Print( "../data/Walk/OptW0.dat", WalkMins1, 12 );
 
 
 
