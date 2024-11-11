@@ -200,28 +200,28 @@ int main (int argc, char *argv[]){
     Print( "../data/Walk/OptW0.dat", WalkMins1, 12 );
 
     vector<vector<double>> WalkMins2 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0.15, 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptW015.dat", WalkMins1, 12 );
+    Print( "../data/Walk/OptW015.dat", WalkMins2, 12 );
 
     vector<vector<double>> WalkMins3 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0.25, 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptW025.dat", WalkMins1, 12 );
+    Print( "../data/Walk/OptW025.dat", WalkMins3, 12 );
 
     vector<vector<double>> WalkMins4 = FindMinBrent( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, 0.001, 0.30, 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptW030.dat", WalkMins1, 12 );
+    Print( "../data/Walk/OptW030.dat", WalkMins4, 12 );
 
     vector<vector<double>> RunMins1 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  0., 0, 2, nstep_v );
     Print( "../data/Run/OptR0.dat", RunMins1, 12 );
 
     vector<vector<double>> RunMins2 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  0.3, 0, 2, nstep_v );
-    Print( "../data/Run/OptR03.dat", RunMins1, 12 );
+    Print( "../data/Run/OptR03.dat", RunMins2, 12 );
 
     vector<vector<double>> RunMins3 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  0.6, 0, 2, nstep_v );
-    Print( "../data/Run/OptR06.dat", RunMins1, 12 );
+    Print( "../data/Run/OptR06.dat", RunMins3, 12 );
 
     vector<vector<double>> RunMins4 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  0.8, 0, 2, nstep_v );
-    Print( "../data/Run/OptR08.dat", RunMins1, 12 );
+    Print( "../data/Run/OptR08.dat", RunMins4, 12 );
 
     vector<vector<double>> RunMins5 = FindMinBrent( boxR, Run, 0, 2, N_vb, dx, nstep_t, 0.001,  1, 0, 2, nstep_v );
-    Print( "../data/Run/OptR1.dat", RunMins1, 12 );
+    Print( "../data/Run/OptR1.dat", RunMins5, 12 );
 
 
 
