@@ -241,6 +241,16 @@ int main (int argc, char *argv[]){
     // }
 
 
+
+    for( int i = 0; i < 10; i++ ) {
+        double v = 0.5748 + i*0.0002;
+        cout << v << " " << Wetness(boxW, Walk, rain_vel, v, dx, 0, 1, nstep_t) << endl;
+    }
+
+
+
+
+
     
     return 0;
 }
