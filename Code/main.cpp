@@ -242,13 +242,46 @@ int main (int argc, char *argv[]){
 
 
 
-    for( int i = 0; i < 10; i++ ) {
-        double v = 0.5748 + i*0.0002;
-        cout << v << " " << Wetness(boxW, Walk, rain_vel, v, dx, 0, 1, nstep_t) << endl;
-    }
+    // Wetness around minimum
+    // dx = 0.001;
+    // nstep_t = 10;
+    // double voptW = 0.59191;
+    // vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.05, voptW + 0.05, 1000, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/Wetfun.dat", wetfunW, 12 );
+    
+    // double voptR = 0.884849;
+    // vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.05, voptR + 0.05, 1000, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/Wetfun.dat", wetfunR, 12 );
 
 
+    dx = 0.0005;
+    nstep_t = 20;
+    double voptW = 0.59;
+    vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    Print( "../data/Walk/Wetfun_dx_dt.dat", wetfunW, 12 );
+    double voptR = 0.885;
+    vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    Print( "../data/Run/Wetfun_dx_dt.dat", wetfunR, 12 );
 
+    dx = 0.0005;
+    nstep_t = 10;
+    double voptW = 0.59;
+    vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    Print( "../data/Walk/Wetfun_dx.dat", wetfunW, 12 );
+    double voptR = 0.885;
+    vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    Print( "../data/Run/Wetfun_dx.dat", wetfunR, 12 );
+
+    dx = 0.001;
+    nstep_t = 20;
+    double voptW = 0.59;
+    vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    Print( "../data/Walk/Wetfun_dt.dat", wetfunW, 12 );
+    double voptR = 0.885;
+    vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    Print( "../data/Run/Wetfun_dt.dat", wetfunR, 12 );
+
+    
 
 
     
