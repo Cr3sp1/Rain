@@ -95,7 +95,7 @@ void Sphere::Prime( vector<double> p, vector<double> v  ) {
 bool Sphere::Check( Ray& ray ) {
     if( ray.IsOn() == false ) return false;
     vector<double> Xrel = ray.GetR0() - Hcent;
-    if( Xrel*Xrel <= rad*rad ) {
+    if( Xrel*Xrel <= rad*rad ) { // Use std::Norm instead, store rad2 only once
         ray.Off();
         return true;
     }
@@ -206,7 +206,7 @@ void Parallelepiped::Prime( vector<double> P, vector<double> V ) {
 // Checks if the body is making contact with a ray
 bool Parallelepiped::Check( Ray& ray ) {
     if( ray.IsOn() == false ) return false;
-    if( PointIsInsideT( ray.GetR0(), H )) {
+    if( PointIsInsideT( ray.GetR0(), H )) { // Use less triangles (4 not 6)
         ray.Off();
         return true;
     }

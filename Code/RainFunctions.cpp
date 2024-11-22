@@ -53,7 +53,7 @@ double MaxU(vector<vector<double>> H, vector<double> u ) {
 
 
 
-// Returns wether the Point is inside the hexagon H using triangles and baycentric coordinates
+// Returns wether the Point is inside the hexagon H using triangles and barycentric coordinates
 bool PointIsInsideT( vector<double> Point, vector<vector<double>> H ){
     // Centers on p
     Point -= H[0];
