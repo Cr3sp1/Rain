@@ -1,9 +1,9 @@
 1.1 1.1 1.1
 0.001
 10
-2
+0.9
 50
-0.25 0 -1
+0.45 0.3 -1
 
 
 
@@ -13,6 +13,4 @@
   ReadInput >> nstep_t (number of time steps in the simulation)
   ReadInput >> body_vel (velocity of the object, oriented on the 0 axis)
   ReadInput >> nstep_v (number of veocity steps in the simulation)
-  ReadInput >> N_vb;
-  ReadInput >> N_fit;
   ReadInput >> rain_vel(0) >> rain_vel(1) >> rain_vel(2) (velocity of the rain)

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <numeric>
 #include "VectorStat.h"
 
 
@@ -11,7 +12,8 @@
 // sum of two vectors: sum component by component
 // ===============================================================================
 
-template <typename T> std::vector<T> operator+(const std::vector<T> &a, const std::vector<T> &b) {
+template <typename T> 
+inline std::vector<T> operator+(const std::vector<T> &a, const std::vector<T> &b) {
   
   assert(a.size() == b.size());  
   std::vector<T> result(a.size());
@@ -26,7 +28,8 @@ template <typename T> std::vector<T> operator+(const std::vector<T> &a, const st
 // difference of two vectors component by component
 // ===============================================================================
 
-template <typename T> std::vector<T> operator-(const std::vector<T> &a, const std::vector<T> &b) {
+template <typename T> 
+ inline std::vector<T> operator-(const std::vector<T> &a, const std::vector<T> &b) {
   
   assert(a.size() == b.size());  
   std::vector<T> result(a.size());
@@ -41,19 +44,17 @@ template <typename T> std::vector<T> operator-(const std::vector<T> &a, const st
 //  scalar product between two vectors 
 // ===============================================================================
 
-template <typename T> T operator*(const std::vector<T> &a, const std::vector<T> &b) {
-  
-  assert(a.size() == b.size());  
-  T sum = 0 ;
-  for (int i = 0; i < static_cast<int>(a.size()); i++) sum += a[i] * b[i];  
-  return sum;
-  
+template <typename T>
+inline T operator*(const std::vector<T> &a, const std::vector<T> &b) {
+    assert(a.size() == b.size());
+    return std::inner_product(a.begin(), a.end(), b.begin(), T(0));
 }
 
 // ===============================================================================  
 // cross product between two vectors 
 // ===============================================================================
-template <typename T> std::vector<T> CrossProduct(const std::vector<T> &a, const std::vector<T> &b) {
+template <typename T> 
+inline std::vector<T> CrossProduct(const std::vector<T> &a, const std::vector<T> &b) {
   assert(a.size() == b.size() && a.size() == 3);
 
   std::vector<T> result(3);
@@ -68,7 +69,7 @@ template <typename T> std::vector<T> CrossProduct(const std::vector<T> &a, const
 // matrix-vector multiplication
 // ===============================================================================
 template <typename T>
-std::vector<T> operator*(const std::vector<std::vector<T>>& matrix, const std::vector<T>& vec) {
+inline std::vector<T> operator*(const std::vector<std::vector<T>>& matrix, const std::vector<T>& vec) {
     if(matrix.size() <= 0 or matrix[0].size() != vec.size()){
       cout << "Error: tried applying matrix: " << endl;
       Print(matrix);
@@ -91,7 +92,8 @@ std::vector<T> operator*(const std::vector<std::vector<T>>& matrix, const std::v
 // ===============================================================================  
 // norm of a vector 
 // ===============================================================================
-template <typename T> T Norm(const std::vector<T> &a) {
+template <typename T> 
+inline T Norm(const std::vector<T> &a) {
   return sqrt(a*a);
 }
 
@@ -99,7 +101,8 @@ template <typename T> T Norm(const std::vector<T> &a) {
 // product between a scalar and a vector
 // ===============================================================================
 
-template <typename T> std::vector<T> operator*( T c , const std::vector<T> &a) {
+template <typename T> 
+inline std::vector<T> operator*( T c , const std::vector<T> &a) {
   
   std::vector<T> result(a.size());
   
@@ -114,7 +117,8 @@ template <typename T> std::vector<T> operator*( T c , const std::vector<T> &a) {
 // product between a scalar and a vector
 // ===============================================================================
 
-template <typename T> std::vector<T> operator*( const std::vector<T> &a , T c) {
+template <typename T> 
+inline std::vector<T> operator*( const std::vector<T> &a , T c) {
   
   std::vector<T> result(a.size());
   for (int i = 0; i < static_cast<int>(a.size()); i++) result[i] = c * a[i];  
@@ -128,7 +132,8 @@ template <typename T> std::vector<T> operator*( const std::vector<T> &a , T c) {
 // division between a vector and a scalar  
 // ===============================================================================
 
-template <typename T> std::vector<T> operator/( const std::vector<T> &a , T c) {
+template <typename T> 
+inline std::vector<T> operator/( const std::vector<T> &a , T c) {
   std::vector<T> result(a.size());
   for (int i = 0; i < static_cast<int>(a.size()); i++) result[i] = a[i] / c ;  
   return result;
@@ -138,7 +143,8 @@ template <typename T> std::vector<T> operator/( const std::vector<T> &a , T c) {
 // add to a vector a, vector b, and the result is stored in a
 // ===============================================================================
 
-template <typename T> std::vector<T>& operator+=(std::vector<T>& a, const std::vector<T>& b) {
+template <typename T> 
+inline std::vector<T>& operator+=(std::vector<T>& a, const std::vector<T>& b) {
   
   assert(a.size() == b.size());  
   

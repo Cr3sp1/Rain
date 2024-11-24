@@ -55,20 +55,24 @@ double MaxU(vector<vector<double>> H, vector<double> u ) {
 
 // Returns wether the Point is inside the hexagon H using triangles and barycentric coordinates
 bool PointIsInsideT( vector<double> Point, vector<vector<double>> H ){
-    // Centers on p
-    Point -= H[0];
-    for(int i = 1; i < 7; i++ ){
-        H[i] -= H[0];
+    // Centers all other points on H[1]
+    Point -= H[1];
+    for(int i = 2; i < 7; i++ ){
+        H[i] -= H[1];
     }
 
-    // Checks if Point is inside the rectangle with vertices H[0], H[i], H[i+1]
-    for( int i = 1; i < 7; i++ ){
+    // Checks if Point is inside the triangle with vertices H[1], H[i], H[i+1]
+    for( int i = 2; i < 6; i++ ){
+        int i_next = i + 1;
         double epsilon = 1e-10;
-        double A = Norm( CrossProduct( H[i], H[PBCH(i+1)]) );
-        double alpha = Norm( CrossProduct( Point, H[PBCH(i+1)]) )/A;
+        double A = Norm( CrossProduct( H[i], H[i_next]) );
+        double alpha = Norm( CrossProduct( Point, H[i_next]) )/A;
         double beta = Norm( CrossProduct( Point, H[i]) )/A;
-        double gamma = Norm( CrossProduct( Point-H[i], Point-H[PBCH(i+1)]) )/A;
-        if( 0 <= alpha and alpha <= 1 and 0 <= beta and beta <= 1 and 0 <= gamma and gamma <= 1 and abs(alpha + beta + gamma - 1 ) <  epsilon ){
+        double gamma = Norm( CrossProduct( Point-H[i], Point-H[i_next]) )/A;
+        if( 0 <= alpha and alpha <= 1 and
+            0 <= beta and beta <= 1 and
+            0 <= gamma and gamma <= 1 and
+            abs(alpha + beta + gamma - 1 ) <  epsilon ){
             return true;
         }
     }
@@ -256,14 +260,15 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Changes frame of reference to l1 = 0
     p -= l1;
     l2 -= l1;
-    if( Norm(l2) == 0 ) return Norm(p);
+    double l2_norm = Norm(l2);
+    // Makes sure not to divide by zero
+    if( l2_norm == 0 ) return Norm(p);
     // Calculates projection of p on line passing through l1 (0) and l2
-    double proj = p*l2/Norm(l2);
+    double proj = p*l2/l2_norm;
     // Returns distance between p and the closest point belonging to the segment
-    if( proj <= 0 )  return Norm(p);
-    if( proj >= Norm(l2) ) return Norm(p-l2);
-    // cout << "ok" << endl;
-    return Norm( p - proj*l2/Norm(l2));
+    if( proj <= 0 ) return Norm(p);                    // p closest to l1
+    if( proj >= l2_norm ) return Norm(p-l2);           // p closest to l2
+    return Norm( p - l2*(proj/l2_norm));               // p closest to its projection on the segment
 }
 
 
@@ -554,4 +559,37 @@ vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, 
 }
 
 
+// Transforms distance into a value in [0, 1]
+double smooth_w( double delta_r, double dx ) {
+    if( delta_r >= dx ) return 0.;
+    if( delta_r <= -dx ) return 1.;
+    return ( 1 - sin(delta_r*M_PI/2) )/2;
+}
+
+
+// Estimates smooth wetness
+double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx ) {
+    vector<double> relvel = rain_v;
+    relvel[0] -= vb;
+    return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProjSmooth(body)/vb;
+}
+
+// Estimates smooth wetness of the dynamic body
+double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx, double tmin, double tmax, unsigned int nstep ) {
+    vector<double> relvel = rain_v;
+    relvel[0] -= vb;
+    return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProjSmooth(body, tmin, tmax, nstep )/vb;
+}
+
+// Estimates smooth wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep ) {
+    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
+    vector<double> body_v(N);
+    vector<double> wetness(N);
+    for( size_t i = 0; i < N; i++ ){
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        wetness[i] = WetnessSmooth( box, body, rain_v, body_v[i], dx, tmin, tmax, nstep );
+    }
+    return Transpose(vector<vector<double>>{ body_v, wetness});
+}
 

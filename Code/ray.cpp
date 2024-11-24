@@ -166,11 +166,43 @@ double ProjSurface::BodyProj( Body& body, double tmin, double tmax, unsigned int
         double t = tmin + i*dt;
         body.Move(t);
         body.Prime( H[0], Ray::V );
-        reset();
         for( Ray& ray : rays ){
             if( body.Check( ray ) ) nhit++;
         }
     }
     // cout << "nhit = " << nhit << endl;
     return nhit*dx*dx/nstep;
+}
+
+
+// Returns a smooth estimate of the projection of the body on the plane
+double ProjSurface::BodyProjSmooth( Body& body ) {
+    double tot_w = 0;
+    // cout << "Projecting on " << rays.size() << " rays" << endl;
+    body.Prime( H[0], Ray::V );
+    for( Ray& ray : rays ){
+        tot_w += body.CheckSmooth( ray, dx );
+    }
+    // cout << "nhit = " << nhit << endl;
+    return tot_w*dx*dx;
+}
+
+
+// Returns a smooth estimate of the projection of the dynamic body on the plane
+double ProjSurface::BodyProjSmooth( Body& body, double tmin, double tmax, unsigned int nstep ) {
+    if( nstep == 0 ) return 0;
+    double dt = ( tmax - tmin )/nstep;
+    double tot_w = 0;
+    
+    // cout << "Projecting on " << rays.size() << " rays" << endl;
+    for( unsigned int i = 0; i < nstep; i++ ){
+        double t = tmin + i*dt;
+        body.Move(t);
+        body.Prime( H[0], Ray::V );
+        for( Ray& ray : rays ){
+            tot_w += body.CheckSmooth( ray, dx );
+        }
+    }
+    // cout << "nhit = " << nhit << endl;
+    return tot_w*dx*dx/nstep;
 }

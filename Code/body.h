@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iomanip>
 #include "VectorOperations.h"
+#include "RainFunctions.h"
 
 
 
@@ -48,7 +49,9 @@ class Body {
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	virtual void Prime( vector<double> p, vector<double> v ) {}
 	// Checks if the body is making contact with a ray
-	virtual bool Check( Ray& rayy ) { return false; }
+	virtual bool Check( Ray& ray ) { return false; }
+	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+	virtual double CheckSmooth( Ray& ray, double dx ) { return 0.; }
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	virtual double Anal( vector<double> RelVel, double bodyvel  ) { return -1; }
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
@@ -79,19 +82,22 @@ class Sphere: public Body {
 	
 	vector<double> cent;	// Position of the center of the sphere 
 	double rad;	// Radius of the sphere
+	double rad2; // Square radius of the sphere
 	vector<double> Hcent;		// Projection of the center of the sphere
 
 
   public:
 
 	// Complete static constructor
-	Sphere( vector<double> center, double radius ): Body(), cent(center), rad(radius) {}
+	Sphere( vector<double> center, double radius ): Body(), cent(center), rad(radius), rad2(radius*radius) {}
 	// Complete dynamic constructor
-	Sphere( vector<double> center, double radius, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(center), rad(radius) {}
+	Sphere( vector<double> center, double radius, string Name, vector<double> Rotcent, vector<double> Rotax, vector<double> W, vector<vector<double>> Trans  ): Body( Name, Rotcent, Rotax, W, Trans ), cent(center), rad(radius), rad2(radius*radius) {}
 	// Primes the body to be checked. p is a point on the surface containing the ray origins and v is the relative velocity
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
+	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+	double CheckSmooth( Ray& ray, double dx ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	double Anal( vector<double> v , double bodyvel ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
@@ -132,6 +138,8 @@ class Parallelepiped: public Body {
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray
 	bool Check( Ray& ray ) override;
+	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+	double CheckSmooth( Ray& ray, double dx ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	double Anal( vector<double> v, double bodyvel  ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
@@ -173,6 +181,8 @@ class Capsule: public Body {
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
+	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+	double CheckSmooth( Ray& ray, double dx ) override;
 	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
 	double Anal( vector<double> v , double bodyvel ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
@@ -216,6 +226,8 @@ class ManyBody: public Body {
 	void Prime( vector<double> p, vector<double> v  ) override;
 	// Checks if the body is making contact with a ray and if so adds its the volume to the wetness
 	bool Check( Ray& ray ) override;
+	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+	double CheckSmooth( Ray& ray, double dx ) override;
 	// Time evolution of all the bodies
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies

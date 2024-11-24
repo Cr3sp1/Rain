@@ -36,10 +36,10 @@ int main (int argc, char *argv[]){
     ReadInput >> body_vel;
     ReadInput >> nstep_v;
     ReadInput >> rain_vel[0] >> rain_vel[1] >> rain_vel[2];
+    ReadInput.close();
+
     rel_vel = rain_vel;
     rel_vel[0] -= body_vel;
-
-    ReadInput.close();
 
 
     // Outputs settings and stuff
@@ -246,22 +246,22 @@ int main (int argc, char *argv[]){
     // dx = 0.001;
     // nstep_t = 10;
     // double voptW = 0.59191;
-    // vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.05, voptW + 0.05, 1000, dx, 0, 1, nstep_t );
+    // vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
     // Print( "../data/Walk/Wetfun.dat", wetfunW, 12 );
     
     // double voptR = 0.884849;
-    // vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.05, voptR + 0.05, 1000, dx, 0, 1, nstep_t );
+    // vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/Wetfun.dat", wetfunR, 12 );
 
 
-    dx = 0.0005;
-    nstep_t = 20;
-    double voptW = 0.59;
-    vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
-    Print( "../data/Walk/Wetfun_dx_dt.dat", wetfunW, 12 );
-    double voptR = 0.885;
-    vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
-    Print( "../data/Run/Wetfun_dx_dt.dat", wetfunR, 12 );
+    // dx = 0.0005;
+    // nstep_t = 20;
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunW = Simulate( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/Wetfun_dx_dt.dat", wetfunW, 12 );
+    // double voptR = 0.885;
+    // vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/Wetfun_dx_dt.dat", wetfunR, 12 );
 
     // dx = 0.0005;
     // nstep_t = 10;
@@ -281,9 +281,26 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> wetfunR = Simulate( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/Wetfun_dt.dat", wetfunR, 12 );
 
+
+    // Trials
+    // double wet = Wetness( boxR, Run, rain_vel, body_vel, dx, 0, 1, nstep_t );
+    // cout << "Wentness: "<< setprecision(15) << wet << endl;
+
+    // double wetSmooth = WetnessSmooth( boxR, Run, rain_vel, body_vel, dx, 0, 1, nstep_t );
+    // cout << "Smooth wentness: "<< setprecision(15) << wetSmooth << endl;
+
+
+
+    // Smooth etness around minimum
+    dx = 0.001;
+    nstep_t = 10;
+    double voptW = 0.59191;
+    vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
     
-
-
+    // double voptR = 0.884849;
+    // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/WetfunS.dat", wetfunSR, 12 );
     
     return 0;
 }

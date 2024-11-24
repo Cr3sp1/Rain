@@ -1,5 +1,6 @@
 #include "body.h"
 #include "ray.h"
+#include "RainFunctions.h"
 
 using namespace std;
 
@@ -93,13 +94,19 @@ void Sphere::Prime( vector<double> p, vector<double> v  ) {
 
 // Checks if the Sphere is making contact with a ray
 bool Sphere::Check( Ray& ray ) {
-    if( ray.IsOn() == false ) return false;
     vector<double> Xrel = ray.GetR0() - Hcent;
-    if( Xrel*Xrel <= rad*rad ) { // Use std::Norm instead, store rad2 only once
+    if( Xrel*Xrel <= rad2 ) { // Use std::Norm instead, store rad2 only once
         ray.Off();
         return true;
     }
     return false;
+}
+
+// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+double Sphere::CheckSmooth( Ray& ray, double dx ) {
+    vector<double> Xrel = ray.GetR0() - Hcent;
+    double delta_r = Norm(Xrel) - rad;
+    return smooth_w( delta_r, dx );
 }
 
 // Analytical solution of rain intercepted. v is relative velocity
@@ -205,12 +212,23 @@ void Parallelepiped::Prime( vector<double> P, vector<double> V ) {
 
 // Checks if the body is making contact with a ray
 bool Parallelepiped::Check( Ray& ray ) {
-    if( ray.IsOn() == false ) return false;
     if( PointIsInsideT( ray.GetR0(), H )) { // Use less triangles (4 not 6)
         ray.Off();
         return true;
     }
     return false;
+}
+
+// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+double Parallelepiped::CheckSmooth( Ray& ray, double dx ) { // VERY INEFFICIENT, TO OPTIMIZE
+    // Finds smallest distance from each side of the hexagon
+    double delta_r = 0;
+    vector<double> point = ray.GetR0();
+    for( int i = 1; i < 7; i++ ){
+        delta_r = max( delta_r, PointSegDist(point, H[i], H[PBCH(i+1)]) );
+    }
+    if( PointIsInsideT(point, H)) delta_r = -delta_r;
+    return smooth_w( delta_r, dx );
 }
 
 // Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
@@ -345,13 +363,17 @@ void Capsule::Prime( vector<double> p, vector<double> v  ) {
 
 // Checks if the Capsule is making contact with a ray
 bool Capsule::Check( Ray& ray ) {
-    if( ray.IsOn() == false ) return false;
-
     if( PointSegDist( ray.GetR0(), H1, H2 ) <= rad ) {
         ray.Off();
         return true;
     }
     return false;
+}
+
+// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+double Capsule::CheckSmooth( Ray& ray, double dx ) {
+    double delta_r = PointSegDist( ray.GetR0(), H1, H2 ) - rad;
+    return smooth_w( delta_r, dx );
 }
 
 // Analytical solution of rain intercepted. v is relative velocity
@@ -603,8 +625,20 @@ void ManyBody::Prime( vector<double> p, vector<double> v  ) {
 
 // Checks if the ManyBody is making contact with a ray
 bool ManyBody::Check( Ray& ray ) {
+    // Iterates over all bodies or until a body makes contact
     for(Body* body : bodies) if(body->Check( ray )) return true;
     return false;
+}
+
+// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
+double ManyBody::CheckSmooth( Ray& ray, double dx ) {
+    double w = 0;
+    // Iterates over all bodies or until a body makes full contact
+    for(Body* body : bodies) {
+        w = max( w, body->CheckSmooth(ray, dx));
+        if( w == 1 ) return w;
+    }
+    return w;
 }
 
 // Time evolution of the body
