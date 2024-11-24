@@ -292,15 +292,43 @@ int main (int argc, char *argv[]){
 
 
     // Smooth etness around minimum
-    dx = 0.001;
-    nstep_t = 10;
-    double voptW = 0.59191;
-    vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
-    Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
+    // dx = 0.001;
+    // nstep_t = 10;
+    // double voptW = 0.59191;
+    // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
     
     // double voptR = 0.884849;
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS.dat", wetfunSR, 12 );
+
+
+    // dx = 0.0005;
+    // nstep_t = 20;
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/WetfunS_dx_dt.dat", wetfunSW, 12 );
+    // double voptR = 0.885;
+    // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/WetfunS_dx_dt.dat", wetfunSR, 12 );
+
+    // dx = 0.0005;
+    // nstep_t = 10;
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/WetfunS_dx.dat", wetfunSW, 12 );
+    // double voptR = 0.885;
+    // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/WetfunS_dx.dat", wetfunSR, 12 );
+
+    // dx = 0.001;
+    // nstep_t = 20;
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/WetfunS_dt.dat", wetfunSW, 12 );
+    // double voptR = 0.885;
+    // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
+    // Print( "../data/Run/WetfunS_dt.dat", wetfunSR, 12 );
     
     return 0;
 }
