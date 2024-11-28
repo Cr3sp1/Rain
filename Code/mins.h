@@ -10,40 +10,42 @@
 
 using namespace std;
 
-class Bracketmethod {
+struct Bracketmethod {
   public:
     // Member variables
     double ax, bx, cx, fa, fb, fc;
+    const double tol;
 
-    // Bracket method, returns true if it finds f(b)<f(a) and f(b)<f(c)
+    // Constructor with default tolerance
+    Bracketmethod(const double toll = 3.0e-8) : tol(toll) {}
+
+    // Bracket method, returns true if it finds b so that f(b)<f(a) and f(b)<f(c)
     template <class T>
-    bool bracket(const double a, const double b, const double c, T &func) {
-        fa = func(a);
-        fb = func(b);
-        fc = func(c);
-        ax = a;
-        bx = b;
-        cx = c;
+    bool bracket(const double a, const double c, const unsigned int n_tries, T &func) {
+        ax = a + tol;
+        cx =  c;
+        fa = func(ax);
+        fc = func(cx);
 
-        if( fa > fb and fc > fb ) {
-            ax = a;
-            bx = b;
-            cx = c;
-            return true;
+        for( unsigned int i = 1; i <= n_tries; i++ ) {
+            bx = c - i*tol;
+            fb = func(bx);
+            if( fb < fa  and fb < fc ) {
+                return true;
+            }
         }
         return false;
     }
 };
 
 
-class Brent : public Bracketmethod {
+struct Brent : public Bracketmethod {
   public:
     // Member variables for Brent's method
     double xmin, fmin;
-    const double tol;
 
     // Constructor with default tolerance
-    Brent(const double toll = 3.0e-8) : tol(toll) {}
+    Brent(const double toll = 3.0e-8) : Bracketmethod(toll) {}
 
     // Brent's minimization method
     template <class T>
