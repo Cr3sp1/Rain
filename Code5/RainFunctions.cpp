@@ -501,7 +501,7 @@ vector<vector<double>> OptMapFit(vector<double> box, Body& body, double vmin, do
 
 
 // Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm
-vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, double vcross, double vtail_min, double vtail_max, unsigned int n_tail ) {
+vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, unsigned int n_tries, double vcross, double vtail_min, double vtail_max, unsigned int n_tail ) {
     vector<double> vtail, vb, wetness;
     Brent mins(tol);
 
@@ -511,7 +511,7 @@ vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin,
         vector<double> rain_vel = {vtail_i, vcross, -1};
         auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return Wetness( box, body, rain_vel, x, dx, 0., 1., nstep );};
 
-        if( mins.bracket( vmin + tol, vmax - 2*tol, vmax, wetfunc ) ) {
+        if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
             mins.minimize( wetfunc);
             vb.push_back( mins.xmin );
             wetness.push_back( mins.fmin );
@@ -527,7 +527,7 @@ vector<vector<double>> FindMinBrent(vector<double> box, Body& body, double vmin,
 
 
 // Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max] using Brent algorithm
-vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross ) {
+vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, unsigned int n_tries, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross ) {
     vector<double> vtail, vcross, vb, wetness;
     Brent mins(tol);
 
@@ -542,7 +542,7 @@ vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, 
             vector<double> rain_vel = {vtail_i, vcross_j, -1};
             auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return Wetness( box, body, rain_vel, x, dx, 0., 1., nstep );};
 
-            if( mins.bracket( vmin + tol, vmax - 2*tol, vmax, wetfunc ) ) {
+            if( mins.bracket( vmin, vmax, n_tries, wetfunc ) ) {
                 mins.minimize( wetfunc);
                 vb.push_back( mins.xmin );
                 wetness.push_back( mins.fmin );
@@ -561,8 +561,9 @@ vector<vector<double>> OptMapBrent(vector<double> box, Body& body, double vmin, 
 
 // Transforms distance into a value in [0, 1]
 double smooth_w( double delta_r, double dx ) {
-    if( delta_r >= dx ) return 0.;
-    if( delta_r <= -dx ) return 1.;
+    delta_r /= dx;
+    if( delta_r >= 1 ) return 0.;
+    if( delta_r <= -1 ) return 1.;
     return ( 1 - sin(delta_r*M_PI/2) )/2;
 }
 
@@ -591,5 +592,31 @@ vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<do
         wetness[i] = WetnessSmooth( box, body, rain_v, body_v[i], dx, tmin, tmax, nstep );
     }
     return Transpose(vector<vector<double>>{ body_v, wetness});
+}
+
+
+// Finds minimums of wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm
+vector<vector<double>> FindMinBrentSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, unsigned int n_tries, double vcross, double vtail_min, double vtail_max, unsigned int n_tail ) {
+    vector<double> vtail, vb, wetness;
+    Brent mins(tol);
+
+    for( size_t i = 0; i < n_tail; i++ ) {
+        double vtail_i = n_tail > 1 ?  vtail_min + i*(vtail_max-vtail_min)/(n_tail-1) : vtail_min;
+        vtail.push_back(vtail_i);
+        vector<double> rain_vel = {vtail_i, vcross, -1};
+        auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return WetnessSmooth( box, body, rain_vel, x, dx, 0., 1., nstep );};
+
+        if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
+            mins.minimize( wetfunc);
+            vb.push_back( mins.xmin );
+            wetness.push_back( mins.fmin );
+        } else {
+            vb.push_back( mins.cx );
+            wetness.push_back( mins.fc );
+        }
+        cout << "Step " << i+1 << "/" << n_tail << " completed" << endl;
+    }
+
+    return Transpose(vector<vector<double>>{vtail, vb, wetness});
 }
 

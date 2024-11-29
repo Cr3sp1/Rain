@@ -331,8 +331,8 @@ int main (int argc, char *argv[]){
 
 
     // Smooth v_opt mins brent
-    vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptSmoothW0.dat", WalkMins1, 12 );
+    // vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW0.dat", WalkMins1, 12 );
 
     // vector<vector<double>> WalkMins2 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.15, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptSmoothW015.dat", WalkMins2, 12 );

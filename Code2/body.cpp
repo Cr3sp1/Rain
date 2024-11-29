@@ -221,12 +221,13 @@ bool Parallelepiped::Check( Ray& ray ) {
 
 // Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
 double Parallelepiped::CheckSmooth( Ray& ray, double dx ) { // VERY INEFFICIENT, TO OPTIMIZE
-    // Finds smallest distance from each side of the hexagon
-    double delta_r = 0;
+    // Finds smallest distance from all side of the hexagon
+    double delta_r = dx;     // Sentinel value
     vector<double> point = ray.GetR0();
     for( int i = 1; i < 7; i++ ){
-        delta_r = max( delta_r, PointSegDist(point, H[i], H[PBCH(i+1)]) );
+        delta_r = min( delta_r, PointSegDist(point, H[i], H[PBCH(i+1)]) );
     }
+    // Changes sign of the distance if the ray intersects the hexagon
     if( PointIsInsideT(point, H)) delta_r = -delta_r;
     return smooth_w( delta_r, dx );
 }

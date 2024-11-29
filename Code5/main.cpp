@@ -291,17 +291,15 @@ int main (int argc, char *argv[]){
 
 
 
-    // Smooth etness around minimum
+    // Smooth wetness around minimum
     // dx = 0.001;
     // nstep_t = 10;
     // double voptW = 0.59191;
     // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
     // Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
-    
     // double voptR = 0.884849;
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS.dat", wetfunSR, 12 );
-
 
     // dx = 0.0005;
     // nstep_t = 20;
@@ -321,14 +319,44 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS_dx.dat", wetfunSR, 12 );
 
-    dx = 0.001;
-    nstep_t = 20;
-    double voptW = 0.59;
-    vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
-    Print( "../data/Walk/WetfunS_dt.dat", wetfunSW, 12 );
+    // dx = 0.001;
+    // nstep_t = 20;
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
+    // Print( "../data/Walk/WetfunS_dt.dat", wetfunSW, 12 );
     // double voptR = 0.885;
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS_dt.dat", wetfunSR, 12 );
+
+
+
+    // Smooth v_opt mins brent
+    // vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW0.dat", WalkMins1, 12 );
+
+    // vector<vector<double>> WalkMins2 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.15, 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW015.dat", WalkMins2, 12 );
+
+    // vector<vector<double>> WalkMins3 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.25, 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW025.dat", WalkMins3, 12 );
+
+    // vector<vector<double>> WalkMins4 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.30, 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW030.dat", WalkMins4, 12 );
+
+    vector<vector<double>> RunMins1 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0., 0, 2, nstep_v );
+    Print( "../data/Run/OptSmoothR0.dat", RunMins1, 12 );
+
+    // vector<vector<double>> RunMins2 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.3, 0, 2, nstep_v );
+    // Print( "../data/Run/OptSmoothR03.dat", RunMins2, 12 );
+
+    // vector<vector<double>> RunMins3 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.6, 0, 2, nstep_v );
+    // Print( "../data/Run/OptSmoothR06.dat", RunMins3, 12 );
+
+    // vector<vector<double>> RunMins4 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.8, 0, 2, nstep_v );
+    // Print( "../data/Run/OptSmoothR08.dat", RunMins4, 12 );
+
+    // vector<vector<double>> RunMins5 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 1, 0, 2, nstep_v );
+    // Print( "../data/Run/OptSmoothR1.dat", RunMins5, 12 );
     
     return 0;
 }
