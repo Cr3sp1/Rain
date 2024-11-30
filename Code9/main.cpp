@@ -294,7 +294,7 @@ int main (int argc, char *argv[]){
     // Smooth wetness around minimum
     // dx = 0.001;
     // nstep_t = 10;
-    // double voptW = 0.59191;
+    // double voptW = 0.59;
     // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
     // Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
     // double voptR = 0.884849;

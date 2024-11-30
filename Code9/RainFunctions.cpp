@@ -260,15 +260,15 @@ double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Changes frame of reference to l1 = 0
     p -= l1;
     l2 -= l1;
-    double l2_norm = Norm(l2);
+    double l2_norm2 = l2*l2;
     // Makes sure not to divide by zero
-    if( l2_norm == 0 ) return Norm(p);
-    // Calculates projection of p on line passing through l1 (0) and l2
-    double proj = p*l2/l2_norm;
+    if( l2_norm2 == 0 ) return Norm(p);
+    // Calculates projection of p on line passing through l1 (0) and l2, value of projection is multiplied by l2_norm
+    double proj = p*l2;
     // Returns distance between p and the closest point belonging to the segment
     if( proj <= 0 ) return Norm(p);                    // p closest to l1
-    if( proj >= l2_norm ) return Norm(p-l2);           // p closest to l2
-    return Norm( p - l2*(proj/l2_norm));               // p closest to its projection on the segment
+    if( proj >= l2_norm2 ) return Norm(p-l2);           // p closest to l2
+    return sqrt( p*p - proj*proj/l2_norm2 );               // p closest to its projection on the segment, calculates distance with pythagoras
 }
 
 
