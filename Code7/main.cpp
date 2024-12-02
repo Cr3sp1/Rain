@@ -332,31 +332,31 @@ int main (int argc, char *argv[]){
 
     // Smooth v_opt mins brent
     // vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptSmoothW0.dat", WalkMins1, 12 );
+    // Print( "../data/Walk/OptSmoothW0_dx_dt.dat", WalkMins1, 12 );
 
     // vector<vector<double>> WalkMins2 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.15, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptSmoothW015.dat", WalkMins2, 12 );
+    // Print( "../data/Walk/OptSmoothW015_dx_dt.dat", WalkMins2, 12 );
 
     // vector<vector<double>> WalkMins3 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.25, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptSmoothW025.dat", WalkMins3, 12 );
+    // Print( "../data/Walk/OptSmoothW025_dx_dt.dat", WalkMins3, 12 );
 
     // vector<vector<double>> WalkMins4 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.30, 0., 0.7, nstep_v );
-    // Print( "../data/Walk/OptSmoothW030.dat", WalkMins4, 12 );
+    // Print( "../data/Walk/OptSmoothW030_dx_dt.dat", WalkMins4, 12 );
 
     // vector<vector<double>> RunMins1 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0., 0, 2, nstep_v );
-    // Print( "../data/Run/OptSmoothR0.dat", RunMins1, 12 );
+    // Print( "../data/Run/OptSmoothR0_dx_dt.dat", RunMins1, 12 );
 
     // vector<vector<double>> RunMins2 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.3, 0, 2, nstep_v );
-    // Print( "../data/Run/OptSmoothR03.dat", RunMins2, 12 );
+    // Print( "../data/Run/OptSmoothR03_dx_dt.dat", RunMins2, 12 );
 
     vector<vector<double>> RunMins3 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.6, 0, 2, nstep_v );
-    Print( "../data/Run/OptSmoothR06.dat", RunMins3, 12 );
+    Print( "../data/Run/OptSmoothR06_dx_dt.dat", RunMins3, 12 );
 
     // vector<vector<double>> RunMins4 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 0.8, 0, 2, nstep_v );
-    // Print( "../data/Run/OptSmoothR08.dat", RunMins4, 12 );
+    // Print( "../data/Run/OptSmoothR08_dx_dt.dat", RunMins4, 12 );
 
     // vector<vector<double>> RunMins5 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 1, 0, 2, nstep_v );
-    // Print( "../data/Run/OptSmoothR1.dat", RunMins5, 12 );
+    // Print( "../data/Run/OptSmoothR1_dx_dt.dat", RunMins5, 12 );
     
     return 0;
 }
