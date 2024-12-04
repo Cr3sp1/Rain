@@ -56,6 +56,10 @@ int main (int argc, char *argv[]){
     ManyBody Run("../Bodies/RunningMan.in");
     vector<double> boxR = {1.13, 0.58, 1.82};
 
+    ManyBody DynSphere("../Bodies/DynamicSphere.in");
+    vector<double> boxDS = {1, 1, 2};
+
+
 
     // // Check boxes
     // PrintDynShadow(boxW, Walk, {0, 0, -1}, dx, 0, 1, 60, "../data/Walk/Proj/Walk_xy" );
@@ -68,6 +72,7 @@ int main (int argc, char *argv[]){
     // // Print dynamic state
     // PrintDynState( Walk, 0, 1, 60, "../data/Walk/Status/Walk");
     // PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
+    // PrintDynState( DynSphere, 0, 1, 60, "../data/Sphere/Status/DynSphere");
 
     // // Walking & running error analysis
     // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
@@ -297,7 +302,7 @@ int main (int argc, char *argv[]){
     // double voptW = 0.59;
     // vector<vector<double>> wetfunSW = SimulateSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.03, voptW + 0.03, 600, dx, 0, 1, nstep_t );
     // Print( "../data/Walk/WetfunS.dat", wetfunSW, 12 );
-    // double voptR = 0.884849;
+    // double voptR = 0.885;
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS.dat", wetfunSR, 12 );
 
@@ -337,8 +342,8 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> WalkMins2 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.15, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptSmoothW015_dx_dt.dat", WalkMins2, 12 );
 
-    vector<vector<double>> WalkMins3 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.25, 0., 0.7, nstep_v );
-    Print( "../data/Walk/OptSmoothW025_dx_dt.dat", WalkMins3, 12 );
+    // vector<vector<double>> WalkMins3 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.25, 0., 0.7, nstep_v );
+    // Print( "../data/Walk/OptSmoothW025_dx_dt.dat", WalkMins3, 12 );
 
     // vector<vector<double>> WalkMins4 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.30, 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptSmoothW030_dx_dt.dat", WalkMins4, 12 );
@@ -357,6 +362,27 @@ int main (int argc, char *argv[]){
 
     // vector<vector<double>> RunMins5 = FindMinBrentSmooth( boxR, Run, 0, 2, dx, nstep_t, 0.001, 3, 1, 0, 2, nstep_v );
     // Print( "../data/Run/OptSmoothR1_dx_dt.dat", RunMins5, 12 );
+
+
+
+    // Simulate different nstep
+    dx = 0.001;
+    int nstep_min = 2;
+    int nstep_max = 100;
+    int N_nstep = 10;
+
+    // double voptW = 0.59;
+    // vector<vector<double>> wetfunSW = SimulateNstepSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.05, voptW + 0.05, 40, dx, nstep_min, nstep_max, N_nstep );
+    // Print( "../data/Walk/WetfunS_nstep.dat", wetfunSW, 12 );
+
+    // double voptR = 0.89;
+    // vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 40, dx, nstep_min, nstep_max, N_nstep );
+    // Print( "../data/Run/WetfunS_nstep.dat", wetfunSR, 12 );
+
+    double voptDS = 2.872;
+    vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
+    Print( "../data/Sphere/WetfunS_nstep.dat", wetfunSR, 12 );
+
     
     return 0;
 }

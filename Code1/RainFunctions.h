@@ -118,6 +118,9 @@ vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<do
 // Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm
 vector<vector<double>> FindMinBrentSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, unsigned int n_tries, double vcross, double vtail_min, double vtail_max, unsigned int n_tail );
 
+// Estimates smooth wetness for N_v velocities of the dynamic body between vmin and vmax, and nN_nstep values of nstep between nstep_min and nstep_max and returns a matrix with the nsteps velocities as the first colunmn, the velocities as the second column and the respective wetness as the third column
+vector<vector<double>> SimulateNstepSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N_v, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep );
+
 
 
 #endif

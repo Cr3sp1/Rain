@@ -620,3 +620,25 @@ vector<vector<double>> FindMinBrentSmooth(vector<double> box, Body& body, double
     return Transpose(vector<vector<double>>{vtail, vb, wetness});
 }
 
+
+// Estimates smooth wetness for N_v velocities of the dynamic body between vmin and vmax, and nN_nstep values of nstep between nstep_min and nstep_max and returns a matrix with the nsteps velocities as the first colunmn, the velocities as the second column and the respective wetness as the third column
+vector<vector<double>> SimulateNstepSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N_v, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep ) {
+    double dtmin = 1./nstep_max;
+    double dtmax = 1./nstep_min;
+    double k =  N_nstep < 2 ? 1  :  pow(dtmin/dtmax, (double)1/(N_nstep-1));
+    vector<double> nstep, vb, wetness;
+    
+    for( size_t i = 0; i < N_nstep; i++ ) {
+        double dt_i = dtmax * pow( k, i );
+        unsigned int nstep_i = round(1./dt_i);
+        for( size_t j = 0; j < N_v; j++ ) {
+            double vb_j = ( N_v < 2 ? vmin : vmin + (vmax - vmin)*(double)j/((double)N_v-1) );
+            nstep.push_back(nstep_i);
+            vb.push_back(vb_j);
+            wetness.push_back( WetnessSmooth( box, body, rain_v, vb_j, dx, 0., 1., nstep_i) );
+        }
+    }
+
+    return Transpose(vector<vector<double>>{ nstep, vb, wetness });
+}
+
