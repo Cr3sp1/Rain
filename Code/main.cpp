@@ -379,10 +379,13 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 40, dx, nstep_min, nstep_max, N_nstep );
     // Print( "../data/Run/WetfunS_nstep.dat", wetfunSR, 12 );
 
-    // double voptDS = 2.872;
+    double voptDS = 2.872;
     // vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
     // Print( "../data/Sphere/WetfunS_nstep.dat", wetfunSR, 12 );
 
+    dx = 0.0005;
+    vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
+    Print( "../data/Sphere/WetfunS_nstep0005.dat", wetfunSR, 12 );
     
     return 0;
 }
