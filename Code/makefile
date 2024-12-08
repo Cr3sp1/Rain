@@ -1,6 +1,7 @@
-CC = g++
+CC = clang++
 CFLAGS = -Wall -O3 --std=c++11 
-MYLIBS = body.o ray.o RainFunctions.o mins.h VectorOperations.h VectorStat.h
+DEBUG_CFLAGS = -Wall -O3 --std=c++11 -pedantic -Winline -g
+MYLIBS = body.o ray.o RainFunctions.o
 
 
 main.exe: main.cpp ${MYLIBS}
@@ -14,3 +15,6 @@ run:
 
 clean :
 	rm *.o main.exe
+
+debug: CFLAGS = $(DEBUG_CFLAGS)
+debug: main.exe

@@ -366,10 +366,10 @@ int main (int argc, char *argv[]){
 
 
     // Simulate different nstep
-    dx = 0.001;
-    int nstep_min = 2;
-    int nstep_max = 100;
-    int N_nstep = 10;
+    // dx = 0.001;
+    // int nstep_min = 2;
+    // int nstep_max = 100;
+    // int N_nstep = 10;
 
     // double voptW = 0.59;
     // vector<vector<double>> wetfunSW = SimulateNstepSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, voptW - 0.05, voptW + 0.05, 40, dx, nstep_min, nstep_max, N_nstep );
@@ -379,13 +379,22 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 40, dx, nstep_min, nstep_max, N_nstep );
     // Print( "../data/Run/WetfunS_nstep.dat", wetfunSR, 12 );
 
-    double voptDS = 2.872;
-    // vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
-    // Print( "../data/Sphere/WetfunS_nstep.dat", wetfunSR, 12 );
+    // double voptDS = 2.872;
+    // vector<vector<double>> wetfunDS = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
+    // Print( "../data/Sphere/WetfunS_nstep.dat", wetfunDS, 12 );
 
-    dx = 0.0005;
-    vector<vector<double>> wetfunSR = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
-    Print( "../data/Sphere/WetfunS_nstep0005.dat", wetfunSR, 12 );
+    // dx = 0.0005;
+    // vector<vector<double>> wetfunDS = SimulateNstepSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, voptDS - 0.03, voptDS + 0.03, 40, dx, nstep_min, nstep_max, N_nstep );
+    // Print( "../data/Sphere/WetfunS_nstep0005.dat", wetfunDS, 12 );
+
+
+
+    // Check shadows of dynamic sphere
+    nstep_t = 20;
+    dx =  0.001;
+    PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth001_" );
+    dx =  0.002;
+    PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth002_" );
     
     return 0;
 }

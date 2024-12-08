@@ -319,10 +319,30 @@ void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, doub
 
     for( unsigned int i = 0; i < nstep; i++ ){
         body.Move(t);
+        canvas.reset();
         canvas.BodyProj(body);
         string out = outfile + to_string(t) + ".dat";
         cout << "Printing to " << out << endl;
         canvas.PrintRaysFlat(out);
+        t += dt;
+    }
+}
+
+
+
+// Prints the smooth shadow of a body at nstep different time steps in [tmin, tmax)
+void PrintDynShadowSmooth( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile){
+    ProjSurface canvas(box, relvel, dx);
+    double dt = nstep < 2 ? 0 : ( tmax - tmin )/nstep;
+    double t = tmin;
+
+    for( unsigned int i = 0; i < nstep; i++ ){
+        body.Move(t);
+        canvas.reset();
+        canvas.BodyProjSmooth(body);
+        string out = outfile + to_string(t) + ".dat";
+        cout << "Printing to " << out << endl;
+        canvas.PrintRaysFlatSmooth(out);
         t += dt;
     }
 }

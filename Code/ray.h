@@ -26,28 +26,35 @@ class Ray {
     // The ray starts active and deactivates when it hits an object
     bool Active;
 
+    // Weight of the ray, desctibes its proximity to the object
+    double Weight;
+
 	
   public:
     // Static direction vector 
     static vector<double> V; 
 
     // Direction setter
-    void SetV( vector<double> v ) { v = V;}
+    void SetV( vector<double> v ) { v = V; }
 
     // Complete static constructor
-	  Ray( vector<double> position, vector<double> direction);
+	  Ray( vector<double> position, vector<double> direction): R0(position), Active(true), Weight(0.) { V = direction; };
 
     // Efficient constructor
-    Ray( vector<double> position );
+    Ray( vector<double> position ): R0(position), Active(true), Weight(0.) {};
 
     // Turns the ray on and off
-    void On(){Active = true;}
-    void Off(){Active = false;}
+    void On() { Active = true; }
+    void Off() { Active = false; }
+
+    // Sets the weight to a value
+    void SetWeight( double w ) { Weight = w; }
 
     // Gets stuff
-    vector<double> GetR0(){return R0;}    
-    vector<double> GetV(){return V;};     
-    bool IsOn(){return Active;}
+    vector<double> GetR0() { return R0; }    
+    vector<double> GetV() { return V; };     
+    bool IsOn() { return Active; }
+    double GetWeight() { return Weight; }
 
 };
 
@@ -73,9 +80,9 @@ class ProjSurface{
     void reset();
 
     // Get stuff
-    int GetNRays(){return rays.size();}
-    vector<vector<double>> GetH(){return H;}
-    vector<double> GetV(){return rays[0].GetV();}
+    int GetNRays() { return rays.size(); }
+    vector<vector<double>> GetH() { return H; }
+    vector<double> GetV() { return rays[0].GetV(); }
 
     // Prints all the origins of the active rays to file, last column is 1 if active, 0 if not
     void PrintR( ofstream &fout );
@@ -84,6 +91,10 @@ class ProjSurface{
     // Prints all the origins of the rays projected on the x-y plane to file, last column is 1 if active, 0 if not
     void PrintRaysFlat( ofstream &fout );
     void PrintRaysFlat( string outfile );
+
+    // Prints all the origins of the rays projected on the x-y plane and their weight to file
+    void PrintRaysFlatSmooth( ofstream &fout );
+    void PrintRaysFlatSmooth( string outfile );
 
     // Prints H to file
     void PrintH( ofstream &fout );

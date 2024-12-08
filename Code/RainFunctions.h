@@ -85,6 +85,9 @@ void Rotate( vector<double>& Point, const vector<double>& Rot0, const vector<vec
 // Prints the shadow of a body at nstep different time steps in [tmin, tmax)
 void PrintDynShadow( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile );
 
+// Prints the smooth shadow of a body at nstep different time steps in [tmin, tmax)
+void PrintDynShadowSmooth( vector<double> box, Body& body, vector<double> relvel, double dx, double tmin, double tmax, unsigned int nstep, string outfile );
+
 // Prints the state of a body at nstep different time steps in [tmin, tmax)
 void PrintDynState( Body& body, double tmin, double tmax, unsigned int nstep, string outfile );
 
