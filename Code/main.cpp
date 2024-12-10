@@ -333,10 +333,23 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> wetfunSR = SimulateSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, voptR - 0.015, voptR + 0.015, 300, dx, 0, 1, nstep_t );
     // Print( "../data/Run/WetfunS_dt.dat", wetfunSR, 12 );
 
+    // Brent path 
+    // Brent mins(0.001);
+    // auto wetfuncW = [&boxW, &Walk, dx, nstep_t] (double x) {return WetnessSmooth( boxW, Walk, vector<double>{0.5, 0.15, -1}, x, dx, 0., 1., nstep_t );};
+    // mins.bracket( 0., 0.7, 3, wetfuncW );
+    // vector<vector<double>> pathW = mins.minimize( wetfuncW );
+    // Print("../data/Walk/MinPath.dat", Transpose(pathW), 12 );
+    // auto wetfuncR = [&boxR, &Run, dx, nstep_t] (double x) {return WetnessSmooth( boxR, Run, vector<double>{0.45, 0.3, -1}, x, dx, 0., 1., nstep_t );};
+    // mins.bracket( 0., 2., 3, wetfuncR );
+    // vector<vector<double>> pathR = mins.minimize( wetfuncR );
+    // Print("../data/Run/MinPath.dat", Transpose(pathR), 12 );
+
+    
+
 
 
     // Smooth v_opt mins brent
-    // vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
+    // vector<vector<double>> WalkMins1 = FindMinBrentSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0.001, 3, 0., 0., 0.7, nstep_v );
     // Print( "../data/Walk/OptSmoothW0_dx_dt.dat", WalkMins1, 12 );
 
     // vector<vector<double>> WalkMins2 = FindMinBrentSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0.001, 3, 0.15, 0., 0.7, nstep_v );
@@ -390,12 +403,50 @@ int main (int argc, char *argv[]){
 
 
     // Check shadows of dynamic sphere
-    nstep_t = 20;
-    dx =  0.001;
-    PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth001_" );
-    dx =  0.002;
-    PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth002_" );
+    // nstep_t = 20;
+    // dx =  0.001;
+    // PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth001_" );
+    // dx =  0.002;
+    // PrintDynShadowSmooth( boxDS, DynSphere, vector<double>{0.45, 0.3, -1}, dx, 0, 1, nstep_t, "../data/Sphere/Shadows/Smooth002_" );
     
+
+
+    // Smooth Brent minimization fit
+    int N_vtail = 50;
+    int N_fit = 7;
+    double dv = 0.0035;
+    dx = 0.001;
+    nstep_t = 10;
+
+    // vector<vector<double>> WalkMinsS0 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0., 0., 0.7, N_vtail, N_fit, dv );
+    // Print( "../data/Walk/OptFitSmoothW0.dat", WalkMinsS0, 12 );
+
+    // vector<vector<double>> WalkMinsS015 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0.15, 0., 0.7, N_vtail, N_fit, dv );
+    // Print( "../data/Walk/OptFitSmoothW015.dat", WalkMinsS015, 12 );
+
+    // vector<vector<double>> WalkMinsS025 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0.25, 0., 0.7, N_vtail, N_fit, dv );
+    // Print( "../data/Walk/OptFitSmoothW025.dat", WalkMinsS025, 12 );
+
+    // vector<vector<double>> WalkMinsS030 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0.30, 0., 0.7, N_vtail, N_fit, dv );
+    // Print( "../data/Walk/OptFitSmoothW030.dat", WalkMinsS030, 12 );
+
+    // vector<vector<double>> RunMinsS0 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 0., 0., 2, N_vtail, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR0.dat", RunMinsS0, 12 );
+
+    // vector<vector<double>> RunMinsS030 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 0.3, 0., 2, N_vtail, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR030.dat", RunMinsS030, 12 );
+
+    // vector<vector<double>> RunMinsS060 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 0.6, 0., 2, N_vtail, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR060.dat", RunMinsS060, 12 );
+
+    // vector<vector<double>> RunMinsS080 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 0.8, 0., 2, N_vtail, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR080.dat", RunMinsS080, 12 );
+
+    // vector<vector<double>> RunMinsS1 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 1., 0., 2, N_vtail, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR1.dat", RunMinsS1, 12 );
+
+
+
     return 0;
 }
 
