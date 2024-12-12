@@ -701,6 +701,7 @@ vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double v
         } else {
             vb.push_back( mins.cx );
             wetness.push_back( mins.fc );
+            vtail.push_back( vtail_i );
         }
         cout << "Step " << i+1 << "/" << n_tail << " completed" << endl;
     }
