@@ -413,8 +413,8 @@ int main (int argc, char *argv[]){
 
     // Smooth Brent minimization fit
     // int N_vtail = 50;
-    // int N_fit = 7;
-    // double dv = 0.003;
+    // int N_fit = 9;
+    // double dv = 0.004;
     // dx = 0.001;
     // nstep_t = 10;
 
@@ -456,8 +456,8 @@ int main (int argc, char *argv[]){
     int nstep_min = 5;
     int nstep_max = 100;
     int N_nstep = 30;
-    int N_fit = 7;
-    double dv = 0.003;
+    int N_fit = 9;
+    double dv = 0.004;
     dx = 0.001;
 
 

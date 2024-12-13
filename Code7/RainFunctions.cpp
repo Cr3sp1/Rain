@@ -705,11 +705,60 @@ vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double v
         }
         cout << "Step " << i+1 << "/" << n_tail << " completed" << endl;
     }
-    Print(vtail);
-    Print(vb);
-    Print(wetness);
 
     return Transpose(vector<vector<double>>{vtail, vb, wetness});
+}
+
+
+// Finds minimums of smooth wetness for a fixed vcross and vtail_min using Brent algorithm with nstep in [nstep_min, nstep_max], and calculates wetness for n_fit values spaced dv around it, returns all these values
+vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep, double vcross, double vtail, int n_fit, double dv ) {
+    double dtmin = 1./nstep_max;
+    double dtmax = 1./nstep_min;
+    double k =  N_nstep < 2 ? 1  :  pow(dtmin/dtmax, (double)1/(N_nstep-1));
+
+    vector<double> nstep, vb, wetness;
+    Brent mins(dv);
+    vector<double> rain_vel = {vtail, vcross, -1};
+
+    for( size_t i = 0; i < N_nstep; i++ ) {
+        double dt_i = dtmax * pow( k, i );
+        unsigned int nstep_i = round(1./dt_i);
+        auto wetfunc = [&box, &body, &rain_vel, dx, nstep_i] (double x) {return WetnessSmooth( box, body, rain_vel, x, dx, 0., 1., nstep_i );};
+
+        if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
+            vector<double> nstep_vec( n_fit, nstep_i );
+            vector<double> x, fx;
+            mins.minimize( wetfunc);
+            x.push_back( mins.xmin );
+            fx.push_back( mins.fmin );
+
+            // Evaluate n_fit points around minimum
+            for( int j = -n_fit/2; j <= (n_fit+1)/2; j++ ) {  
+                if( j == 0 ) continue;
+                double x_j = mins.xmin + j*dv;
+                x.push_back( x_j );
+                fx.push_back( wetfunc(x_j) );
+            }
+            // Remove point with max wetness
+            auto max_it = std::max_element(fx.begin(), fx.end());
+            size_t index = std::distance(fx.begin(), max_it);
+            fx.erase( fx.begin() + index );
+            x.erase( x.begin() + index );
+
+            // Add remaining points to output
+            vb.insert( vb.end(), x.begin(), x.end() );
+            wetness.insert( wetness.end(), fx.begin(), fx.end() );
+            nstep.insert( nstep.end(), nstep_vec.begin(), nstep_vec.end() );
+
+        } else {
+            vb.push_back( mins.cx );
+            wetness.push_back( mins.fc );
+            nstep.push_back( nstep_i );
+        }
+        cout << "Step " << i+1 << "/" << N_nstep << " completed" << endl;
+    }
+
+    return Transpose(vector<vector<double>>{nstep, vb, wetness});
 }
 
 

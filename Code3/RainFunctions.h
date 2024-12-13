@@ -127,6 +127,9 @@ vector<vector<double>> SimulateNstepSmooth( vector<double> box, Body& body, vect
 // Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm, and calculates wetness for n_fit values spaced dv around it, returns all these values
 vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double vcross, double vtail_min, double vtail_max, unsigned int n_tail, int n_fit, double dv );
 
+// Finds minimums of smooth wetness for a fixed vcross and vtail_min using Brent algorithm with nstep in [nstep_min, nstep_max], and calculates wetness for n_fit values spaced dv around it, returns all these values
+vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep, double vcross, double vtail, int n_fit, double dv );
+
 
 
 #endif
