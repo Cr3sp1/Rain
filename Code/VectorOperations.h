@@ -179,12 +179,13 @@ template <typename T> std::vector<std::vector<T>> Transpose(const std::vector<st
 
   for (size_t i = 0; i < rows; ++i) {
     for (size_t j = 0; j < cols; ++j) {
-      transposed[j][i] = matrix[i][j];
+      transposed[j][i] = ( j <= matrix[i].size() ) ? matrix[i][j] : 0;
     }
   }
 
   return transposed;
 }
+
 
 
 

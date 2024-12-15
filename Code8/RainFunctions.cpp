@@ -733,18 +733,12 @@ vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double v
             fx.push_back( mins.fmin );
 
             // Evaluate n_fit points around minimum
-            for( int j = -n_fit/2; j <= (n_fit+1)/2; j++ ) {  
+            for( int j = -(n_fit-1)/2; j <= n_fit/2; j++ ) {  
                 if( j == 0 ) continue;
                 double x_j = mins.xmin + j*dv;
                 x.push_back( x_j );
                 fx.push_back( wetfunc(x_j) );
             }
-            // Remove point with max wetness
-            auto max_it = std::max_element(fx.begin(), fx.end());
-            size_t index = std::distance(fx.begin(), max_it);
-            fx.erase( fx.begin() + index );
-            x.erase( x.begin() + index );
-
             // Add remaining points to output
             vb.insert( vb.end(), x.begin(), x.end() );
             wetness.insert( wetness.end(), fx.begin(), fx.end() );

@@ -413,8 +413,8 @@ int main (int argc, char *argv[]){
 
     // Smooth Brent minimization fit
     // int N_vtail = 50;
-    // int N_fit = 9;
-    // double dv = 0.004;
+    // int N_fit = 12;
+    // double dv = 0.006;
     // dx = 0.001;
     // nstep_t = 10;
 
@@ -453,19 +453,19 @@ int main (int argc, char *argv[]){
 
 
     // Smooth Brent minimization fit variable nstep
-    int nstep_min = 5;
-    int nstep_max = 100;
-    int N_nstep = 30;
-    int N_fit = 9;
-    double dv = 0.004;
-    dx = 0.001;
+    // int nstep_min = 5;
+    // int nstep_max = 100;
+    // int N_nstep = 30;
+    // int N_fit = 12;
+    // double dv = 0.006;
+    // dx = 0.001;
 
 
-    vector<vector<double>> WalkMinsSnstep= FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_min, nstep_max, N_nstep, 0.15, 0.5, N_fit, dv );
-    Print( "../data/Walk/OptFitSmoothW_nstep.dat", WalkMinsSnstep, 12 );
+    // vector<vector<double>> WalkMinsSnstep= FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_min, nstep_max, N_nstep, 0.15, 0.5, N_fit, dv );
+    // Print( "../data/Walk/OptFitSmoothW_nstep.dat", WalkMinsSnstep, 12 );
 
-    vector<vector<double>> RunMinsSnstep = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
-    Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
+    // vector<vector<double>> RunMinsSnstep = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
+    // Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
 
 
     return 0;
