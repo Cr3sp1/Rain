@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <random> 
 #include "body.h"
 #include "ray.h"
 #include "VectorStat.h"
@@ -413,7 +414,7 @@ int main (int argc, char *argv[]){
 
     // Smooth Brent minimization fit
     // int N_vtail = 50;
-    // int N_fit = 12;
+    // int N_fit = 9;
     // double dv = 0.006;
     // dx = 0.001;
     // nstep_t = 10;
@@ -456,7 +457,7 @@ int main (int argc, char *argv[]){
     // int nstep_min = 5;
     // int nstep_max = 100;
     // int N_nstep = 30;
-    // int N_fit = 12;
+    // int N_fit = 9;
     // double dv = 0.006;
     // dx = 0.001;
 
@@ -468,5 +469,18 @@ int main (int argc, char *argv[]){
     // Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
 
 
-    return 0;
+    // Generate test data points
+    vector<double> x_vals = {0.570520066327, 0.576520066327, 0.588520066327, 0.594520066327, 0.600520066327, 0.606520066327, 0.612520066327};
+    vector<double> y_vals = {0.29479666893, 0.294705514724, 0.294675456911, 0.294707292073, 0.294757611102, 0.294841895418, 0.294933717592};
+
+    // Random noise generator
+
+    // Perform quadratic regression
+    double reg_a, reg_b, reg_c;
+    tie(reg_a, reg_b, reg_c) = QuadraticRegression(x_vals, y_vals);
+    double reg_min = -reg_b/(2*reg_a);
+
+    cout << "Computed coefficients: a = " << reg_a << ", b = " << reg_b << ", c = " << reg_c << " min = " << reg_min <<  endl;
+
+
 }

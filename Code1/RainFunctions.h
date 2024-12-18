@@ -7,6 +7,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm> 
+#include <tuple>
 #include "VectorOperations.h"
 #include "mins.h"
 
@@ -124,12 +125,13 @@ vector<vector<double>> FindMinBrentSmooth(vector<double> box, Body& body, double
 // Estimates smooth wetness for N_v velocities of the dynamic body between vmin and vmax, and nN_nstep values of nstep between nstep_min and nstep_max and returns a matrix with the nsteps velocities as the first colunmn, the velocities as the second column and the respective wetness as the third column
 vector<vector<double>> SimulateNstepSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N_v, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep );
 
+// Fits points with a parabola y = ax^2 + bx + c, using least squares minimization, and returns a tuple containing (a, b, c)
+tuple<double, double, double> QuadraticRegression( vector<double> x_vals, vector<double> y_vals );
+
 // Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm, and calculates wetness for n_fit values spaced dv around it, returns all these values
 vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double vcross, double vtail_min, double vtail_max, unsigned int n_tail, int n_fit, double dv );
 
 // Finds minimums of smooth wetness for a fixed vcross and vtail_min using Brent algorithm with nstep in [nstep_min, nstep_max], and calculates wetness for n_fit values spaced dv around it, returns all these values
 vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep, double vcross, double vtail, int n_fit, double dv );
-
-
 
 #endif
