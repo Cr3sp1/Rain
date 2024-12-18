@@ -413,11 +413,11 @@ int main (int argc, char *argv[]){
 
 
     // Smooth Brent minimization fit
-    // int N_vtail = 50;
-    // int N_fit = 9;
-    // double dv = 0.006;
-    // dx = 0.001;
-    // nstep_t = 10;
+    int N_vtail = 50;
+    int N_fit = 9;
+    double dv = 0.006;
+    dx = 0.001;
+    nstep_t = 10;
 
     // vector<vector<double>> WalkMinsS0 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0., 0., 0.7, N_vtail, N_fit, dv );
     // Print( "../data/Walk/OptFitSmoothW0.dat", WalkMinsS0, 12 );
@@ -467,20 +467,6 @@ int main (int argc, char *argv[]){
 
     // vector<vector<double>> RunMinsSnstep = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
     // Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
-
-
-    // Generate test data points
-    vector<double> x_vals = {0.570520066327, 0.576520066327, 0.588520066327, 0.594520066327, 0.600520066327, 0.606520066327, 0.612520066327};
-    vector<double> y_vals = {0.29479666893, 0.294705514724, 0.294675456911, 0.294707292073, 0.294757611102, 0.294841895418, 0.294933717592};
-
-    // Random noise generator
-
-    // Perform quadratic regression
-    double reg_a, reg_b, reg_c;
-    tie(reg_a, reg_b, reg_c) = QuadraticRegression(x_vals, y_vals);
-    double reg_min = -reg_b/(2*reg_a);
-
-    cout << "Computed coefficients: a = " << reg_a << ", b = " << reg_b << ", c = " << reg_c << " min = " << reg_min <<  endl;
 
 
 }
