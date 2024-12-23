@@ -417,7 +417,7 @@ int main (int argc, char *argv[]){
     int N_fit = 9;
     double dv = 0.006;
     dx = 0.001;
-    nstep_t = 10;
+    nstep_t = 50;
 
     // vector<vector<double>> WalkMinsS0 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0., 0., 0.7, N_vtail, N_fit, dv );
     // Print( "../data/Walk/OptFitSmoothW0.dat", WalkMinsS0, 12 );
@@ -445,6 +445,7 @@ int main (int argc, char *argv[]){
 
     // vector<vector<double>> RunMinsS1 = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_t, 1., 0., 2, N_vtail, N_fit, dv );
     // Print( "../data/Run/OptFitSmoothR1.dat", RunMinsS1, 12 );
+    
 
     // vector<vector<double>> WalkMinsSEx= FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0.15, 0.5, 0.7, 1, N_fit, dv );
     // Print( "../data/Walk/OptFitSmoothW_Ex.dat", WalkMinsSEx, 12 );
