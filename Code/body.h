@@ -52,8 +52,6 @@ class Body {
 	virtual bool Check( Ray& ray ) { return false; }
 	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
 	virtual double CheckSmooth( Ray& ray, double dx ) { return 0.; }
-	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-	virtual double Anal( vector<double> RelVel, double bodyvel  ) { return -1; }
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 	virtual void Move( double T );
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
@@ -98,8 +96,6 @@ class Sphere: public Body {
 	bool Check( Ray& ray ) override;
 	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
 	double CheckSmooth( Ray& ray, double dx ) override;
-	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-	double Anal( vector<double> v , double bodyvel ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
@@ -140,8 +136,6 @@ class Parallelepiped: public Body {
 	bool Check( Ray& ray ) override;
 	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
 	double CheckSmooth( Ray& ray, double dx ) override;
-	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-	double Anal( vector<double> v, double bodyvel  ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies
@@ -183,8 +177,6 @@ class Capsule: public Body {
 	bool Check( Ray& ray ) override;
 	// Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
 	double CheckSmooth( Ray& ray, double dx ) override;
-	// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-	double Anal( vector<double> v , double bodyvel ) override;
 	// Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 	void Move( double T ) override;
 	// Time evolution caused by the super-body, affects the whole frame of reference, also propagates to the sub-bodies

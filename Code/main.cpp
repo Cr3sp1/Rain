@@ -49,6 +49,12 @@ int main (int argc, char *argv[]){
     cout << "Relative velocity = [ " << rel_vel[0] << ", " << rel_vel[1] << ", " << rel_vel[2] << " ]" << endl;
 
 
+    // Base bodies
+    ManyBody TrialS("../Bodies/Sphere.in");
+    ManyBody TrialP("../Bodies/Parallelepiped.in");
+    ManyBody TrialC("../Bodies/Capsule.in");
+    box = {1.1, 1.1, 1.1};
+
     // Walking man
     ManyBody Walk("../Bodies/WalkingMan.in");
     vector<double> boxW = {0.90, 0.56, 1.74 };
@@ -57,6 +63,7 @@ int main (int argc, char *argv[]){
     ManyBody Run("../Bodies/RunningMan.in");
     vector<double> boxR = {1.13, 0.58, 1.82};
 
+    // Dynamic Sphere
     ManyBody DynSphere("../Bodies/DynamicSphere.in");
     vector<double> boxDS = {1, 1, 2};
 
@@ -75,41 +82,81 @@ int main (int argc, char *argv[]){
     // PrintDynState( Run, 0, 1, 60, "../data/Run/Status/Run");
     // PrintDynState( DynSphere, 0, 1, 60, "../data/Sphere/Status/DynSphere");
 
-    // // Walking & running error analysis
-    // vector<vector<double>> WalkResDxT = SimErrTdx(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    // Print( "../data/Walk/ErrDxT.dat", WalkResDxT, 12 );
-    // vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
-    // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
-    // vector<vector<double>> WalkResDx = SimErr(boxW, Walk, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
-    // Print( "../data/Walk/ErrDx.dat", WalkResDx, 12 );
-
-    // vector<vector<double>> RunResDxT = SimErrTdx(boxR, Run, rel_vel, body_vel, nstep_v, dx, 0.1, nstep_t, 1, nstep_t );
-    // Print( "../data/Run/ErrDxT.dat", RunResDxT, 12 );
-    // vector<vector<double>> RunResT = SimErrT(boxR, Run, rel_vel, body_vel, dx, 0, 1, 100, 1, nstep_t);
-    // Print( "../data/Run/ErrT.dat", RunResT, 12 );
-    // vector<vector<double>> RunResDx = SimErr(boxW, Run, rel_vel, body_vel, nstep_v, dx, 1, 0, 1, nstep_t);
-    // Print( "../data/Run/ErrDx.dat", RunResDx, 12 );
-    
 
 
-    // // Error analysis sphere
-    // ManyBody TrialS("../Bodies/Sphere.in");
+    // // Error analysis with discrete points
+    // dx = 0.001;
+    // double dxmin = 0.0001;
+    // nstep_t = 50;
+    // int nstepmax = 1000;
+    // rain_vel = {0.5, 0.25, -1};
+    // body_vel = 2.;
+
     // vector<vector<double>> resultsS;
-    // resultsS = SimErr( box, TrialS, rel_vel, body_vel, 200, 0.0001, 1 );
+    // resultsS = SimErr( box, TrialS, rain_vel, body_vel, 200, dxmin, 0.1 );
     // Print( "../data/Sphere/ErrorS.dat", resultsS, 15);
+    // resultsS = Simulate( box, TrialS, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Sphere/CompareS.dat", resultsS, 15);
         
-    // // Error analysis parallelepiped
-    // ManyBody TrialP("../Bodies/Parallelepiped.in");
     // vector<vector<double>> resultsP;
-    // resultsP = SimErr( box, TrialP, rel_vel, body_vel, 200, 0.0001, 1 );
+    // resultsP = SimErr( box, TrialP, rain_vel, body_vel, 200, dxmin, 0.1 );
     // Print( "../data/Parallelepiped/ErrorP.dat", resultsP, 15);
+    // resultsP = Simulate( box, TrialP, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Parallelepiped/CompareP.dat", resultsP, 15);
 
-    // // Error analysis capsule
-    // ManyBody TrialC("../Bodies/Capsule.in");
     // vector<vector<double>> resultsC;
-    // resultsC = SimErr( box, TrialC, rel_vel, body_vel, 200, 0.0001, 1 );
+    // resultsC = SimErr( box, TrialC, rain_vel, body_vel, 200, dxmin, 0.1 );
     // Print( "../data/Capsule/ErrorC.dat", resultsC, 15);
-    
+    // resultsC = Simulate( box, TrialC, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Capsule/CompareC.dat", resultsC, 15);
+
+    // vector<vector<double>> WalkResDx = SimErr(boxW, Walk, rain_vel, body_vel, 100, dxmin, 0.1, 0, 1, nstep_t);
+    // Print( "../data/Walk/ErrDx.dat", WalkResDx, 12 );
+    // vector<vector<double>> WalkResT = SimErrT(boxW, Walk, rain_vel, body_vel, dx, 0, 1, 100, 1, nstepmax);
+    // Print( "../data/Walk/ErrT.dat", WalkResT, 12 );
+
+    // vector<vector<double>> RunResDx = SimErr(boxR, Run, rain_vel, body_vel, 100, dxmin, 0.1, 0, 1, nstep_t);
+    // Print( "../data/Run/ErrDx.dat", RunResDx, 12 );
+    // vector<vector<double>> RunResT = SimErrT(boxR, Run, rain_vel, body_vel, dx, 0, 1, 100, 1, nstepmax);
+    // Print( "../data/Run/ErrT.dat", RunResT, 12 );
+
+
+    // Error analysis smooth
+    // dx = 0.001;
+    // double dxmin = 0.0001;
+    // nstep_t = 50;
+    // int nstepmax = 1000;
+    // rain_vel = {0.5, 0.25, -1};
+    // body_vel = 2.;
+
+    // vector<vector<double>> resultsS;
+    // resultsS = SimSmoothErr( box, TrialS, rain_vel, body_vel, 200, dxmin, 0.1 );
+    // Print( "../data/Sphere/ErrorS_Smooth.dat", resultsS, 15);
+    // resultsS = SimulateSmooth( box, TrialS, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Sphere/CompareS_Smooth.dat", resultsS, 15);
+        
+    // vector<vector<double>> resultsP;
+    // resultsP = SimSmoothErr( box, TrialP, rain_vel, body_vel, 200, dxmin, 0.1 );
+    // Print( "../data/Parallelepiped/ErrorP_Smooth.dat", resultsP, 15);
+    // resultsP = SimulateSmooth( box, TrialP, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Parallelepiped/CompareP_Smooth.dat", resultsP, 15);
+
+    // vector<vector<double>> resultsC;
+    // resultsC = SimSmoothErr( box, TrialC, rain_vel, body_vel, 200, dxmin, 0.1 );
+    // Print( "../data/Capsule/ErrorC_Smooth.dat", resultsC, 15);
+    // resultsC = SimulateSmooth( box, TrialC, rain_vel, 1, 10, nstep_v, dx );
+    // Print("../data/Capsule/CompareC_Smooth.dat", resultsC, 15);
+
+    // vector<vector<double>> WalkResDx = SimSmoothErr(boxW, Walk, rain_vel, body_vel, 100, dxmin, 0.1, 0, 1, nstep_t);
+    // Print( "../data/Walk/ErrDx_Smooth.dat", WalkResDx, 12 );
+    // vector<vector<double>> WalkResT = SimSmoothErrT(boxW, Walk, rain_vel, body_vel, dx, 0, 1, 100, 1, nstepmax);
+    // Print( "../data/Walk/ErrT_Smooth.dat", WalkResT, 12 );
+
+    // vector<vector<double>> RunResDx = SimSmoothErr(boxR, Run, rain_vel, body_vel, 100, dxmin, 0.1, 0, 1, nstep_t);
+    // Print( "../data/Run/ErrDx_Smooth.dat", RunResDx, 12 );
+    // vector<vector<double>> RunResT = SimSmoothErrT(boxR, Run, rain_vel, body_vel, dx, 0, 1, 100, 1, nstepmax);
+    // Print( "../data/Run/ErrT_Smooth.dat", RunResT, 12 );
+
 
 
     // // Draw shadow of capsules
@@ -121,34 +168,23 @@ int main (int argc, char *argv[]){
     // Canv.PrintRaysFlat("../data/Capsule/OneCapProj.dat");
     // Canv.BodyProj(TwoCap);
     // Canv.PrintRaysFlat("../data/Capsule/TwoCapProj.dat");
-
-
-    // // Simulate different body velocities
-    // resultsS = CompareAN( box, *TrialS.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    // Print("../data/Sphere/CompareS.dat", resultsS, 15);
-    // resultsP = CompareAN( box, *TrialP.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    // Print("../data/Parallelepiped/CompareP.dat", resultsP, 15);
-    // resultsC = CompareAN( box, *TrialC.Find("Name"), rain_vel, 1, 10, nstep_v, dx );
-    // Print("../data/Capsule/CompareC.dat", resultsC, 15);
-
+    
 
 
     // // Simulation of two Parallelepipeds compenetrating
     // ManyBody Trial2P("../Bodies/DoubleParallelepiped.in");
+    // rain_vel = {0, 0.03, -1 };
+    // body_vel = 0.52;
     // vector<double> dist;
     // vector<double> wet2P;
-    // ProjSurface Surf2P( box, rel_vel, dx );
     // for( size_t i = 0; i < nstep_t; i++ ) {
     //     Trial2P.Move( asin( (double)i/(nstep_t-1))/(2*M_PI));   // it just works ;)
     //     vector<double> cent1 = dynamic_cast<Parallelepiped*>(Trial2P.Find("Still"))->GetCent();
     //     vector<double> cent2 = dynamic_cast<Parallelepiped*>(Trial2P.Find("Moving"))->GetCent();
     //     dist.push_back( Norm( cent1 - cent2 ));
-    //     Surf2P.reset();
-    //     wet2P.push_back(Surf2P.BodyProj(Trial2P)*Norm(rel_vel)/body_vel);
-    //     // Surf2P.PrintRaysFlat("../data/Parallelepiped/Proj2P/dist" + to_string(dist[i]) + ".dat");
+    //     wet2P.push_back( WetnessSmooth( box, Trial2P, rain_vel, body_vel, 0.001 ));
     // }
-
-    // vector<vector<double>> results2P = { dist, wet2P};
+    // vector<vector<double>> results2P = { dist, wet2P };
     // results2P = Transpose(results2P);
     // Print("../data/Parallelepiped/DoubleP.dat", results2P, 12 );
     
@@ -413,11 +449,11 @@ int main (int argc, char *argv[]){
 
 
     // Smooth Brent minimization fit
-    int N_vtail = 50;
-    int N_fit = 9;
-    double dv = 0.006;
-    dx = 0.001;
-    nstep_t = 50;
+    // int N_vtail = 50;
+    // int N_fit = 9;
+    // double dv = 0.006;
+    // dx = 0.001;
+    // nstep_t = 50;
 
     // vector<vector<double>> WalkMinsS0 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0., 0., 0.7, N_vtail, N_fit, dv );
     // Print( "../data/Walk/OptFitSmoothW0.dat", WalkMinsS0, 12 );

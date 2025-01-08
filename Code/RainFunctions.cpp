@@ -11,6 +11,8 @@ vector<double> Project( vector<double> Point, vector<double> p, vector<double> v
     return ( Point + v*(diff*v)/(v*v) );
 }
 
+
+
 // Finds the vertex in the middle of the three seen faces of a parallelepiped defined by a point p and three sides 
 vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vector<double> v ){
     for( size_t i = 0; i < sides.size(); i++ ){
@@ -18,6 +20,8 @@ vector<double> FindMiddle( vector<double> p, vector<vector<double>> sides, vecto
     }
     return p;
 }
+
+
 
 // Finds the hexagonal projection H of a parallelepiped defined by a vertex p and sides on a plane perpendicular to v and passing through P0
 vector<vector<double>> FindHexProj(  vector<double> p, vector<vector<double>> Side, vector<double> v, vector<double> P0){
@@ -38,6 +42,8 @@ vector<vector<double>> FindHexProj(  vector<double> p, vector<vector<double>> Si
 
     return H;
 }
+
+
 
 // Returns the highest absolute value of the projections of the vertices of H on a line in direction u1 passing through H[0]
 double MaxU(vector<vector<double>> H, vector<double> u ) {
@@ -98,6 +104,8 @@ void RayGenCheck( string outfile, vector<double> box, vector<double> rel_vel ){
     Pout.close();
 }
 
+
+
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 double Wetness( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx ) {
     vector<double> relvel = rain_v;
@@ -105,12 +113,16 @@ double Wetness( vector<double> box, Body& body, vector<double> rain_v, double vb
     return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/vb;
 }
 
+
+
 // Estimates wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 double Wetness( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx, double tmin, double tmax, unsigned int nstep ) {
     vector<double> relvel = rain_v;
     relvel[0] -= vb;
     return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep )/vb;
 }
+
+
 
 // Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
@@ -124,6 +136,8 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
     return Transpose(vector<vector<double>>{ body_v, wetness});
 }
 
+
+
 // Estimates wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep ) {
     if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
@@ -136,43 +150,49 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
     return Transpose(vector<vector<double>>{ body_v, wetness});
 }
 
+
+
 // Estimates wetness for N values of dx between dxmin and dxmax, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax) {
+vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax ) {
     vector<double> d = {dxmax};
-    vector<double> S = {ProjSurface( box, relvel, d[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
+    vector<double> S = {Wetness( box, body, rain_vel, body_vel, dxmax)};
     double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
         d.push_back(d[i-1]*k);
         cout << "dx = " << d[i] << endl;
-        S.push_back(ProjSurface( box, relvel, d[i] ).BodyProj(body)*Norm(relvel)/bodyvel);
+        S.push_back(Wetness( box, body, rain_vel, body_vel, d[i]));
     }
 
     return Transpose(vector<vector<double>>{ d, S});
 }
 
+
+
 // Estimates wetness for N values of dx between dxmin and dxmax for dynamic body, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep) {
+vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep) {
     vector<double> dx = {dxmax};
-    vector<double> S = {ProjSurface( box, relvel, dx[0] ).BodyProj(body)*Norm(relvel)/bodyvel};
+    vector<double> S = {Wetness( box, body, rain_vel, body_vel, dxmax, tmin, tmax, nstep )};
     double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
         dx.push_back(dx[i-1]*k);
         cout << "dx = " << dx[i] << endl;
-        S.push_back(ProjSurface( box, relvel, dx[i] ).BodyProj(body, tmin, tmax, nstep )*Norm(relvel)/bodyvel);
+        S.push_back(Wetness( box, body, rain_vel, body_vel, dx[i], tmin, tmax, nstep ));
     }
 
     return Transpose(vector<vector<double>>{ dx, S});
 }
 
+
+
 // Estimates wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> relvel, double bodyvel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax) {
+vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax) {
     double dtmin = 1./nstepmax;
     double dtmax = 1./nstepmin;
     vector<double> dt = {dtmax};
     vector<double> nstep = { (double) nstepmin};
-    vector<double> S = {ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstep[0] )*Norm(relvel)/bodyvel};
+    vector<double> S = {Wetness( box, body, rain_vel, body_vel, dx, tmin, tmax, nstepmin )};
     double k =  N == 0 ? 0  :  pow(dtmin/dtmax, (double)1/(N-1));
     
     for( size_t i = 1; i < N; i++ ) {
@@ -181,38 +201,13 @@ vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> r
         if( nstepnew > nstep.back()) {
             cout << "Nstep = " << nstepnew << endl;
             nstep.push_back(nstepnew);
-            S.push_back(ProjSurface( box, relvel, dx ).BodyProj(body, tmin, tmax, nstepnew )*Norm(relvel)/bodyvel);
+            S.push_back(Wetness( box, body, rain_vel, body_vel, dx, tmin, tmax, nstepnew ));
         }
     }
 
     return Transpose(vector<vector<double>>{ nstep, S});
 }
 
-// Estimate wetness for N_dx values of dx between dxmin and dxmax, and N_t values of nstep between nstepmin and nstepmax, and returns a matrix where first column is the nstep and first row is the dx
-vector<vector<double>> SimErrTdx( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N_dx, double dxmin, double dxmax, unsigned int N_t, unsigned int nstepmin, unsigned int nstepmax) {
-    double k_dx =  N_dx == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N_dx-1));
-    double k_t =  N_t == 0 ? 0  :  (double)(nstepmax-nstepmin)/(N_t-1);
-
-    // Build indices
-    vector<double> index_dx = { 0, dxmax };
-    for( size_t i = 1; i < N_dx; i++ ) index_dx.push_back(index_dx[i]*k_dx);
-
-    vector<double> index_t = { (double)nstepmin };
-    for( size_t i = 1; i < N_t; i++ ) index_t.push_back(index_t[i-1]+k_t);
-
-    vector<vector<double>> results = {index_dx};
-    for( double& nstep : index_t ) results.push_back({floor(nstep)});
-
-    // Fill the matrix
-    for( size_t i = 1; i <= N_t; i++ ) {
-        cout << "Nstep = " << results[i][0] << endl;
-        for( size_t j = 1; j <= N_dx; j++) {
-            results[i].push_back(ProjSurface( box, relvel, results[0][j] ).BodyProj(body, 0, 1, results[i][0] )*Norm(relvel)/bodyvel);
-        }
-    }
-
-    return results;
-}
 
 
 // Estimate wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
@@ -233,23 +228,6 @@ vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double>
     }
     
     vector<vector<double>> mat{body_v, analytical, wetness};
-    return Transpose(mat);
-}
-
-// Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
-vector<vector<double>> CompareBB( vector<double> box, Body& body1, Body& body2, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx){
-    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
-    vector<double> body_v(N);
-    vector<double> wetness1(N);
-    vector<double> wetness2(N);
-    for( size_t i = 0; i < N; i++ ){
-        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
-        vector<double> relvel = rain_v;
-        relvel[0] -= body_v[i];
-        wetness1[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body1)/body_v[i];
-        wetness2[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body2)/body_v[i];
-    }
-    vector<vector<double>> mat{body_v, wetness1, wetness2};
     return Transpose(mat);
 }
 
@@ -595,12 +573,14 @@ double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, dou
     return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProjSmooth(body)/vb;
 }
 
+
 // Estimates smooth wetness of the dynamic body
 double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx, double tmin, double tmax, unsigned int nstep ) {
     vector<double> relvel = rain_v;
     relvel[0] -= vb;
     return Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProjSmooth(body, tmin, tmax, nstep )/vb;
 }
+
 
 // Estimates smooth wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep ) {
@@ -612,6 +592,72 @@ vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<do
         wetness[i] = WetnessSmooth( box, body, rain_v, body_v[i], dx, tmin, tmax, nstep );
     }
     return Transpose(vector<vector<double>>{ body_v, wetness});
+}
+
+
+// Estimates smooth wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
+    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
+    vector<double> body_v(N);
+    vector<double> wetness(N);
+    for( size_t i = 0; i < N; i++ ){
+        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
+        wetness[i] = WetnessSmooth( box, body, rain_v, body_v[i], dx);
+    }
+    return Transpose(vector<vector<double>>{ body_v, wetness});
+}
+
+
+// Estimates smooth wetness for N values of dx between dxmin and dxmax, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax ) {
+    vector<double> d = {dxmax};
+    vector<double> S = {WetnessSmooth( box, body, rain_vel, body_vel, dxmax)};
+    double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
+    
+    for( size_t i = 1; i < N; i++ ) {
+        d.push_back(d[i-1]*k);
+        cout << "dx = " << d[i] << endl;
+        S.push_back(WetnessSmooth( box, body, rain_vel, body_vel, d[i]));
+    }
+
+    return Transpose(vector<vector<double>>{ d, S});
+}
+
+// Estimates smooth wetness for N values of dx between dxmin and dxmax for dynamic body, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep) {
+    vector<double> dx = {dxmax};
+    vector<double> S = {WetnessSmooth( box, body, rain_vel, body_vel, dxmax, tmin, tmax, nstep )};
+    double k =  N == 0 ? 0  :  pow(dxmin/dxmax, (double)1/(N-1));
+    
+    for( size_t i = 1; i < N; i++ ) {
+        dx.push_back(dx[i-1]*k);
+        cout << "dx = " << dx[i] << endl;
+        S.push_back(WetnessSmooth( box, body, rain_vel, body_vel, dx[i], tmin, tmax, nstep ));
+    }
+
+    return Transpose(vector<vector<double>>{ dx, S});
+}
+
+// Estimates smooth wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErrT( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax) {
+    double dtmin = 1./nstepmax;
+    double dtmax = 1./nstepmin;
+    vector<double> dt = {dtmax};
+    vector<double> nstep = { (double) nstepmin};
+    vector<double> S = {WetnessSmooth( box, body, rain_vel, body_vel, dx, tmin, tmax, nstepmin )};
+    double k =  N == 0 ? 0  :  pow(dtmin/dtmax, (double)1/(N-1));
+    
+    for( size_t i = 1; i < N; i++ ) {
+        dt.push_back(dt[i-1]*k);
+        double nstepnew = round(1./dt[i]);
+        if( nstepnew > nstep.back()) {
+            cout << "Nstep = " << nstepnew << endl;
+            nstep.push_back(nstepnew);
+            S.push_back(WetnessSmooth( box, body, rain_vel, body_vel, dx, tmin, tmax, nstepnew ));
+        }
+    }
+
+    return Transpose(vector<vector<double>>{ nstep, S});
 }
 
 

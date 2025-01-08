@@ -54,22 +54,13 @@ vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> 
 vector<vector<double>> Simulate( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep );
 
 // Estimates wetness for N values of dx between dxmin and dxmax, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax);
+vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax);
 
 // Estimates wetness for N values of dx between dxmin and dxmax for dynamic body, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep);
+vector<vector<double>> SimErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep);
 
 // Estimates wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
-vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> relvel, double bodyvel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax);
-
-// Estimates wetness for N_dx values of dx between dxmin and dxmax, and N_T values of nstep between nstepmin and nstepmax, and returns a matrix where first column is the nstep and first row is the dx
-vector<vector<double>> SimErrTdx( vector<double> box, Body& body, vector<double> relvel, double bodyvel, unsigned int N_dx, double dxmin, double dxmax, unsigned int N_T, unsigned int nstepmin, unsigned int nstepmax);
-
-// Estimates wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
-vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx);
-
-// Estimates wetness for N velocities of two body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the wetness of the first body as the second column and of the second body as the third column
-vector<vector<double>> CompareBB( vector<double> box, Body& body1, Body& body2, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx);
+vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax);
 
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 );
@@ -116,8 +107,20 @@ double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, dou
 // Estimates smooth wetness of the dynamic body
 double WetnessSmooth( vector<double> box, Body& body, vector<double> rain_v, double vb, double dx, double tmin, double tmax, unsigned int nstep );
 
+// Estimates smooth wetness for N velocities of the body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx );
+
 // Estimates smooth wetness for N velocities of the dynamic body between vmin and vmax, and returns a matrix with the velocities as the first colunmn and the respective wetness as the second column
 vector<vector<double>> SimulateSmooth( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx, double tmin, double tmax, unsigned int nstep );
+
+// Estimates smooth wetness for N values of dx between dxmin and dxmax, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax);
+
+// Estimates smooth wetness for N values of dx between dxmin and dxmax for dynamic body, and returns a matrix with dx as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErr( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, unsigned int N, double dxmin, double dxmax, double tmin, double tmax, unsigned int nstep);
+
+// Estimates smooth wetness for N values of nstep between nstepmin and nstepmax, and returns a matrix with nstep as the first colunmn and the respective wetness as the second column
+vector<vector<double>> SimSmoothErrT( vector<double> box, Body& body, vector<double> rain_vel, double body_vel, double dx, double tmin, double tmax, unsigned int N, unsigned int nstepmin, unsigned int nstepmax);
 
 // Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm
 vector<vector<double>> FindMinBrentSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double tol, unsigned int n_tries, double vcross, double vtail_min, double vtail_max, unsigned int n_tail );

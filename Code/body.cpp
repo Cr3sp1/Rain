@@ -108,11 +108,6 @@ double Sphere::CheckSmooth( Ray& ray, double dx ) {
     return smooth_w( delta_r, dx );
 }
 
-// Analytical solution of rain intercepted. v is relative velocity
-double Sphere::Anal( vector<double> v, double bodyvel ) {
-    double surface = M_PI*rad*rad;
-    return Norm(v)*surface/bodyvel;
-}
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 void Sphere::Move( double T ) {
@@ -230,14 +225,6 @@ double Parallelepiped::CheckSmooth( Ray& ray, double dx ) { // VERY INEFFICIENT,
     return smooth_w( delta_r, dx );
 }
 
-// Analytical solution of rain intercepted. v is relative velocity, bodyvel is body velocity
-double Parallelepiped::Anal( vector<double> v, double bodyvel  ) {
-    double flux = 0;
-    flux += abs(CrossProduct(side[0], side[1]) * v);
-    flux += abs(CrossProduct(side[1], side[2]) * v);
-    flux += abs(CrossProduct(side[2], side[0]) * v);
-    return flux/bodyvel;
-}
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 void Parallelepiped::Move( double T ) {
@@ -374,14 +361,6 @@ double Capsule::CheckSmooth( Ray& ray, double dx ) {
     return smooth_w( delta_r, dx );
 }
 
-// Analytical solution of rain intercepted. v is relative velocity
-double Capsule::Anal( vector<double> v, double bodyvel ) {
-    vector<double> axis = l1 - l2;
-    axis -= v*axis*v/(v*v);
-    double L = Norm(axis);
-    double surface = M_PI*rad*rad + L*2*rad;
-    return Norm(v)*surface/bodyvel;
-}
 
 // Time evolution of the body in its own frame of reference, also propagates to the sub-bodies
 void Capsule::Move( double T ) {
