@@ -194,7 +194,7 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> WalkOptMapFit = OptMapFit( boxW, Walk, 0, 0.7, N_vb, dx, nstep_t, N_fit,  0, 0.7, nstep_v, 0, 0.35, nstep_v );
     // Print( "../data/Walk/OptMapFitW.dat", WalkOptMapFit, 12 );
 
-    // vector<vector<double>> RunOptMapFit = OptMapFit( boxR, Run, 0, 2, N_vb-17, dx, nstep_t, N_fit, 0, 2, nstep_v, 0, 1.2, nstep_v );
+    // vector<vector<double>> RunOptMapFit = OptMapFit( boxR, Run, 0, 2, N_vb, dx, nstep_t, N_fit, 0, 2, nstep_v, 0, 1.2, nstep_v );
     // Print( "../data/Run/OptMapFitR.dat", RunOptMapFit, 12 ); 
 
 
@@ -490,7 +490,7 @@ int main (int argc, char *argv[]){
     // Print( "../data/Run/OptFitSmoothR_Ex.dat", RunMinsSEx, 12 );
 
 
-    // Smooth Brent minimization fit variable nstep
+    // Smooth Brent minimization fit with variable nstep
     // int nstep_min = 5;
     // int nstep_max = 100;
     // int N_nstep = 30;
@@ -505,5 +505,24 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunMinsSnstep = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
     // Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
 
+
+    // Smooth Brent minimization fit map
+    nstep_v = 20;
+    int N_fit = 9;
+    double dv = 0.006;
+    dx = 0.001;
+    nstep_t = 50;
+
+    // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0, 0.40, nstep_v);
+    // Print( "../data/Walk/OptMapFitSmoothW.dat", WalkOptMapFit, 12 );
+
+    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Run/OptMapFitSmoothR.dat", RunOptMapFit, 12 ); 
+
+    // vector<vector<double>> WalkOptMapComp = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Walk/OptMapCompareSmoothW.dat", WalkOptMapComp, 12 );
+
+    // vector<vector<double>> RunOptMapComp = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, -0.5, 2, nstep_v, 0, 1.2, nstep_v );
+    // Print( "../data/Run/OptMapCompareSmoothR.dat", RunOptMapComp, 12 );
 
 }

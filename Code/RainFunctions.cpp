@@ -210,29 +210,6 @@ vector<vector<double>> SimErrT( vector<double> box, Body& body, vector<double> r
 
 
 
-// Estimate wetness for N velocities of the body between vmin and vmax (measured as fractions of vertical rain speed), and returns a matrix with the velocities as the first colunmn and the respective theorical wetness as the second column and the estimated wetness as the third
-vector<vector<double>> CompareAN( vector<double> box, Body& body, vector<double> rain_v, double vmin, double vmax, unsigned int N, double dx ) {
-    if( vmin > vmax or vmin < 0 ) cout << "Error: Vmin and Vmax have to be positive and Vmax > Vmin!" << endl;
-    
-    vector<double> body_v(N);
-    vector<double> analytical(N);
-    vector<double> wetness(N);
-    for( size_t i = 0; i < N; i++ ){
-        body_v[i] = ( N == 1 ? vmin : vmin + (vmax - vmin)*(double)i/((double)N-1) );
-        vector<double> relvel = rain_v;
-        relvel[0] -= body_v[i];
-        cout << "relvel = (" << relvel[0] << ", " << relvel[1] << ", "<< relvel[2] << ")" << endl;
-        analytical[i] = body.Anal( relvel, body_v[i]);
-        cout << "anal = " << analytical[i];
-        wetness[i] = Norm(relvel)*ProjSurface( box, relvel, dx ).BodyProj(body)/body_v[i];
-    }
-    
-    vector<vector<double>> mat{body_v, analytical, wetness};
-    return Transpose(mat);
-}
-
-
-
 // Returns the minimum distance between the point p and the segment line with extremes l1 and l2
 double PointSegDist( vector<double> p, vector<double> l1, vector<double> l2 ) {
     // Changes frame of reference to l1 = 0
@@ -730,77 +707,89 @@ tuple<double, double, double> QuadraticRegression( vector<double> x_vals, vector
 }
 
 
+// Finds minimums of smooth wetness using Brent algorithm,calculates wetness for n_fit values spaced dv around it, and returns two vectors, the first containing the values of vb and the second the respective wetness
+tuple<vector<double>, vector<double>> MinFitSmooth( vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double vcross, double vtail, int n_fit, double dv ) {
+    vector<double> vb, wetness;
+    Brent mins(dv);
+
+    vector<double> rain_vel = {vtail, vcross, -1};
+    auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return WetnessSmooth( box, body, rain_vel, x, dx, 0., 1., nstep );};
+
+    if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
+        mins.minimize( wetfunc);
+
+        // Evaluate n_fit points around minimum
+        for( int j = -(n_fit-1)/2; j <= n_fit/2; j++ ) {  
+            double vb_j = mins.xmin + j*dv;
+            double wetness_j = ( j == 0 ) ? mins.fmin : wetfunc(vb_j);
+            vb.push_back( vb_j );
+            wetness.push_back( wetness_j );
+        }
+
+        // Try quadratic fit, if resulting minimum isn't in the middle of evaluated points move towards it and repeat until it is
+        int max_iter = 100;
+        int n_half = n_fit/2;
+        for( int iter = 0; iter < max_iter; iter++ ) {
+            double a_fit, b_fit, c_fit, min_fit;
+            tie( a_fit, b_fit, c_fit ) = QuadraticRegression( vb, wetness );
+
+            min_fit = ( a_fit != 0 )?  -b_fit/(2*a_fit) : -sgn(b_fit)*2*vmax;        // moving towards -sgn(b_fit)*2*vmax means moving following first derivative
+
+            // Avoid following minimum outside of range
+            if( a_fit > 0 && ( min_fit <= vmin || min_fit >= vmax ) ) break;
+
+            // Find number of values of x that are lower (and higher) than min_fit
+            int n_lower = 0;
+            while( n_lower < n_fit && vb[n_lower] < min_fit ) n_lower ++;
+            int n_higher = n_fit - n_lower;
+
+            // Account for failed fit, if a_fit < 0 move in  opposite direction
+            if( a_fit < 0 ) swap( n_lower, n_higher );
+
+            cout << "Iteration " << iter + 1 << ", n_lower = " << n_lower << ", n_higher = " << n_higher << endl;
+
+            // Move towards minimum
+            if( n_lower < n_half ) {
+                double new_vb = vb[0] - dv;
+                vb.insert( vb.begin(), new_vb );
+                wetness.insert( wetness.begin(), wetfunc( new_vb ) );
+                vb.pop_back();
+                wetness.pop_back();
+            } else if( n_higher < n_half ) {
+                double new_vb = vb.back() + dv;
+                vb.push_back( new_vb );
+                wetness.push_back( wetfunc( new_vb ) );
+                vb.erase( vb.begin() );
+                wetness.erase( wetness.begin() );
+            } else break;
+        }
+
+    } else {    // If bracketing fails the bound minimum is in vb = vmax
+        vb.push_back( mins.cx );
+        wetness.push_back( mins.fc );
+    }
+
+    return make_tuple( vb, wetness );
+}
+
+
+
 // Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max] using Brent algorithm, and calculates wetness for n_fit values spaced dv around it, returns all these values
 vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, double vcross, double vtail_min, double vtail_max, unsigned int n_tail, int n_fit, double dv ) {
     vector<double> vtail, vb, wetness;
-    Brent mins(dv);
 
     for( size_t i = 0; i < n_tail; i++ ) {
         double vtail_i = n_tail > 1 ?  vtail_min + i*(vtail_max-vtail_min)/(n_tail-1) : vtail_min;
-        vector<double> rain_vel = {vtail_i, vcross, -1};
-        auto wetfunc = [&box, &body, &rain_vel, dx, nstep] (double x) {return WetnessSmooth( box, body, rain_vel, x, dx, 0., 1., nstep );};
+        
+        // Calculate fit points
+        vector<double> vb_i, wetness_i;
+        tie( vb_i, wetness_i ) = MinFitSmooth( box, body, vmin, vmax, dx, nstep, vcross, vtail_i, n_fit, dv );
 
-        if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
-            vector<double> vtail_vec( n_fit, vtail_i );
-            vector<double> x, fx;
-            mins.minimize( wetfunc);
+        // Add resulting points to output
+        vb.insert( vb.end(), vb_i.begin(), vb_i.end() );
+        wetness.insert( wetness.end(), wetness_i.begin(), wetness_i.end() );
+        for( size_t j = 0; j < vb_i.size(); j++ ) vtail.push_back( vtail_i );
 
-            // Evaluate n_fit points around minimum
-            for( int j = -(n_fit-1)/2; j <= n_fit/2; j++ ) {  
-                double x_j = mins.xmin + j*dv;
-                double fx_j = ( j == 0 ) ? mins.fmin : wetfunc(x_j);
-                x.push_back( x_j );
-                fx.push_back( fx_j );
-            }
-
-            // Try quadratic fit, if resulting minimum isn't in the middle of evaluated points move towards it and repeat until it is
-            int max_iter = 100;
-            int n_half = n_fit/2;
-            for( int iter = 0; iter < max_iter; iter++ ) {
-                double a_fit, b_fit, c_fit, min_fit;
-                tie( a_fit, b_fit, c_fit ) = QuadraticRegression( x, fx );
-
-                min_fit = ( a_fit != 0 )?  -b_fit/(2*a_fit) : -sgn(b_fit)*2*vmax;        // moving towards -sgn(b_fit)*2*vmax means moving following first derivative
-
-                // Avoid following minimum outside of range
-                if( a_fit > 0 && ( min_fit <= vmin || min_fit >= vmax ) ) break;
-
-                // Find number of values of x that are lower (and higher) than min_fit
-                int n_lower = 0;
-                while( n_lower < n_fit && x[n_lower] < min_fit ) n_lower ++;
-                int n_higher = n_fit - n_lower;
-
-                // Account for failed fit, if a_fit < 0 move in  opposite direction
-                if( a_fit < 0 ) swap( n_lower, n_higher );
-
-                cout << "Iteration " << iter + 1 << ", n_lower = " << n_lower << ", n_higher = " << n_higher << endl;
-
-                // Move towards minimum
-                if( n_lower < n_half ) {
-                    double new_x = x[0] - dv;
-                    x.insert( x.begin(), new_x );
-                    fx.insert( fx.begin(), wetfunc( new_x ) );
-                    x.pop_back();
-                    fx.pop_back();
-                } else if( n_higher < n_half ) {
-                    double new_x = x.back() + dv;
-                    x.push_back( new_x );
-                    fx.push_back( wetfunc( new_x ) );
-                    x.erase( x.begin() );
-                    fx.erase( fx.begin() );
-                } else break;
-            }
-
-            // Add resulting points to output
-            vb.insert( vb.end(), x.begin(), x.end() );
-            wetness.insert( wetness.end(), fx.begin(), fx.end() );
-            vtail.insert( vtail.end(), vtail_vec.begin(), vtail_vec.end() );
-
-        } else {    // If bracketing fails the bound minimum is in vb = vmax
-            vb.push_back( mins.cx );
-            wetness.push_back( mins.fc );
-            vtail.push_back( vtail_i );
-        }
         cout << "Step " << i+1 << "/" << n_tail << " completed" << endl;
     }
 
@@ -815,77 +804,49 @@ vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double v
     double k =  N_nstep < 2 ? 1  :  pow(dtmin/dtmax, (double)1/(N_nstep-1));
 
     vector<double> nstep, vb, wetness;
-    Brent mins(dv);
-    vector<double> rain_vel = {vtail, vcross, -1};
 
     for( size_t i = 0; i < N_nstep; i++ ) {
         double dt_i = dtmax * pow( k, i );
         unsigned int nstep_i = round(1./dt_i);
-        auto wetfunc = [&box, &body, &rain_vel, dx, nstep_i] (double x) {return WetnessSmooth( box, body, rain_vel, x, dx, 0., 1., nstep_i );};
 
-        if( mins.bracket( vmin, vmax, 3, wetfunc ) ) {
-            vector<double> nstep_vec( n_fit, nstep_i );
-            vector<double> x, fx;
-            mins.minimize( wetfunc);
-            
-            // Evaluate n_fit points around minimum
-            for( int j = -(n_fit-1)/2; j <= n_fit/2; j++ ) {  
-                double x_j = mins.xmin + j*dv;
-                double fx_j = ( j == 0 ) ? mins.fmin : wetfunc(x_j);
-                x.push_back( x_j );
-                fx.push_back( fx_j );
-            }
+        // Calculate fit points
+        vector<double> vb_i, wetness_i;
+        tie( vb_i, wetness_i ) = MinFitSmooth( box, body, vmin, vmax, dx, nstep_i, vcross, vtail, n_fit, dv );
 
-            // Try quadratic fit, if resulting minimum isn't in the middle of evaluated points move towards it and repeat until it is
-            int max_iter = 100;
-            int n_half = n_fit/2;
-            for( int iter = 0; iter < max_iter; iter++ ) {
-                double a_fit, b_fit, c_fit, min_fit;
-                tie( a_fit, b_fit, c_fit ) = QuadraticRegression( x, fx );
+        // Add resulting points to output
+        vb.insert( vb.end(), vb_i.begin(), vb_i.end() );
+        wetness.insert( wetness.end(), wetness_i.begin(), wetness_i.end() );
+        for( size_t j = 0; j < vb_i.size(); j++ ) nstep.push_back( nstep_i );
 
-                min_fit = ( a_fit != 0 )?  -b_fit/(2*a_fit) : -sgn(b_fit)*2*vmax;        // moving towards -sgn(b_fit)*2*vmax means moving following first derivative
-
-                // Avoid following minimum outside of range
-                if( a_fit > 0 && ( min_fit <= vmin || min_fit >= vmax ) ) break;
-
-                // Find number of values of x that are lower (and higher) than min_fit
-                int n_lower = 0;
-                while( n_lower < n_fit && x[n_lower] < min_fit ) n_lower ++;
-                int n_higher = n_fit - n_lower;
-
-                // Account for failed fit, if a_fit < 0 move in  opposite direction
-                if( a_fit < 0 ) swap( n_lower, n_higher );
-
-                cout << "Iteration " << iter + 1 << ", n_lower = " << n_lower << ", n_higher = " << n_higher << endl;
-
-                // Move towards minimum
-                if( n_lower < n_half ) {
-                    double new_x = x[0] - dv;
-                    x.insert( x.begin(), new_x );
-                    fx.insert( fx.begin(), wetfunc( new_x ) );
-                    x.pop_back();
-                    fx.pop_back();
-                } else if( n_higher < n_half ) {
-                    double new_x = x.back() + dv;
-                    x.push_back( new_x );
-                    fx.push_back( wetfunc( new_x ) );
-                    x.erase( x.begin() );
-                    fx.erase( fx.begin() );
-                } else break;
-            }
-
-            // Add remaining points to output
-            vb.insert( vb.end(), x.begin(), x.end() );
-            wetness.insert( wetness.end(), fx.begin(), fx.end() );
-            nstep.insert( nstep.end(), nstep_vec.begin(), nstep_vec.end() );
-
-        } else {
-            vb.push_back( mins.cx );
-            wetness.push_back( mins.fc );
-            nstep.push_back( nstep_i );
-        }
         cout << "Step " << i+1 << "/" << N_nstep << " completed" << endl;
     }
 
     return Transpose(vector<vector<double>>{nstep, vb, wetness});
+}
+
+
+// Finds minimums of smooth wetness for a fixed vcross and [vtail_min, vtail_max]x[vcross_min, vcross_max] with brent, calculates wetness for n_fit values around it, returns all these values
+vector<vector<double>> OptMapFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep, unsigned int n_fit, double dv, double vtail_min, double vtail_max, unsigned int n_tail, double vcross_min, double vcross_max, unsigned int n_cross ) {
+    vector<double> vtail, vcross, vb, wetness;
+
+    for( size_t i = 0; i < n_cross; i++ ) {
+        double vcross_i = n_cross > 1 ?  vcross_min + i*(vcross_max-vcross_min)/(n_cross-1) : vcross_min;
+        
+        // Calculate fit points
+        vector<vector<double>> points_i = FindMinFitSmooth( box, body, vmin, vmax, dx, nstep, vcross_i, vtail_min, vtail_max, n_tail, n_fit, dv );
+        points_i = Transpose( points_i );
+        vector<double> vtail_i = points_i[0];
+        vector<double> vb_i = points_i[1];
+        vector<double> wetness_i = points_i[2];
+
+        // Add resulting points to output
+        vtail.insert( vtail.end(), vtail_i.begin(), vtail_i.end() );
+        vb.insert( vb.end(), vb_i.begin(), vb_i.end() );
+        wetness.insert( wetness.end(), wetness_i.begin(), wetness_i.end() );
+        for( size_t j = 0; j < vb_i.size(); j++ ) vcross.push_back( vcross_i );
+
+        cout << "Super step " << i+1 << "/" << n_cross << " completed" << endl;
+    }
+
+    return Transpose(vector<vector<double>>{vtail, vcross, vb, wetness});
 }
