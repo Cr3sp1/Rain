@@ -67,6 +67,9 @@ int main (int argc, char *argv[]){
     ManyBody DynSphere("../Bodies/DynamicSphere.in");
     vector<double> boxDS = {1, 1, 2};
 
+    // Check that body is moving
+    cout << "Still: " << WetnessSmooth(boxW, Walk, {0.3, 0.15, -1}, 0.50, 0.01 ) << endl;
+    cout << "Moving: " << WetnessSmooth(boxW, Walk, {0.3, 0.15, -1}, 0.50, 0.01, 0, 1, nstep_t ) << endl;
 
 
     // // Check boxes
