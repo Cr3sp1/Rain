@@ -70,8 +70,8 @@ int main (int argc, char *argv[]){
     // Check that body is moving
     dx = 0.01;
     nstep_t = 50;
-    cout << "Still: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.01 ) << endl;
-    cout << "Moving: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.01, 0, 1, nstep_t ) << endl;
+    cout << "Still: " << WetnessSmooth(boxW, Walk, {0.3, 0.15, -1}, 0.50, 0.01 ) << endl;
+    cout << "Moving: " << WetnessSmooth(boxW, Walk, {0.3, 0.15, -1}, 0.50, 0.01, 0, 1, nstep_t ) << endl;
 
 
     // // Check boxes
@@ -550,8 +550,8 @@ int main (int argc, char *argv[]){
     // Print( "../data/Run/OptMapFitSmoothR4.dat", RunOptMapFit, 12 ); 
     // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(8./19), 1.2*(9./19), 2 );
     // Print( "../data/Run/OptMapFitSmoothR5.dat", RunOptMapFit, 12 );
-    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(10./19), 1.2*(11./19), 2 );
-    // Print( "../data/Run/OptMapFitSmoothR6.dat", RunOptMapFit, 12 );
+    vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(10./19), 1.2*(11./19), 2 );
+    Print( "../data/Run/OptMapFitSmoothR6.dat", RunOptMapFit, 12 );
     // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(12./19), 1.2*(13./19), 2 );
     // Print( "../data/Run/OptMapFitSmoothR7.dat", RunOptMapFit, 12 );
     // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(14./19), 1.2*(15./19), 2 );
