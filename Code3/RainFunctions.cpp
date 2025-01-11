@@ -729,6 +729,7 @@ tuple<vector<double>, vector<double>> MinFitSmooth( vector<double> box, Body& bo
         // Try quadratic fit, if resulting minimum isn't in the middle of evaluated points move towards it and repeat until it is
         int max_iter = 100;
         int n_half = n_fit/2;
+        bool moving_forward = false, moving_backwards = false;
         for( int iter = 0; iter < max_iter; iter++ ) {
             double a_fit, b_fit, c_fit, min_fit;
             tie( a_fit, b_fit, c_fit ) = QuadraticRegression( vb, wetness );
@@ -750,18 +751,23 @@ tuple<vector<double>, vector<double>> MinFitSmooth( vector<double> box, Body& bo
 
             // Move towards minimum
             if( n_lower < n_half ) {
+                moving_backwards = true;
                 double new_vb = vb[0] - dv;
                 vb.insert( vb.begin(), new_vb );
                 wetness.insert( wetness.begin(), wetfunc( new_vb ) );
                 vb.pop_back();
                 wetness.pop_back();
             } else if( n_higher < n_half ) {
+                moving_forward = true;
                 double new_vb = vb.back() + dv;
                 vb.push_back( new_vb );
                 wetness.push_back( wetfunc( new_vb ) );
                 vb.erase( vb.begin() );
                 wetness.erase( wetness.begin() );
             } else break;
+
+            // Avoid moving back and forth
+            if( moving_backwards && moving_forward ) break;
         }
 
     } else {    // If bracketing fails the bound minimum is in vb = vmax
@@ -798,7 +804,7 @@ vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double v
 
 
 // Finds minimums of smooth wetness for a fixed vcross and vtail_min using Brent algorithm with nstep in [nstep_min, nstep_max], and calculates wetness for n_fit values spaced dv around it, returns all these values
-vector<vector<double>> FindMinFitSmooth(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep, double vcross, double vtail, int n_fit, double dv ) {
+vector<vector<double>> FindMinFitSmoothNstep(vector<double> box, Body& body, double vmin, double vmax, double dx, unsigned int nstep_min, unsigned int nstep_max, unsigned int N_nstep, double vcross, double vtail, int n_fit, double dv ) {
     double dtmin = 1./nstep_max;
     double dtmax = 1./nstep_min;
     double k =  N_nstep < 2 ? 1  :  pow(dtmin/dtmax, (double)1/(N_nstep-1));

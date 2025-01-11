@@ -499,19 +499,19 @@ int main (int argc, char *argv[]){
     // dx = 0.001;
 
 
-    // vector<vector<double>> WalkMinsSnstep= FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_min, nstep_max, N_nstep, 0.15, 0.5, N_fit, dv );
+    // vector<vector<double>> WalkMinsSnstep= FindMinFitSmoothNstep( boxW, Walk, 0., 0.7, dx, nstep_min, nstep_max, N_nstep, 0.15, 0.5, N_fit, dv );
     // Print( "../data/Walk/OptFitSmoothW_nstep.dat", WalkMinsSnstep, 12 );
 
-    // vector<vector<double>> RunMinsSnstep = FindMinFitSmooth( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
+    // vector<vector<double>> RunMinsSnstep = FindMinFitSmoothNstep( boxR, Run, 0., 2., dx, nstep_min, nstep_max, N_nstep, 0.30, 0.45, N_fit, dv );
     // Print( "../data/Run/OptFitSmoothR_nstep.dat", RunMinsSnstep, 12 );
 
 
     // Smooth Brent minimization fit map
-    nstep_v = 20;
-    int N_fit = 9;
-    double dv = 0.006;
-    dx = 0.001;
-    nstep_t = 50;
+    // nstep_v = 20;
+    // int N_fit = 9;
+    // double dv = 0.006;
+    // dx = 0.001;
+    // nstep_t = 50;
 
     // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0, 0.40, nstep_v);
     // Print( "../data/Walk/OptMapFitSmoothW.dat", WalkOptMapFit, 12 );
@@ -525,4 +525,49 @@ int main (int argc, char *argv[]){
     // vector<vector<double>> RunOptMapComp = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, -0.5, 2, nstep_v, 0, 1.2, nstep_v );
     // Print( "../data/Run/OptMapCompareSmoothR.dat", RunOptMapComp, 12 );
 
+
+    // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0, 0.40*(4./19), 5 );
+    // Print( "../data/Walk/OptMapFitSmoothW1.dat", WalkOptMapFit, 12 );
+    // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0.40*(5./19), 0.40*(9./19), 5 );
+    // Print( "../data/Walk/OptMapFitSmoothW2.dat", WalkOptMapFit, 12 );
+    // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0.40*(10./19), 0.40*(14./19), 5 );
+    // Print( "../data/Walk/OptMapFitSmoothW3.dat", WalkOptMapFit, 12 );
+    // vector<vector<double>> WalkOptMapFit = OptMapFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, N_fit, dv, 0, 0.7, nstep_v, 0.40*(15./19), 0.40, 5 );
+    // Print( "../data/Walk/OptMapFitSmoothW4.dat", WalkOptMapFit, 12 );
+
+    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 0, 1.2*(4./19), 5 );
+    // Print( "../data/Run/OptMapFitSmoothR1.dat", RunOptMapFit, 12 ); 
+    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(5./19), 1.2*(9./19), 5 );
+    // Print( "../data/Run/OptMapFitSmoothR2.dat", RunOptMapFit, 12 ); 
+    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(10./19), 1.2*(14./19), 5 );
+    // Print( "../data/Run/OptMapFitSmoothR3.dat", RunOptMapFit, 12 ); 
+    // vector<vector<double>> RunOptMapFit = OptMapFitSmooth( boxR, Run, 0, 2, dx, nstep_t, N_fit, dv, 0, 2, nstep_v, 1.2*(15./19), 1.2, 5 );
+    // Print( "../data/Run/OptMapFitSmoothR4.dat", RunOptMapFit, 12 ); 
+
+
+    // Points for example fit
+    dx = 0.001;
+    nstep_t = 50;
+    rain_vel = { 0.5, 0.15, -1};
+    double vmin = 0.55, vmax = 0.64;
+    nstep_v = 300;
+
+    vector<vector<double>> EgWetfun = SimulateSmooth( boxW, Walk, rain_vel, vmin, vmax, nstep_v, dx, 0, 1, nstep_t );
+    Print( "../data/Walk/EgWetFun.dat", EgWetfun , 12 ); 
+    // vector<vector<double>> EgWetfun = SimulateSmooth( boxW, Walk, rain_vel, vmin, vmax, nstep_v, dx, 0., 1., nstep_t );
+    // Print( "../data/Temp/EgWetFun.dat", EgWetfun , 12 ); 
+
+    // vector<double> vb, Rb;
+    // tie( vb, Rb ) = MinFitSmooth( boxW, Walk, 0, 0.7, dx, nstep_t, 0., 0.5, 9, 0.006);
+    // vector<vector<double>> results = {vb, Rb};
+    // results = Transpose(results);
+    // Print( "../data/Temp/EgMins.dat", results , 12 ); 
+
+
+    // vector<vector<double>> WalkMinsS0 = FindMinFitSmooth( boxW, Walk, 0., 0.7, dx, nstep_t, 0., 0., 0.7, 50, 9, 0.006 );
+    // Print( "../data/Temp/OptFitSmoothW0.dat", WalkMinsS0, 12 );
+
+    // Check that body is moving
+    cout << "Still: " << WetnessSmooth(boxW, Walk, rain_vel, 0.50, 0.01 ) << endl;
+    cout << "Moving: " << WetnessSmooth(boxW, Walk, rain_vel, 0.50, 0.01, 0, 1, nstep_t ) << endl;
 }

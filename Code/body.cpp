@@ -213,7 +213,7 @@ bool Parallelepiped::Check( Ray& ray ) {
 }
 
 // Returns a value in [0, 1] describing how close the ray is to the body, 0 if the ray is at least a distance dx from the body, 1 if the ray is at least dx inside the body
-double Parallelepiped::CheckSmooth( Ray& ray, double dx ) { // VERY INEFFICIENT, TO OPTIMIZE
+double Parallelepiped::CheckSmooth( Ray& ray, double dx ) { 
     // Finds smallest distance from all side of the hexagon
     double delta_r = dx;     // Sentinel value
     vector<double> point = ray.GetR0();
