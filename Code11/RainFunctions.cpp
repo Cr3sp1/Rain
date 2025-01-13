@@ -737,7 +737,7 @@ tuple<vector<double>, vector<double>> MinFitSmooth( vector<double> box, Body& bo
             min_fit = ( a_fit != 0 )?  -b_fit/(2*a_fit) : -sgn(b_fit)*2*vmax;        // moving towards -sgn(b_fit)*2*vmax means moving following first derivative
 
             // Avoid following minimum outside of range
-            if( a_fit > 0 && ( min_fit <= vmin || min_fit >= vmax ) ) break;
+            if( a_fit > 0 && ( min_fit <= vmin || min_fit >= vmax ) ) {break;}
 
             // Find number of values of x that are lower (and higher) than min_fit
             int n_lower = 0;
