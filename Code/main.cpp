@@ -566,9 +566,9 @@ int main (int argc, char *argv[]){
     // Points for example fit
     // dx = 0.001;
     // nstep_t = 50;
+    // nstep_v = 300;
     // rain_vel = { 0.5, 0.15, -1};
     // double vmin = 0.55, vmax = 0.64;
-    // nstep_v = 300;
 
     // vector<vector<double>> EgWetfun = SimulateSmooth( boxW, Walk, rain_vel, vmin, vmax, nstep_v, dx, 0, 1, nstep_t );
     // Print( "../data/Walk/EgWetFun.dat", EgWetfun , 12 ); 
