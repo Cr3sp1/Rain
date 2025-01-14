@@ -68,8 +68,8 @@ int main (int argc, char *argv[]){
     vector<double> boxDS = {1, 1, 2};
 
     // Check that body is moving
-    cout << "Still: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.001 ) << endl;
-    cout << "Moving: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.001, 0, 1, 50 ) << endl;
+    cout << "Still: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.01 ) << endl;
+    cout << "Moving: " << WetnessSmooth(boxW, Walk, {0.5, 0.15, -1}, 0.60, 0.01, 0, 1, 50 ) << endl;
 
 
     // // Check boxes
